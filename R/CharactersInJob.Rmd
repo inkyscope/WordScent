@@ -1,0 +1,404 @@
+---
+title: "Characters in Job"
+author: "sung inkyung"
+date: '2019 8 7'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## sources: http://uc-r.github.io/tidy_text
+```{r}
+library(tidyverse)
+library(tidytext)
+```
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book %in% c("Job", "Psalms", "Proverbs", "Ecclesiastes")) %>% 
+    select(-c(citation, verse)) 
+```
+
+```{r}
+bible %>% 
+  count(book)
+```
+
+```{r}
+bible_tokenized <- bible %>%
+  mutate(book =factor(book)) %>% 
+  select(book, chapter, text) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  group_by(book, word, chapter) %>%
+  count(sort = TRUE) %>% 
+  ungroup() %>% 
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art",
+                      "shalt", "thee", "hath", "ye")) 
+```
+
+```{r}
+Job_characters <- bible_tokenized %>%
+  filter(book == "Job") %>%
+  mutate(
+    chapter = case_when(
+      chapter %in% c("1", "2", "3") ~ "Angel",
+    chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "40", "41") ~ "Job",
+    chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+    chapter %in% c("8", "18", "25") ~"Bildad",
+    chapter %in% c("11", "20") ~ "Zophar",
+    chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+    chapter %in% c("38", "39", "42") ~ "God",
+    TRUE ~ as.character(chapter)
+    )) 
+```
+
+```{r}
+Job_characters %>% 
+  count(chapter, word) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+Job_characters %>% 
+  filter(chapter %in% c("Job", "Eliphaz", "Bildad", "Zophar", "Elihu", "God")) %>% 
+  arrange(desc(n)) %>% 
+  group_by(chapter) %>%
+  top_n(10) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, n, fill = chapter)) +
+  geom_bar(stat = "identity",
+           alpha = .7,
+           show.legend = FALSE) +
+  scale_fill_brewer(palette = "Dark2") +
+  facet_wrap(~chapter, scales = "free") +
+  coord_flip() + 
+  labs(title = "Word Frequency of each character in Job",
+         x = " ",
+         y = " ") +
+  theme_minimal()
+```
+
+```{r}
+Job_characters <- Job_characters %>% 
+  bind_tf_idf(word, chapter, n)
+
+Job_characters
+```
+
+```{r}
+Job_characters %>% 
+  filter(chapter %in% c("Job", "Eliphaz", "Bildad", "Zophar", "Elihu", "God")) %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(chapter) %>% 
+  top_n(6, tf_idf) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, tf_idf, fill = chapter))+
+  geom_col(stat = "identity",
+           alpha = .7,
+           show.legend = FALSE) +
+  labs(x = NULL,
+       y = "tf_idf") +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_fill_brewer(palette = "Dark2") +
+  facet_wrap(~ chapter, ncol = 2, scales = "free")+
+  coord_flip()+
+   theme_minimal()
+```
+
+```{r}
+# labMT2 sentiment analysis
+
+sentiments <- read.csv("https://raw.githubusercontent.com/aleszu/textanalysis-shiny/master/labMT2english.csv", sep="\t")
+    
+labMT <- sentiments %>%
+      select(word, happs)
+    
+sentiments %>% 
+  summarise(mean(happs))
+```
+
+```{r}
+bible_sent <- bible %>%
+  mutate(book =factor(book)) %>% 
+  select(book, chapter, text) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art",
+                      "shalt", "thee", "hath", "ye")) %>% 
+  inner_join(labMT, by = "word") %>%
+  group_by(word, book, chapter) %>%
+  summarize(sentiment = mean(happs)) %>%
+  arrange(desc(sentiment)) %>% 
+  mutate(score = sentiment-5.372) 
+
+```
+
+```{r}
+Job_characters <- bible_sent %>%
+  filter(book == "Job") %>%
+  mutate(
+    chapter = case_when(
+      chapter %in% c("1", "2", "3") ~ "Angel",
+    chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "40", "41") ~ "Job",
+    chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+    chapter %in% c("8", "18", "25") ~"Bildad",
+    chapter %in% c("11", "20") ~ "Zophar",
+    chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+    chapter %in% c("38", "39", "42") ~ "God",
+    TRUE ~ as.character(chapter)
+    )) 
+```
+
+```{r}
+Job_characters %>% 
+  filter(chapter %in% c("Job", "Eliphaz", "Bildad", "Zophar", "Elihu", "God")) %>% 
+  group_by(chapter) %>% 
+  top_n(30) %>% 
+  ungroup() %>% 
+  mutate(chapter = fct_reorder(chapter, score)) %>% 
+  ggplot(aes(word, score, fill = chapter))+
+  geom_bar(stat = "identity",
+           alpha = .7,
+           show.legend = FALSE,
+           na.rm = TRUE) +
+  scale_fill_brewer(palette = "Dark2") +
+  facet_wrap(~ chapter, 
+             scales = "free") +
+  coord_flip() + 
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(-2, 10), 
+                     breaks = seq(-2, 10, by = 2)) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+    labs(title = "words of each character in Job based on labMT sentiment score",
+         x = " ",
+         y = "score") +
+  theme_minimal()
+```
+
+```{r bigrams}
+
+bible_bigrams <- bible %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) %>% 
+  filter(!bigram %in% c("thou hast", "thou art", "thou shalt")) %>% 
+  separate(bigram, c("word1", "word2", sep = " ")) %>% 
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word)%>% 
+  count(book, word1, word2, sort = TRUE) %>% 
+  unite(bigram, word1, word2, sep = " ")
+
+bible_bigrams %>% 
+  group_by(book) %>% 
+  top_n(10) %>% 
+  ungroup() %>% 
+  mutate(book = factor(book) %>% 
+           forcats::fct_rev()) %>% 
+  ggplot(aes(drlib::reorder_within(bigram, n, book), n, fill = book)) +
+  geom_bar(stat = "identity", alpha = .7,
+           show.legend = FALSE) +
+  drlib::scale_x_reordered() +
+  scale_fill_brewer(palette = "Dark2") +
+  facet_wrap(~book, ncol = 2, 
+             scales = "free") +
+  coord_flip()+
+  theme_minimal()
+
+```
+
+```{r}
+bigram_tf_idf <- bible_bigrams %>% 
+  count(book, bigram, sort = TRUE) %>% 
+  bind_tf_idf(bigram, book, n) %>% 
+  arrange(desc(tf_idf))
+
+```
+
+```{r}
+bigram_tf_idf %>% 
+  group_by(book) %>% 
+  sample_n(10, wt = tf_idf) %>% 
+  ungroup() %>% 
+  mutate(book = factor(book) %>% 
+           forcats::fct_rev()) %>% 
+  ggplot(aes(drlib::reorder_within(bigram, tf_idf, book, na.rm = TRUE), 
+             tf_idf, fill =book)) +
+  geom_bar(stat = "identity", alpha = .7, 
+           show.legend = FALSE) +
+  labs(title = "bigrams with the highest tf-idf from selected books from bible", 
+       x = " ",
+       y = "tf-idf") +
+  drlib::scale_x_reordered() +
+  scale_fill_brewer(palette = "Dark2") +
+  facet_wrap(~book, ncol = 2, scales = "free") +
+  coord_flip()+
+  theme_minimal()
+```
+
+```{r}
+bible_bigrams <- bible %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) 
+
+bigrams_separated <-  bible_bigrams %>% 
+  separate(bigram, c("word1", "word2"), sep = " ") %>% 
+  filter(word1 == "not") %>% 
+  count(book, word1, word2, sort = TRUE)
+```
+
+```{r}
+AFINN <- get_sentiments("afinn")
+not_words <- bigrams_separated %>% 
+  inner_join(AFINN, by = c(word2 = "word")) %>% 
+  count(word2, score, sort = TRUE) %>% 
+  ungroup()
+```
+
+```{r}
+not_words %>% 
+  mutate(contribution = n * score) %>% 
+  arrange(desc(abs(contribution))) %>% 
+  head(20) %>% 
+  ggplot(aes(reorder(word2, contribution), n*score, fill = n*score > 0))+
+  geom_bar(stat = "identity",
+           show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * # of occurrences") +
+  coord_flip()+
+  theme_minimal()
+```
+
+```{r}
+negation_words <- c("not", "no", "never", "without")
+
+negated_words <- bigrams_separated %>% 
+  filter(word1 %in% negation_words) %>% 
+  inner_join(AFINN, by = c(word2 = "word")) %>% 
+  count(word1, word2, score, sort = TRUE) %>% 
+  ungroup()
+```
+
+```{r}
+negated_words %>% 
+  mutate(contribution = n*score) %>% 
+  arrange(desc(abs(contribution))) %>% 
+  group_by(word1) %>% 
+  top_n(10, abs(contribution)) %>% 
+  ggplot(aes(drlib::reorder_within(word2, contribution, word1), contribution, fill = contribution > 0)) +
+  geom_bar(stat = "identity", show.legend = FALSE)+
+  xlab("Words preceded by 'not', 'no', 'never', 'without'") +
+  ylab("Sentiment score * # of occurrences") +
+  drlib::scale_x_reordered() +
+  facet_wrap(~word1, scales = "free") +
+  coord_flip()+
+  theme_minimal()
+```
+
+```{r n-gram Networks}
+library(igraph)
+
+bigram_graph <- bible %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) %>% 
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>% 
+  count(word1, word2, sort = TRUE) %>% 
+        filter(n > 10) %>%
+        graph_from_data_frame()
+```
+
+```{r}
+library(ggraph)
+
+set.seed(2019)
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link()+
+  geom_node_point(color= "#40e0d0", size = 5) +
+  geom_node_text(aes(label = name),
+                 vjust = 1,
+                 hjust = 1) +
+  theme_void()
+```
+
+```{r Word Correlation}
+library(widyr)
+
+bible_books_words <- bible %>% 
+  filter(book == "Job") %>% 
+  mutate(chapter = row_number() %/% 10) %>% 
+  filter(chapter > 0) %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!word %in% stop_words$word)
+
+bible_books_words
+```
+
+```{r}
+# count words co-occuring within chapters
+word_pairs <- bible_books_words %>% 
+  pairwise_count(word, chapter, sort = TRUE)
+
+word_pairs
+```
+
+```{r}
+word_pairs %>% 
+  filter(item1 == "job")
+```
+
+```{r}
+word_cors <- bible_books_words %>% 
+  group_by(word) %>% 
+  filter(!word %in% c("thee", "thy", "hast", "thou", "thine", "wilt", "hast", "hath", "ye", "doth", "canst", "thereof",
+                      "yea", "shalt")) %>% 
+  filter(n()>20) %>% 
+  pairwise_cor(word, chapter, sort = TRUE)
+```
+
+```{r}
+word_cors %>% 
+  filter(item1 == "god")
+```
+
+```{r}
+word_cors %>% 
+  filter(item1 %in% c("god", "job", "soul", "wisdom")) %>% 
+  group_by(item1) %>% 
+  top_n(6) %>% 
+  ungroup() %>% 
+  mutate(item2 = reorder(item2, correlation)) %>% 
+  ggplot(aes(item2, correlation, fill = item1)) +
+  geom_bar(stat = "identity",
+           alpha = .7,
+           show.legend = FALSE) + 
+  scale_fill_brewer(palette = "Dark2") +
+  facet_wrap(~item1, scales = "free") +
+   guides(fill = guide_legend(reverse = TRUE)) +
+  coord_flip() +
+  theme_minimal()
+```
+
+```{r}
+set.seed(2019)
+
+word_cors %>%  
+  filter(correlation > .1) %>% 
+  graph_from_data_frame() %>% 
+  ggraph(layout = "fr") + # graphopt
+  geom_edge_link(aes(edge_alpha = correlation), 
+                 show.legend = FALSE)+
+  geom_node_point(color = "#40e0d0", size = 3) +
+  geom_node_text(aes(label = name), 
+                 repel = TRUE) +
+  labs(title = "Word-pairs in Job based on correlation > .1 ",
+       subtitle = "Correlated words appearing within the same 10-line verses")+
+  theme_void()
+```
+
+
+
+

@@ -1,0 +1,52 @@
+---
+title: "bibleKJV"
+author: "Sung Inkyung"
+date: '2019 10 22 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(scales)
+library(SnowballC)
+library(igraph)
+library(ggraph)
+```
+### source (https://github.com/joshua-feldman/King-James-Bible/blob/master/Bible.R)
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
+```
+
+```{r}
+book_by_characters <- bible %>% 
+  group_by(book) %>% 
+  summarise(characters = sum(nchar(text))) %>% 
+  arrange(desc(characters))
+```
+```{r}
+book_by_characters$book <- factor(book_by_characters$book,
+                                  levels = book_by_characters)
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
