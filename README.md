@@ -6,5 +6,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Sentiment Analysis of Job, Psalms, Proverbs, and Ecclesiates
+![Sentiment Analysis](https://github.com/inkyscope/inkyscroll/blob/master/figures/BingSentimentAnalysis.png)
+
+
 ### Psalms words network by [KJV](https://www.kingjamesbibleonline.org/)
 ![Psalms words network](https://github.com/inkyscope/inkyscroll/blob/master/figures/psalms_scroll.png)
