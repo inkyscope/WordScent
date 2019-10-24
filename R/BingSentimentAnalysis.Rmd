@@ -1,0 +1,412 @@
+---
+title: "selected books from bible"
+author: "sung inkyung"
+date: '2019 8 7'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## sources: [UC Business Analytics R Programming Guide](http://uc-r.github.io/tidy_text)
+```{r}
+library(tidyverse)
+library(tidytext)
+library(textdata)
+library(cowplot)
+library(patchwork)
+library(here)
+```
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
+```
+
+```{r}
+
+bible_text <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>%
+  count(word, sort = TRUE)
+```
+
+```{r}
+bible %>% 
+  count(book) %>% 
+  filter(n > 500) %>% 
+  mutate(book = as.factor(fct_reorder(book, n))) %>%   
+  ggplot(aes(book, n)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = n),
+            nudge_y = -100,
+            hjust = 0.3,
+            size = 2.5,
+            color = "white",
+            check_overlap = TRUE) +
+  coord_flip() +
+  labs(x = "",
+       y = "") +
+  theme_half_open(12)
+```
+
+```{r}
+one_page <- bible %>% 
+  filter(book =="Job",
+         chapter == 1) %>% 
+  select(-c(citation, verse)) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!(word %in% c("thy", "thou", "thine", "thee", "hast", "hath", "lord", "god", "ye", "yea")),
+         str_detect(word, "[a-z]")) %>% 
+  count(word, sort = TRUE) %>% 
+  summarise(total = n())
+
+books_filtered <- bible %>% 
+  filter(book %in% c("Job", "Psalms", "Proverbs", "Ecclesiastes")) %>% 
+  select(-c(citation, verse)) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!(word %in% c("thy", "thou", "thine", "thee", "hast", "hath", "lord", "god", "ye", "yea")),
+         str_detect(word, "[a-z]"))
+  
+```
+
+```{r}
+# top 10 most common words in each book
+
+books_filtered %>% 
+  group_by(book) %>% 
+  count(word, sort = TRUE) %>% 
+  top_n(10) %>% 
+  ungroup() %>% 
+  mutate(book = factor(book),
+         book = fct_reorder(book, n,
+                            na.rm = TRUE),) %>% 
+  ggplot(aes(word, n, fill = book)) +
+  geom_col() +
+  facet_wrap(~book, scales = "free_y") +
+  labs(x = "", 
+       y = "Frequency") +
+  coord_flip() +
+  theme_minimal() +
+  labs(x = "", 
+       y = "") +
+  theme(legend.position = "none")
+  
+```
+
+
+```{r}
+# calculate percent of word use across the selected books
+
+books_pct <- books_filtered %>% 
+  count(word) %>% 
+  transmute(word, all_words = n / sum(n))
+
+# calculate percent of word use within each book
+frequency <- books_filtered %>% 
+  count(book, word) %>% 
+  mutate(book_words = n/ sum(n)) %>% 
+  left_join(books_pct, by = "word") %>% 
+  arrange(desc(book_words)) %>% 
+  ungroup()
+
+p1 <- frequency %>% 
+  ggplot(aes(book_words, all_words, 
+           color = abs(all_words - book_words))) +
+  geom_abline(color = "gray40", lty = 2) +
+  geom_jitter(alpha = 0.05, 
+              size = 0.9, 
+              width = .3,
+              height = .3,
+              show.legend = FALSE) +
+  geom_text(aes(label = word),
+            check_overlap = TRUE,
+            vjust = 1.7) +
+  scale_x_log10(labels = scales::percent_format()) +
+  scale_y_log10(labels = scales::percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001),
+                       low = "#395555", 
+                       high = "#c6008e") +
+  facet_wrap(~book, ncol = 2) +
+  labs(y = " ",
+       x = " ",
+       title = "The frequency for each word across the selected books from bible",
+       subtitle = "The below plot allows us to compare strong deviations of word frequency within each book") +
+  theme_half_open(12) +
+  theme(legend.position = "none",
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 13)) 
+p1
+
+```
+
+```{r}
+frequency %>% 
+  group_by(book) %>% 
+  summarise(coorelation = cor(book_words, all_words),
+            p_value = cor.test(book_words, all_words)$p.value)
+```
+
+```{r Sentiment Analysis}
+# to see the individual lexicons try
+get_sentiments("afinn")
+get_sentiments("bing")
+get_sentiments("nrc")
+```
+
+```{r}
+books_filtered %>% 
+  right_join(get_sentiments("nrc")) %>% 
+  filter(!is.na(sentiment)) %>% 
+  count(sentiment, sort = TRUE)
+```
+
+```{r}
+p2 <- books_filtered %>% 
+  group_by(book) %>% 
+  mutate(word_count = 1:n(),
+         index = word_count %/% 70 + 1) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  count(book, index = index, sentiment) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = sentiment,
+              values_from = n, 
+              values_fill = NULL) %>% 
+  mutate(sentiment = positive - negative,
+         book = factor(book)) %>% 
+  ggplot(aes(index, sentiment, fill = book)) +
+  geom_bar(alpha = .7, 
+           stat = "identity", 
+           na.rm = TRUE,
+           show.legend = FALSE) +
+  facet_wrap(~book, 
+             ncol = 2, 
+             scales = "free_x") +
+  labs(title = "Sentiment of Ecclesiates, Job, Proverbs, and Psalms",
+       subtitle = "Index that breaks up each book by 70 word; this is close to the number of words of one pages.\nBING lexicon is applied to assess the positive vs. negative sentiment of each word") +
+  theme_half_open(12) +
+   theme(legend.position = "none",
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 13)) 
+
+```
+
+```{r comparing sentiments}
+
+afinn <-  books_filtered %>% 
+  group_by(book) %>% 
+  mutate(word_count = 1:n(),
+         index = word_count %/% 70 + 1) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(book, index) %>% 
+  summarise(sentiment = sum(value)) %>% 
+  mutate(method = "AFINN")
+
+bing_and_nrc <- bind_rows(books_filtered %>%
+                  group_by(book) %>% 
+                  mutate(word_count = 1:n(),
+                         index = word_count %/% 70 + 1) %>% 
+                  inner_join(get_sentiments("bing")) %>%
+                  mutate(method = "BING"),
+          books_filtered %>%
+                  group_by(book) %>% 
+                  mutate(word_count = 1:n(),
+                         index = word_count %/% 70 + 1) %>%
+                  inner_join(get_sentiments("nrc") %>%
+                                     filter(sentiment %in% c("positive", "negative"))) %>%
+                  mutate(method = "NRC")) %>%
+        count(book, method, index = index , sentiment) %>%
+        ungroup() %>%
+        pivot_wider(names_from = sentiment,
+              values_from = n, 
+              values_fill = NULL) %>%
+        mutate(sentiment = positive - negative) %>%
+        select(book, index, method, sentiment)
+```
+
+```{r}
+bind_rows(afinn, 
+          bing_and_nrc) %>% 
+  ungroup() %>% 
+  mutate(book = factor(book)) %>% 
+  ggplot(aes(index, sentiment, fill = method)) +
+  geom_bar(stat = "identity",
+           show.legend = FALSE) +
+  scale_fill_brewer(palette = "Set2") +
+  facet_grid(book ~ method) +
+  labs(x = "index",
+       y = "sentiment",
+       title = "Comparing each book with three sentiment lexicons") +
+  theme_half_open(12)
+```
+
+```{r Common Sentiment Words}
+bing_word_counts <- books_filtered %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  count(word, sentiment, sort = TRUE) %>% 
+  ungroup()
+```
+
+```{r}
+bing_word_counts %>% 
+  group_by(sentiment) %>% 
+  top_n(10) %>% 
+  ggplot(aes(reorder(word, n), n, fill = sentiment)) +
+  geom_bar(alpha = 0.8, stat = "identity", 
+           show.legend = FALSE) +
+  scale_fill_manual(values = c("#f3a09d", "#55c671")) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Word category by sentiment",
+       x = "",
+       title = "Common sentiment words for each sentiment") +
+  coord_flip() +
+  theme_half_open(12)
+```
+
+```{r Sentiment Analysis with Larger Units}
+psalms_sentences <- bible %>% 
+  filter(book %in% "Psalms") %>% 
+  select(-c(citation, verse)) %>% 
+  unnest_tokens(sentence, text, token = "sentences")
+
+```
+
+```{r}
+psalms_sent<- psalms_sentences %>%
+        group_by(chapter) %>%
+        mutate(sentence_num = 1:n(),
+               index = round(sentence_num / n(), 2)) %>%
+        unnest_tokens(word, sentence) %>%
+        inner_join(get_sentiments("afinn")) %>%
+        group_by(chapter, index) %>%
+        summarise(sentiment = sum(value, na.rm = TRUE)) %>%
+        arrange(desc(sentiment))
+
+psalms_sent
+```
+
+```{r}
+ggplot(psalms_sent, aes(index, 
+                        factor(chapter, 
+                               levels = sort(unique(chapter),
+                                             decreasing = TRUE)),
+                        fill = sentiment)) +
+        geom_tile(color = "white") +
+        scale_fill_gradient2() +
+        scale_x_continuous(labels = scales::percent, 
+                           expand = c(0, 0)) +
+        scale_y_discrete(breaks = seq(1, 150, 10),
+                         expand = c(0, 0)) +
+        labs(x = "Chapter Progression", 
+             y = "Chapter") +
+        ggtitle("Sentiment of Bible and Psalms",
+                subtitle = "Summary of the net sentiment score through each chapter") +
+        theme_minimal() +
+        theme(panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              legend.position = "top")
+```
+
+```{r Term vs Document Frequency}
+books_words <-  books_filtered %>% 
+  count(book, word, sort = TRUE) %>% 
+  ungroup()
+
+books_filtered_words <- books_words %>% 
+  group_by(book) %>% 
+  summarise(total = sum(n))
+
+books_words <- left_join(books_words, books_filtered_words, by = "book")
+```
+
+```{r}
+books_words %>% 
+  mutate(ratio = n / total) %>% 
+  ggplot(aes(ratio, fill = book)) +
+  geom_histogram(show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~book, ncol = 2)
+```
+
+```{r Zipf's Law}
+freq_by_rank <- books_words %>% 
+  group_by(book) %>% 
+  mutate(rank = row_number(),
+         term_freq = n / total)
+
+freq_by_rank %>% 
+  ggplot(aes(rank, term_freq,
+             color = book)) +
+  geom_line() +
+  scale_x_log10() +
+  scale_y_log10() +
+  theme_minimal()
+```
+
+```{r}
+lower_rank <- freq_by_rank %>%
+        filter(rank < 500)
+
+lm(log10(term_freq) ~ log10(rank), data = lower_rank)
+```
+
+```{r}
+p3 <-  freq_by_rank %>% 
+  ggplot(aes(rank, term_freq, color = book)) +
+  geom_abline(intercept = -1.3613, slope = -0.7081, 
+              color = "gray50", linetype = 2) +
+  geom_line(size = 1.2, alpha = 0.8) +
+  scale_x_log10() +
+  scale_y_log10() +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = "rank order (log)",
+       y = "term frequency (log)",
+       title = "Zipf's law on a log-log graph",
+       subtitle = "The below plot illustrates that the distribution is similar across the 4 selected books \nfrom bible. Ecclesiates is devited from the beginning, and the tails of the distribution \nis getting off. However, it can be said that the law is bordering on the given text.") +
+  theme_half_open(12) +
+  theme(plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 13),
+        legend.position = c(0.1, 0.35),
+        legend.title = element_text(size = 11))+
+  guides(color = guide_legend(reverse = FALSE))
+p3
+```
+
+```{r}
+books_words <-  books_words %>% 
+  bind_tf_idf(word, book, n) %>% 
+  arrange(desc(tf_idf))
+```
+
+```{r}
+p4 <- books_words %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word))),
+         book = factor(book)) %>% 
+  group_by(book) %>% 
+  top_n(10, wt = tf_idf) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, tf_idf, fill = book)) +
+  geom_bar(stat = "identity", alpha = .7, 
+           show.legend = FALSE) +
+  labs(x = NULL,
+       y = "tf-idf",
+       title = "Highest tf-idf word in the selected bible books",
+       subtitle = "Most of these high ranking tf-idf words provide charateristic context for\nthe respective book.") +
+  facet_wrap(~book, ncol = 2, 
+             scales = "free") +
+  coord_flip() +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 13))
+p4
+```
+
+```{r}
+library(patchwork)
+
+(p1 + p2 + p3 + plot_layout(ncol = 1))
+
+ggsave(here("figures", "BingSentimentAnalysis.png"), width = 11, height = 15, units = "in")
+```
