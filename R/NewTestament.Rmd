@@ -1,0 +1,595 @@
+---
+title: "bible_ZipfLaw"
+author: "Sung Inkyung"
+date: '2019 11 5 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(scales)
+library(paletteer)
+library(patchwork)
+library(here)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), "New Testament", "Old Testament"))
+```
+
+```{r Zipf's Law}
+freq_by_rank <- new_testament_word %>% 
+  group_by(book) %>% 
+  mutate(rank = row_number(),
+         frequency = n / total)
+
+lower_rank <- freq_by_rank %>% 
+  filter(rank < 300)
+
+lm(log10(frequency) ~ log10(rank), data = lower_rank)
+
+top_book <- freq_by_rank %>%
+  count(book, total) %>% 
+  filter(n == max(n)) %>% 
+  top_n(10, n)
+
+colors <- set_names(grey.colors(27),
+                     pull(top_book, book))
+
+colors[["John"]] <- "#dd2a7b"
+colors[["1 John"]] <- "#954bff"
+colors[["2 John"]] <- "#ffbc58"
+colors[["3 John"]] <- "#56ae87"
+colors[["Revelation"]] <- "#112358"
+
+
+freq_by_rank_plot <- freq_by_rank %>% 
+  ggplot(aes(rank, frequency, color = book)) +
+  geom_abline(intercept = -0.7982, slope = -0.9873,
+              color = "#094276", 
+              linetype = 2) +
+  geom_line(aes(color = book),
+            show.legend = FALSE) +
+  geom_text(aes(x = 5, y = 1), 
+            label="Revelation", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 2.8, y = 0.053, 
+           xend = 4.7, yend = 0.6, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 16, y = 0.5), 
+            label="1 John", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 10, y = 0.0215, 
+           xend = 16, yend = 0.3, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 53, y = 0.23), 
+            label="2 John", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 32, y = 0.01, 
+           xend = 53, yend = 0.14, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 160, y = 0.1), 
+            label="3 John", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 107, y = 0.0035, 
+           xend = 160, yend = 0.065, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 300, y = 0.00007), 
+            label="John", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 805, y = 0.00006, 
+           xend = 400, yend = 0.00005, 
+           curvature = -.3, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(4, "mm"))) +
+  scale_x_log10() +
+  scale_y_log10() +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  labs(x = "log(rank order)",
+       y = "log(word frquency)",
+       title = "Fitting an exponent for Zipf's law with New Testament books",
+       subtitle = "Books written by John and revelation are highlighted showing deviations especially at low rank\nwhereas deviations at tails are not uncommon.") +
+  theme(legend.position = "none",
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 15)) +
+  theme_minimal()
+
+ggsave(here("figures", "Zipf'sLawofNewTestament.png"), width = 9, height = 7, units = "in")
+```
+### source[Joshua Feldman](https://github.com/joshua-feldman/King-James-Bible/blob/master/Bible.R)
+```{r}
+book_by_characters <- bible %>% 
+  group_by(book, Testament) %>% 
+  summarize(characters = sum(nchar(text))) %>% 
+  arrange(desc(characters))
+
+book_by_characters$book <- factor(book_by_characters$book, 
+                                  levels = book_by_characters $book[order(book_by_characters$characters)]) #reorder books according to length
+book_by_characters$Testament <- factor(book_by_characters$Testament,
+                                       levels = c("Old Testament", "New Testament"))
+
+book_by_characters %>% 
+  ggplot(aes(book, characters, fill = Testament)) +
+  geom_col() +
+  coord_flip()+
+  scale_fill_manual(values = c("Old Testament" = "#112358",
+                               "New Testament" = "#dd2a7b")) +
+  scale_y_continuous(expand = c(0, 0),
+                     label = comma) +
+  labs(x = "",
+       y = "# of characters per book",
+       title = "Books of the King James Bible by word frequency") +
+  theme_minimal()
+
+book_by_characters %>% 
+  ggplot(aes(book, characters, fill = Testament)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual(values = c("Old Testament" = "#112358",
+                               "New Testament" = "#dd2a7b")) +
+  scale_y_continuous(expand = c(0, 0),
+                     label = comma) +
+  coord_flip() +
+  facet_wrap(~Testament, scales = "free_y") +
+  labs(x = "",
+       y = "# of characters per book",
+       title = "Books of the King James Bible by character frequency") +
+  theme_minimal()
+```
+
+
+```{r}
+old_length_words <- sum(nchar(bible$text[bible$Testament == "Old Testament"]))
+new_length_words <- sum(nchar(bible$text[bible$Testament == "New Testament"]))
+```
+
+
+```{r Analysis book by words}
+book_by_words <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  count(book, Testament, word, sort = TRUE) %>% 
+  ungroup() %>% 
+  group_by(book, Testament) %>% 
+  summarise(words = sum(n)) %>% 
+  arrange(desc(words))
+
+book_by_words$book <- factor(book_by_words$book,
+                             levels = book_by_words$book[order(book_by_words$words)]) # Reorder books according to length
+book_by_words$Testament <- factor(book_by_words$Testament, 
+                                  levels = c("Old Testament", "New Testament"))
+
+p1 <- book_by_words %>% 
+  ggplot(aes(book, words, fill = Testament)) +
+  geom_col(show.legend = FALSE)+
+  scale_fill_manual(values = c("Old Testament" = "#112358",
+                               "New Testament" = "#dd2a7b")) +
+  scale_y_continuous(expand = c(0, 0),
+                     label = comma) +
+  coord_flip() +
+  labs(x = "",
+       y = "# of words per testament") +
+  theme_minimal()
+p1
+
+p2 <- book_by_words %>% 
+  ggplot(aes(book, words, fill = Testament)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual(values = c("Old Testament" = "#112358",
+                               "New Testament" = "#dd2a7b")) +
+  scale_y_continuous(expand = c(0, 0),
+                     label = comma) +
+  coord_flip() +
+  facet_wrap(~Testament, scales = "free_y") +
+  labs(x = "",
+       y = "# of words per testament") +
+  theme_minimal() 
+
+p2
+
+title <- ggplot(data.frame(x = 1:2, y = 1:10)) +
+  labs(x = "",
+       y = "",
+       title = "Books of the King James Bible by Word Frequency",
+       subtitle = "It seems to be related to number of pages in each book. The more the higher.\nLuke is included in the top10 of book with highest frequency of words.\nIt usually takes 4 1/2 hours to 2 1/2 hoursto listen to those top 10 books.") +
+  theme(legend.position="none",
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 13),
+        panel.grid = element_blank())
+
+title + p1 + p2 +  plot_layout(widths = c(0, 1, 1.5))
+
+ggsave(here("figures", "WordFrequency.png"), width = 11, height = 7, units = "in")
+```
+
+
+```{r Word Frequencies: Old Testament vs New Testament}
+
+bible_words <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|saith|thy|thee|thee|hath|god|lord|dai"))
+
+frequency <- bible_words %>% 
+  group_by(Testament) %>% 
+  count(word, sort = TRUE) %>% 
+  left_join(bible_words %>% 
+              group_by(Testament) %>% 
+              summarize(total = n())) %>% 
+  mutate(freq = n / total) %>% 
+  select(Testament, word, freq) %>% 
+  pivot_wider(names_from = Testament, values_from = freq) %>% 
+  na.omit() %>% 
+  arrange(`Old Testament`, `New Testament`)
+
+word_plot <- frequency %>% 
+  ggplot(aes(`Old Testament`, `New Testament`, color = abs(`New Testament` - `Old Testament`)))  +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3,
+              show.legend = FALSE) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5,
+            show.legend = FALSE) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "gray40", lty = 2) +
+  scale_color_gradient(limits = c(0, 0.001),
+                       low = "#024500",
+                       high = "#425e78") +
+    labs(title = "Word frequencies in the Old and New Testament") +
+  theme(legend.position = "none") +
+  theme_minimal() +
+  theme(legend.position="none",
+        plot.title = element_text(size = 14),
+        panel.grid = element_blank())
+  
+
+word_plot
+
+```
+
+```{r}
+bible_words_pct <- bible_words %>% 
+  count(word, sort = TRUE) %>% 
+  transmute(word, all_words = n / sum(n))
+
+testament_words_pct <- bible_words %>% 
+  count(Testament, word, sort = TRUE) %>% 
+  mutate(testament_words = n / sum(n)) %>% 
+  left_join(bible_words_pct) %>% 
+  arrange(desc(testament_words)) %>% 
+  ungroup()
+
+pct_plot <- testament_words_pct %>% 
+  ggplot(aes(testament_words, all_words, 
+             color = abs(all_words - testament_words))) +
+  geom_jitter(alpha = 0.1,
+              size = 1.5,
+              width = 0.3,
+              height = 0.3,
+              show.legend = FALSE) +
+  geom_abline(color = "gray50", lty = 2) +
+  geom_text(aes(label = word), 
+            check_overlap = TRUE, 
+            vjust = 1,
+            show.legend = FALSE) +
+  scale_x_log10(labels = scales::percent_format()) +
+  scale_y_log10(labels = scales:: percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001),
+                       low = "#024500",
+                       high = "#425e78") +
+  facet_wrap(~Testament, ncol = 2) +
+  theme(legend.position = "none") +
+  labs(x = "% of word within each new and old testament",
+       y = "% of word across bible",
+       title = "Word Frequency across bible versus within New and Old Testament") +
+  theme_minimal() +
+  theme(legend.position="none",
+        plot.title = element_text(size = 14),
+        panel.grid = element_blank())
+  
+
+word_plot + pct_plot + plot_layout(nrow = 2)
+
+ggsave(here("figures", "TestamentWords.png"), width = 7, height = 6, units = "in")
+
+```
+
+```{r}
+cor <- testament_words_pct %>% 
+  group_by(Testament) %>% 
+  summarise(correlation = cor(testament_words, all_words),
+            pvalue = cor.test(testament_words, all_words)$p.value)
+
+p <- cor %>% 
+  ggplot(aes(Testament, correlation, fill = Testament)) +
+  geom_col() +
+  scale_fill_manual(values = c("Old Testament" = "#112358",
+                               "New Testament" = "#dd2a7b")) +
+  coord_flip() +
+  theme_minimal()
+  
+
+## The high correlations in Old Testament, which are all statistcally significant(p-values < 0.0001), suggests that the relationship between the word frequencies is highly similar across the entire Old Testament, while New Testament suggests some distinction between the word frequencies across books in New Testament
+```
+
+
+```{r}
+library(gghighlight)
+library(ggtext)
+
+book_words_pct <- bible_words %>% 
+  count(book, Testament, word, sort = TRUE) %>% 
+  mutate(book_words = n / sum(n)) %>% 
+  left_join(bible_words_pct) %>% 
+  arrange(desc(book_words)) %>% 
+  ungroup() %>% 
+  group_by(book, Testament) %>% 
+  summarise(correlation = cor(book_words, all_words),
+            pvalue = cor.test(book_words, all_words)$p.value) %>% 
+  ungroup() %>% 
+  top_n(10, correlation)
+
+p <- book_words_pct %>% 
+  mutate(book = fct_reorder(book, correlation)) %>% 
+  ggplot(aes(book, correlation)) +
+  geom_col(show.legend = FALSE,
+           fill = "#dd2a7b") +
+  gghighlight(book == "Luke",
+              unhighlighted_colour = alpha("gray50", 0.5))+
+  scale_y_continuous(breaks = seq(0, 1, 0.2))+
+  coord_flip() +
+  labs(x = "",
+       y = "correlation",
+       title = "How correlated are the word frquencies between the entire book and each book?",
+       subtitle = "<span style = 'color:#dd2a7b'> **Luke**</span> from New Testament is selected from top 10 correlated books across the entire bible books.") +
+  theme(plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_markdown(size = 13))
+  
+p
+  
+```
+
+
+```{r}
+book_words_pct <- bible_words %>% 
+  filter(Testament == "New Testament") %>% 
+  count(book, word, sort = TRUE) %>% 
+  mutate(testament_words = n / sum(n)) %>% 
+  left_join(bible_words_pct) %>% 
+  arrange(desc(testament_words)) %>% 
+  ungroup() %>% 
+  filter(book %in%  c("Matthew", "Mark", "Luke", "John"))
+
+p <- book_words_pct %>% 
+  ggplot(aes(testament_words, all_words, 
+             color = abs(all_words - testament_words))) +
+  geom_jitter(alpha = 0.1,
+              size = 1.5,
+              width = 0.3,
+              height = 0.3,
+              show.legend = FALSE) +
+  geom_abline(color = "gray50", lty = 2) +
+  geom_text(aes(label = word), 
+            check_overlap = TRUE, 
+            vjust = 1,
+            show.legend = FALSE) +
+  scale_x_log10(labels = scales::percent_format()) +
+  scale_y_log10(labels = scales:: percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001),
+                       low = "#024500",
+                       high = "#425e78") +
+  facet_wrap(~book, ncol = 2) +
+  theme(legend.position = "none") +
+  labs(x = "% of word within each new and old testament",
+       y = "% of word across bible",
+       title = "Frequency for each word across bible versus within New and Old Testament") +
+  theme_minimal()
+
+p
+```
+
+```{r tf-idf: Testament level}
+testament_count <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(Testament, word, sort = TRUE) 
+
+total_count <- testament_count %>% 
+  group_by(Testament) %>% 
+  summarise(total = sum(n))
+
+testament_total_count <- left_join(testament_count, total_count)
+
+testament_total_count <- testament_total_count %>% 
+  bind_tf_idf(word, Testament, n)
+
+testament_total_count$Testament <- factor(testament_total_count$Testament,
+                                          levels = c("Old Testament", "New Testament"))
+
+testament_total_count %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(Testament) %>% 
+  top_n(15) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, tf_idf, fill = Testament)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual(values = c("Old Testament" = "#112358",
+                               "New Testament" = "#dd2a7b")) +
+  coord_flip() +
+  facet_wrap(~ Testament, ncol =2, scales = "free") +
+  labs(x = "",
+       y = "tf_idf",
+       title = "Highest tf-idf words in New and Old Testament",
+       subtitle = "Most of highest tf-idf words are related to representative people appeared in new and old testaments") +
+  theme_minimal()
+```
+
+```{r tf-idf: Old Testament}
+
+old_testament <- bible %>% 
+  filter(Testament == "Old Testament")
+
+book_count <- old_testament %>% 
+  unnest_tokens(word, text) %>% 
+  count(book, word, sort = TRUE)
+
+total_count <- book_count %>% 
+  group_by(book) %>% 
+  summarize(total = sum(n))
+
+book_total_count <- left_join(book_count, total_count)
+
+book_total_count %>% 
+  mutate(ratio = n / total) %>% 
+  top_n(10, ratio) %>% 
+  ggplot(aes(ratio, fill = book)) +
+  geom_histogram(show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~book, ncol = 2)
+
+old_book_tf_idf <- book_total_count %>% 
+  bind_tf_idf(word, book, n) %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) 
+  
+
+image <- png::readPNG("C:/Users/inkyscope/Documents/projectR/inkyscroll/images/gourd.png")
+gourd <- grid::rasterGrob(image, interpolate = T)
+
+
+old_plot <- old_book_tf_idf %>% 
+  group_by(book) %>% 
+  filter(tf_idf >= 0.013) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, tf_idf, fill = word)) +
+  geom_col(show.legend = FALSE) +
+  annotation_custom(gourd, xmin = 1.5, xmax = 10, ymin = 0.019, ymax = 0.043) +
+  paletteer::scale_fill_paletteer_d(dichromat, BluetoDarkOrange.18) +
+  labs(x = "", 
+       y = "tf-idf") +
+  coord_flip() +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 12),
+        axis.text.x = element_text(size = 9),
+        plot.margin = margin(12, 12, 0, 12))
+
+old_plot
+  
+
+```
+
+```{r tf-idf: New Testament}
+new_testament <- bible %>% 
+  filter(Testament == "New Testament")
+
+new_book_count <- new_testament %>% 
+  unnest_tokens(word, text) %>% 
+  count(book, word, sort = TRUE)
+
+new_total_count <- new_book_count %>% 
+  group_by(book) %>% 
+  summarize(total = sum(n))
+
+new_book_total_count <- left_join(new_book_count, new_total_count)
+
+new_book_total_count %>% 
+  mutate(ratio = n / total) %>% 
+  top_n(10, ratio) %>% 
+  ggplot(aes(ratio, fill = book)) +
+  geom_histogram(show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~book, ncol = 2)
+
+new_book_tf_idf <- new_book_total_count %>% 
+  bind_tf_idf(word, book, n) %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(book) %>% 
+  filter(tf_idf >= 0.011) %>% 
+  ungroup()
+
+image <- png::readPNG("C:/Users/inkyscope/Documents/projectR/inkyscroll/images/2John12.png")
+paper <- grid::rasterGrob(image, interpolate = T)
+
+new_plot <- new_book_tf_idf %>% 
+  ggplot(aes(word, tf_idf, fill = word)) +
+  geom_col(show.legend = FALSE) +
+  paletteer::scale_fill_paletteer_d(dichromat, GreentoMagenta.16) +
+  annotation_custom(paper, xmin = 2, xmax = 7, ymin = 0.0065, ymax = 0.029) +
+  labs(x = "", 
+       y = "tf-idf") +
+  coord_flip() +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 12),
+        axis.text.x = element_text(size = 9),
+        plot.margin = margin(12, 12, 0, 12))
+
+new_plot
+```
+```{r}
+title <- ggplot(data.frame(x =1:2, y = 1:10)) +
+  labs(title = "Leading tf-idf words in each book of the Old and New Testament",
+       subtitle = "Words from Old Testament are name of people while words from New Testament are mostly extracted from 2John or 3John",
+       caption = "Image on Old Testament: Jonah sits below the gourd vine\nJMM 1995.28.259 by Mas Heppner") +
+  theme(legend.position="none",
+        panel.grid = element_blank(),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 11),
+        plot.caption = element_text(size = 9,
+                                    hjust = -1))
+
+
+title + old_plot + new_plot + plot_layout(nrow = 1, widths = c(0, 0.5, 0.5))
+
+ggsave(here("figures", "tf-idf.png"), width = 9, height = 5, units = "in")
+```
+
