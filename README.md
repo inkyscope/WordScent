@@ -14,12 +14,23 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://https://youtu.be/7JGIDsfHqO8) | Humility | Andrew Murray |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Inverse Document Frequency and tf-idf
+![tf-idf](https://github.com/inkyscope/inkyscroll/blob/master/figures/tf-idf.png)
+
+### Zipf's Law
+![Zipf's law](https://github.com/inkyscope/inkyscroll/blob/master/figures/Zipf'sLawofNewTestament.png)
+
+### Words in bible
+![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/TestamentWords.png)
+
+### Word frequency across books of bible
+![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordFrequency.png)
+
 ### NRC using sentiment analysis of Psalms
 ![Sentiment Analysis](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsSentimentFlow.gif)
 
 ### Sentiment Analysis of Job, Psalms, Proverbs, and Ecclesiates
 ![Sentiment Analysis](https://github.com/inkyscope/inkyscroll/blob/master/figures/BingSentimentAnalysis.png)
-
 
 ### Psalms words network by [KJV](https://www.kingjamesbibleonline.org/)
 ![Psalms words network](https://github.com/inkyscope/inkyscroll/blob/master/figures/psalms_scroll.png)
