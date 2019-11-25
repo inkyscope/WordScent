@@ -209,10 +209,11 @@ p1 <- not_words %>%
   geom_col(show.legend = FALSE) +
   coord_flip()+
   scale_fill_manual(values = c("#c6008e", "#1caa55")) +
-  labs(title = "Words preceded by 'not' based on \nthe contribution to sentiment values",
+  labs(title = "Words preceded by 'not' based on the contribution to sentiment values",
        x = " ",
        y = "Sentiment value * number of occurrences") +
-  theme(plot.title = element_text(size = 14),
+  theme(plot.title = element_text(size = 24,
+                                  margin = margin(b = 10)),
         axis.text.x = element_text(size = 7),
         axis.title.y = element_text(size = 9)) +
   theme_half_open(12)
@@ -223,7 +224,7 @@ p1
 ```{r}
 negation_words <- c("not", "no", "never", "without")
 
-negated_words <- bigrams_separated %>% 
+negated_words <- psalms_bigrams %>% 
   filter(word1 %in% negation_words) %>%  
   inner_join(get_sentiments("afinn"), 
              by = c(word2 = "word")) %>% 
@@ -352,12 +353,13 @@ p2 <- word_cors %>%
   scale_fill_brewer(palette = "Set2") +
   facet_wrap(~item1, scales = "free") +
   coord_flip() +
-  labs(title = "Most correlated words with selected words:<br><span style = 'color:#66C2A5'>**Enemy**</span>, <span style = 'color:#FC8D62'> **Mercy**</span>, <span style = 'color:#8DA0CB'> **Mouth**</span>, <span style = 'color:#E78AC3'> **Word**</span>",
+  labs(title = "Most correlated words with given words:<br><span style = 'color:#66C2A5'>Enemy</span>, <span style = 'color:#FC8D62'> Mercy</span>, <span style = 'color:#8DA0CB'> Mouth</span>, <span style = 'color:#E78AC3'> Word</span>",
        x = "",
        y= "correlation") +
   theme_half_open(12) +
-  theme(plot.title = element_markdown(size = 14),
-        axis.text.x = element_text(size = 7))
+  theme(plot.title = element_markdown(size = 20,
+                                      margin = margin(b = 10)),
+        axis.text.x = element_text(size = 9))
  
 ```
 
@@ -371,19 +373,27 @@ p3 <- word_cors %>%
   ggraph(layout = "fr") + # graphopt
   geom_edge_link(aes(edge_alpha = correlation,
                      edge_width = correlation), 
-                 edge_color = "#0093ec")+
+                 edge_color = "#213970") +
   geom_node_point(size = 3,
-                  color = "#1caa55") +
+                  color = "#210070") +
   geom_node_text(aes(label = name), 
                  repel = TRUE,
                  point.padding = unit(0.2, "lines")) +
-  labs(title = "Pairwise correlation in <span style = 'color:#1caa55'>**Psalms**</span>",
-       subtitle = "Correlated words appearing within the same 10-line verses.<br>What's recognized is a cluster related to **Word** on the bottom left.",
-       caption =  "source | King James version") +
+  labs(title = "Correlated Word Pairings in <span style = 'color:#210070'>**Psalms**</span>",
+       subtitle = "Correlated words with higher than .25 correlation appearing within the same 10-line verses.<br>What brought to my attention is a cluster related to **word** on the bottom left such as precepts, statutes, commandments,<br>judgments,law, and testimonies.",
+       caption = "\nSource| kingjamesbibleonline.org") +
   theme(legend.position = "none",
-        plot.title = element_markdown(size = 16),
-        plot.subtitle = element_markdown(size = 13),
-        plot.caption = element_text(size = 9))
+        panel.background = element_rect(fill = "transparent"),
+        plot.margin = margin(.7, .7, .7, .7, "inch"),
+        plot.title = element_markdown(size = 24, 
+                                  color = "#21130b",
+                                  margin = margin(b = 10)),
+        plot.subtitle = element_markdown(size = 16, 
+                                         color = "#21130b",
+                                         lineheight = 1.25,
+                                  margin = margin(b = 20)),
+        plot.caption = element_text(size = 11,
+                                    color = "#162a41"))
 
 ```
 
@@ -391,6 +401,6 @@ p3 <- word_cors %>%
 
 (p1 | p2) / p3 + plot_layout(ncol = 1)
 
-ggsave(here("figures", "psalms_scroll.png"), width = 11, height = 7, units = "in")
+ggsave(here("figures", "psalms_scroll.png"), width = 14, height = 13, units = "in")
 
 ```
