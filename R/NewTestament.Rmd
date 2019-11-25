@@ -579,17 +579,16 @@ new_plot
 title <- ggplot(data.frame(x =1:2, y = 1:10)) +
   labs(title = "Leading tf-idf words in each book of the Old and New Testament",
        subtitle = "Words from Old Testament are name of people while words from New Testament are mostly extracted from 2John or 3John",
-       caption = "Image on Old Testament: Jonah sits below the gourd vine\nJMM 1995.28.259 by Mas Heppner") +
+       caption = "Image on Old Testament: Jonah sits below the gourd vine JMM 1995.28.259 by Mas Heppner") +
   theme(legend.position="none",
         panel.grid = element_blank(),
         plot.title = element_text(size = 16),
         plot.subtitle = element_text(size = 11),
         plot.caption = element_text(size = 9,
-                                    hjust = -1))
+                                    hjust = 0))
 
 
 title + old_plot + new_plot + plot_layout(nrow = 1, widths = c(0, 0.5, 0.5))
 
-ggsave(here("figures", "tf-idf.png"), width = 9, height = 5, units = "in")
+ggsave(here("figures", "tf-idf.png"), width = 11, height = 6, units = "in")
 ```
-

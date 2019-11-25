@@ -1,0 +1,343 @@
+---
+title: "Revelation"
+author: "Sung Inkyung"
+date: '2019 11 23 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(wordcloud)
+library(paletteer)
+library(patchwork)
+library(here)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>%
+  filter(book == "Revelation")
+```
+
+```{r}
+revelation_words <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(word, sort = TRUE) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|thy|thee|thee|hath|thou|hast|saith")) 
+
+p <- revelation_words %>% 
+  filter(n > 20) %>% 
+  mutate(word = reorder(word, n)) %>% 
+  ggplot(aes(word, n)) +
+  geom_col() +
+  labs(x = "") +
+  coord_flip() +
+  theme_minimal()
+```
+
+```{r}
+get_sentiments("afinn")
+get_sentiments("bing")
+get_sentiments("nrc")
+```
+
+```{r}
+
+```
+
+```{r}
+set.seed(2019)
+
+revelation_words %>% 
+    with(wordcloud(word, n, max.words = 50))
+```
+
+```{r}
+library(reshape2)
+
+set.seed(2019)
+
+bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|thy|thee|thee|hath|thou|hast|saith")) %>%
+  inner_join(get_sentiments("bing")) %>% 
+  count(word, sentiment, sort = TRUE) %>% 
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>% 
+  comparison.cloud(colors = c("#668b8b", "#9fd6ff"),
+                   max.words = 100)
+
+```
+```{r}
+revelation_classified <- bible %>% 
+  select(chapter, text) %>% 
+  group_by(chapter) %>% 
+  mutate(linenumber = row_number(),
+         total = cumsum(str_detect(text, regex("^chapter[\\divxlc]",
+                                              ignore_case = TRUE)))) %>% 
+  mutate(
+    structure = case_when(
+    chapter <= 3 ~ "Seven Letters(chapter 1~3)",
+    chapter <= 7 ~ "Seven Seals(chapter 4~7)",
+    chapter <= 11 ~ "Seven Trumpets(chapter 8~11)",
+    chapter <= 14 ~ "Dragon(chapter 12~14)",
+    chapter <= 18 ~ "Seven Bowls(chapter 15~18)",
+    chapter <= 22 ~ "Lamb(chapter 19~22)"
+  )) %>% 
+  ungroup()  
+  
+
+revelation_sentiment <- revelation_classified %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  count(structure, index = linenumber %/% 180, sentiment) %>% 
+  spread(sentiment, n, fill = 0) %>% 
+  mutate(sentiment = positive - negative) %>% 
+  ggplot(aes(index, sentiment, fill = structure)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_paletteer_d(ggsci, legacy_tron) +
+  facet_wrap(~structure, ncol = 2, scales = "free_x") +
+  theme_minimal()
+
+```
+```{r}
+nrc_joy <- get_sentiments("nrc") %>% 
+  filter(sentiment == "joy")
+
+joy_plot <-  revelation_classified %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  inner_join(nrc_joy) %>% 
+  count(word, sort = TRUE) %>% 
+  ungroup() %>% 
+  top_n(20) %>% 
+  mutate(word = reorder(word, n)) %>% 
+  ggplot(aes(word, n)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(x = "",
+       y = "",
+       title = "Most common **joy** words in Revelation") +
+  theme(plot.title = element_markdown(size = 16),
+        panel.background = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 0.3,
+                                   color = "gray85"))
+  
+
+```
+```{r}
+revelation_tf_idf <- revelation_classified %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(structure, word, sort = TRUE) %>% 
+  bind_tf_idf(word, structure, n) %>% 
+  arrange(desc(tf_idf))
+
+revelation_tf_idf %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(structure) %>% 
+  top_n(12) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, tf_idf, fill = structure)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_paletteer_d(ggsci, legacy_tron) +
+  labs(x = "",
+       y = "tf-idf",
+       title = "Highest tf_idf words in each structure of Revelation") +
+  facet_wrap(~structure, ncol = 2, scales = "free") +
+  coord_flip() +
+   theme(plot.title = element_markdown(size = 16),
+        panel.background = element_blank(),
+        panel.grid = element_blank())
+       
+```
+
+```{r bigram}
+revelation_bigram <- revelation_classified %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) %>%   separate(bigram, c("word1", "word2")) %>% 
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) 
+
+bigrams_united <- revelation_bigram %>% 
+  unite(bigram, word1, word2, sep = " ")
+
+revelation_bigram %>% 
+  filter(word1 == "book") %>% 
+  count(word2, sort = TRUE)
+
+# Words I tried to input: "language", "song", "sign", "salvation", "repent", "lord" which I picked up while I was listening via YOUTUBE this morning.
+```
+
+```{r}
+bigram_tf_idf <- bigrams_united %>% 
+  count(structure, bigram) %>% 
+  bind_tf_idf(bigram, structure, n) %>% 
+  arrange(desc(tf_idf)) %>% 
+  ungroup() %>% 
+  mutate(word = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  group_by(structure) %>% 
+  top_n(12) %>% 
+  ungroup() %>% 
+  ggplot(aes(bigram, tf_idf, fill = structure)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_paletteer_d(ggsci, legacy_tron) +
+  labs(x = "",
+       y = "tf-idf",
+       title = "Highest tf_idf bigram in each structure of Revelation") +
+  facet_wrap(~structure, ncol = 2, scales = "free") +
+  coord_flip() +
+   theme(plot.title = element_markdown(size = 16),
+        panel.background = element_blank(),
+        panel.grid = element_blank())
+  
+```
+
+```{r trigram}
+revelation_trigram <- revelation_classified %>% 
+  unnest_tokens(trigram, text, token = "ngrams", n = 3) %>% 
+  count(trigram, sort = TRUE) %>% 
+  separate(trigram, c("word1", "word2", "word3")) %>% 
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word,
+         !word3 %in% stop_words$word) %>% 
+  count(word1, word2, word3, sort = TRUE)
+
+```
+plot.background = element_rect(color = "#6f0022",
+                                       size = 1),
+```{r network of bigrams}
+library(igraph)
+library(ggraph)
+
+bigram_graph <- revelation_bigram %>% 
+  count(word1, word2, sort = TRUE) %>% 
+  top_n(70) %>% 
+  graph_from_data_frame()
+
+set.seed(2019)
+
+a <- grid::arrow(type = "closed", length = unit(.2, "cm"))
+
+p1 <- ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n),
+                     show.legend = FALSE,
+                     arrow = a, 
+                     end_cap = circle(0.3, "cm")) +
+  geom_node_point(color = "#ace46b",
+                  size = 3) +
+  geom_node_text(aes(label = name),
+                 vjust = 1, 
+                 hjust = 0.5) +
+  theme(panel.background = element_rect(fill = "transparent"),
+        plot.margin = margin(0.5, 1.5, 1, 0, "cm")) 
+
+```
+
+```{r counting and correlating pairs of words}
+revelation <- bible %>% 
+  mutate(section = row_number() %/% 10) %>% 
+  filter(section > 0) %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!word %in% stop_words$word) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|thy|thee|thee|hath|thou|hast|saith"))
+```
+
+
+```{r}
+library(widyr)
+
+word_pairs <- revelation %>% 
+  pairwise_count(word, section, sort = TRUE) 
+
+word_pairs %>% 
+  filter(item1 == "repent")
+
+```
+
+
+```{r}
+word_cors <- revelation %>% 
+  group_by(word) %>% 
+  filter(n() >= 10) %>% 
+  pairwise_cor(word, section, sort = TRUE) %>% 
+  ungroup()
+
+word_cors %>% 
+  filter(item1 == "heaven")
+
+plot <- word_cors %>% 
+  filter(item1 %in% c("heaven", "earth", "angel", "twelve")) %>% 
+  group_by(item1) %>% 
+  top_n(6) %>% 
+  ungroup() %>% 
+  mutate(item2 = reorder(item2, correlation)) %>% 
+  ggplot(aes(item2, correlation)) + 
+  geom_bar(stat = "identity") +
+  facet_wrap(~item1, scales = "free") +
+  coord_flip() +
+  labs(x = "",
+       y = "Correlation",
+       title = "Words from Revelation that were most correlated with given words") +
+  theme_minimal()
+
+```
+
+        plot.background = element_rect(color = "#6f0022",
+                                       size = 1),
+        
+```{r}
+set.seed(2019)
+
+p2 <- word_cors %>%
+  filter(correlation > .35) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "#9fd6ff", size = 5) +
+  geom_node_text(aes(label = name), 
+                 repel = TRUE) +
+  labs(caption = "\nSource| kingjamesbibleonline.org") +
+  theme(panel.background = element_rect(fill = "transparent"),
+        plot.margin = margin(0.5, 1, 1.5, 1, "cm"),
+        plot.caption = element_text(size = 9, 
+                                    color = "#162a41")) 
+  
+```
+
+```{r}
+## left-alligned title
+title <- ggplot(data.frame(x = 1:2, y = 1:20)) +
+  labs(x = NULL, y = NULL,
+       title = "**Common bigram pairings** and **Correlated word pairings** in Revelation", 
+       subtitle = "<span style = 'color:#ace46b'>**Bigram analysis**</span> includes directionality while <span style = 'color: #9fd6ff'> **Correlating pairs of words**</span> with higher than .35 correlation is<br>symmetrical. Word pairs based on correlation tend to imply a symbolic combination to allow me to create a story.") +
+  theme(panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(color = "#6f0022",
+                                       size = 1),
+        plot.margin = margin(2, 2, 2, 2, "cm"),
+        plot.title = element_markdown(size = 24, 
+                                  color = "#21130b",
+                                  margin = margin(b = 10)),
+        plot.subtitle = element_markdown(size = 16, 
+                                         color = "#21130b",
+                                         lineheight = 1.25,
+                                  margin = margin(b = 20)))
+  
+```
+
+```{r}
+title + p1 + p2 + plot_layout(nrow = 1, widths = c(0, 1, 1))
+ggsave(here::here("figures", "RevelationWordPairings.png"), width = 35, height = 17, units = "cm")
+```
