@@ -47,8 +47,6 @@ tidy_psalms %>%
   xlab(NULL) +
   coord_flip() +
   theme_minimal() 
-
-
 ```
 
 ```{r}
@@ -155,6 +153,9 @@ bigrams_tf_idf <- psalms_bigrams %>%
   count(chapter, bigram, sort = TRUE) %>% 
   bind_tf_idf(bigram, chapter, n) %>% 
   arrange(desc(tf_idf))
+
+bigrams_tf_idf$facet = factor(bigrams_tf_idf$chapter, 
+                              levels = c("Book1", "Book2", "Book3", "Book4", "Book5"))
 ```
 
 ```{r}
@@ -172,7 +173,7 @@ bigrams_tf_idf %>%
        x = " ",
        y = "") +
   drlib::scale_x_reordered() +
-  facet_wrap(~ chapter, ncol = 2, scales = "free") +
+  facet_wrap(~ facet, ncol = 2, scales = "free") +
   coord_flip()+
   theme_minimal()
 ```
@@ -270,8 +271,8 @@ count_bigrams <- function(dataset) {
 
 visualize_bigrams <- function(bigrams) {
   set.seed(2019)
-  a <- grid::arrow(type = "closed", 
-                   length = unit(.15, "inches"))
+  
+  a <- grid::arrow(type = "closed", length = unit(.2, "cm"))
   
   bigrams %>%
     graph_from_data_frame() %>%
@@ -377,10 +378,11 @@ p3 <- word_cors %>%
   geom_node_point(size = 3,
                   color = "#210070") +
   geom_node_text(aes(label = name), 
+                 size = 4.5,
                  repel = TRUE,
                  point.padding = unit(0.2, "lines")) +
   labs(title = "Correlated Word Pairings in <span style = 'color:#210070'>**Psalms**</span>",
-       subtitle = "Correlated words with higher than .25 correlation appearing within the same 10-line verses.<br>What brought to my attention is a cluster related to **word** on the bottom left such as precepts, statutes, commandments,<br>judgments,law, and testimonies.",
+       subtitle = "Correlated words with higher than .25 correlation appearing within the same 10-line verses.<br>What brought to my attention is a cluster linked to **Word** on the bottom left such as precepts, statutes, commandments, <br> judgments, law, and testimonies.<br>**Love** is projecting from its cluster like a whisker or a tack push pin. Is it as the same in the other?",
        caption = "\nSource| kingjamesbibleonline.org") +
   theme(legend.position = "none",
         panel.background = element_rect(fill = "transparent"),

@@ -48,11 +48,6 @@ get_sentiments("afinn")
 get_sentiments("bing")
 get_sentiments("nrc")
 ```
-
-```{r}
-
-```
-
 ```{r}
 set.seed(2019)
 
@@ -144,11 +139,19 @@ revelation_tf_idf <- revelation_classified %>%
   bind_tf_idf(word, structure, n) %>% 
   arrange(desc(tf_idf))
 
+revelation_tf_idf$facet = factor(revelation_tf_idf$structure, 
+                              levels = c("Seven Letters(chapter 1~3)", 
+                                         "Seven Seals(chapter 4~7)",
+                                         "Seven Trumpets(chapter 8~11)", 
+                                         "Dragon(chapter 12~14)", 
+                                         "Seven Bowls(chapter 15~18)",
+                                         "Lamb(chapter 19~22)"))
+
 revelation_tf_idf %>% 
   arrange(desc(tf_idf)) %>% 
   mutate(word = factor(word, levels = rev(unique(word)))) %>% 
   group_by(structure) %>% 
-  top_n(12) %>% 
+  slice(1:10) %>% 
   ungroup() %>% 
   ggplot(aes(word, tf_idf, fill = structure)) +
   geom_col(show.legend = FALSE) +
@@ -156,7 +159,7 @@ revelation_tf_idf %>%
   labs(x = "",
        y = "tf-idf",
        title = "Highest tf_idf words in each structure of Revelation") +
-  facet_wrap(~structure, ncol = 2, scales = "free") +
+  facet_wrap(~facet, ncol = 2, scales = "free") +
   coord_flip() +
    theme(plot.title = element_markdown(size = 16),
         panel.background = element_blank(),
@@ -181,14 +184,25 @@ revelation_bigram %>%
 ```
 
 ```{r}
+
 bigram_tf_idf <- bigrams_united %>% 
   count(structure, bigram) %>% 
   bind_tf_idf(bigram, structure, n) %>% 
   arrange(desc(tf_idf)) %>% 
   ungroup() %>% 
-  mutate(word = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  mutate(word = factor(bigram, levels = rev(unique(bigram))))
+
+bigram_tf_idf$facet = factor(bigram_tf_idf$structure, 
+                              levels = c("Seven Letters(chapter 1~3)", 
+                                         "Seven Seals(chapter 4~7)",
+                                         "Seven Trumpets(chapter 8~11)", 
+                                         "Dragon(chapter 12~14)", 
+                                         "Seven Bowls(chapter 15~18)",
+                                         "Lamb(chapter 19~22)"))
+
+ p <- bigram_tf_idf %>% 
   group_by(structure) %>% 
-  top_n(12) %>% 
+  slice(1:10) %>% 
   ungroup() %>% 
   ggplot(aes(bigram, tf_idf, fill = structure)) +
   geom_col(show.legend = FALSE) +
@@ -196,7 +210,7 @@ bigram_tf_idf <- bigrams_united %>%
   labs(x = "",
        y = "tf-idf",
        title = "Highest tf_idf bigram in each structure of Revelation") +
-  facet_wrap(~structure, ncol = 2, scales = "free") +
+  facet_wrap(~facet, ncol = 2, scales = "free") +
   coord_flip() +
    theme(plot.title = element_markdown(size = 16),
         panel.background = element_blank(),
