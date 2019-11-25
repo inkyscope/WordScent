@@ -1,4 +1,4 @@
-# inkyscroll
+# inKYscroll
 a personal sketchnote of textmining with bible for a word network(thread, stitch) along with visual supports
 
 "The speech, the Word which establishes and binds together the fellowship, is accompanied by silence. ...
@@ -12,6 +12,7 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.carus-verlag.com/en/choir/sacred-choral-music/mendelssohn-herr-gott-dich-loben-wir-church-music-ix.html) | Herr Gott, dich loben wir | Felix Mendelssohn Bartholdy |
 |[:link:](https://static1.squarespace.com/static/518c65fee4b0887d9a39138d/t/5827e7aab3db2b0f3d311bf5/1479010229503/Life+Together_Eng.pdf) | Life Tegether | Dietrich Bonhoeffer |
 |[:link:](https://https://youtu.be/7JGIDsfHqO8) | Humility | Andrew Murray |
+|[:link:](https://youtu.be/ezbExj7pT1s) | Divine Conspiracy | Dallas Willard |
 
 --------------------------------------------------------------------------------------------------------------------------------------
 ### Inverse Document Frequency and tf-idf
