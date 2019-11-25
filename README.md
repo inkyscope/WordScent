@@ -15,6 +15,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://youtu.be/ezbExj7pT1s) | Divine Conspiracy | Dallas Willard |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Word pairings in Revelation
+![word pairings](https://github.com/inkyscope/inkyscroll/blob/master/figures/RevelationWordPairings.png)
+
 ### Inverse Document Frequency and tf-idf
 ![tf-idf](https://github.com/inkyscope/inkyscroll/blob/master/figures/tf-idf.png)
 
