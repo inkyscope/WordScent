@@ -1,0 +1,113 @@
+---
+title: "PaulTopPicks"
+author: "Sung Inkyung"
+date: '2020 1 21 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(here)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), "New Testament", "Old Testament"))
+```
+
+
+```{r Bible written by Paul}
+new <- bible %>% 
+  filter(Testament == "New Testament",
+         book %in% c("Romans", "1 Corinthians", "2 Corinthians",
+                     "Galatians", "Ephesians",
+                     "Philippians","Colossians", 
+                     "1 Thessalonians", "2 Thessalonians")) %>% 
+  select(book, chapter, text) 
+```
+
+
+```{r}
+new_word <- new %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|saith|thy|thee|thee|hath|god|lord|dai|sosthenes|silvanus|corinth|timotheus|paul")) %>% 
+  mutate(rank = row_number(),
+         n = 1)
+
+top_picks <- new_word %>% 
+  group_by(book, word) %>% 
+  mutate(popularity = 1000 - rank) %>% 
+  tally(popularity) %>% 
+  top_n(1) %>% 
+  mutate(top_1 = TRUE) %>% 
+  ungroup() %>% 
+  select(word, top_1)
+  
+word <- new_word %>% 
+  left_join(top_picks, by = "word") %>% 
+  mutate(top_1 = case_when(
+    is.na(top_1) ~ 1,
+    TRUE ~ 0
+  )) %>% 
+  arrange(desc(rank))
+
+book_order <- new_word %>% 
+  group_by(book) %>% 
+  tally()
+```
+
+```{r}
+word_plot <- word %>% 
+  ggplot(aes(fct_relevel(book, "Romans", 
+                         "1 Corinthians", 
+                         "2 Corinthians", 
+                         "Ephesians", 
+                         "Galatians",
+                         "Philippians", 
+                         "Colossians", 
+                         "1 Thessalonians",
+                         "2 Thessalonians"), 
+             y = n,
+             label = word, color = top_1)) +
+  geom_text(position = "stack", 
+            stat = "identity",
+            size = 5,
+            show.legend = FALSE) +
+  scale_color_gradient(low = "#9a1750", 
+                       high = "#eee2dc") +
+  labs(x = " ",
+       y = "# of words",
+       title = "Most popular words from New Testaments written by Paul",
+       caption = "Source: King James Bible") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(size = 21),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        axis.text.x = element_text(size = 9,
+                                    margin=margin(t = -20, b = 10)))
+  
+  ggsave(here("figures", "PaulTopPicks.png"), width = 30, height = 28, units = "cm")
+```
+
