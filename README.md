@@ -13,6 +13,7 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://static1.squarespace.com/static/518c65fee4b0887d9a39138d/t/5827e7aab3db2b0f3d311bf5/1479010229503/Life+Together_Eng.pdf) | Life Tegether | Dietrich Bonhoeffer |
 |[:link:](https://https://youtu.be/7JGIDsfHqO8) | Humility | Andrew Murray |
 |[:link:](https://youtu.be/ezbExj7pT1s) | Divine Conspiracy | Dallas Willard |
+|[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
 ### Word pairings in Revelation
