@@ -93,15 +93,15 @@ word_plot <- word %>%
             stat = "identity",
             size = 5,
             show.legend = FALSE) +
-  scale_color_gradient(low = "#9a1750", 
-                       high = "#eee2dc") +
+  scale_color_gradient(low = "#990066", 
+                       high = "#cccc00") +
   labs(x = " ",
-       y = "# of words",
+       y = "Frequency of words",
        title = "Most popular words from New Testaments written by Paul",
-       caption = "Source: King James Bible") +
+       caption = "Source: King James Bible | Graphic: Sung Inkyung") +
   theme_minimal() +
   theme(legend.position = "none",
-        plot.title = element_text(size = 21),
+        plot.title = element_text(size = 18),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         plot.margin = unit(c(1, 1, 1, 1), "cm"),
