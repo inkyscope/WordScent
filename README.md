@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Words in 4 Gospel Books
+![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/figures/MatthewMarkLukeJohn.png)
+
 ### Word pillars in Hebrews
 ![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/figures/HebrewsTopPicks.png)
 
