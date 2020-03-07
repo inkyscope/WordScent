@@ -1,0 +1,95 @@
+---
+title: "Untitled"
+author: "Sung Inkyung"
+date: '2020 3 7 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(viridis)
+library(here)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book %in% c("Matthew", "Mark", "Luke", "John")) %>% 
+  select(book, chapter, text)
+
+gospels <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|saith|thy|thee|thee|hath|god|lord|dai|jesus|son|father")) %>% 
+  count(book, word, sort = TRUE) %>% 
+  bind_tf_idf(book, word, n) %>% 
+  arrange(desc(book), tf_idf) 
+
+
+top_matthew <- gospels %>% 
+  filter(book == "Matthew") %>% 
+  arrange(desc(tf_idf)) %>% 
+  slice(1:20) %>% 
+  mutate(rank = 1:20)
+
+top_mark <- gospels %>% 
+  filter(book == "Mark") %>% 
+  arrange(desc(tf_idf)) %>% 
+  slice(1:20) %>% 
+  mutate(rank = 1:20)
+
+top_luke <- gospels %>% 
+  filter(book == "Luke") %>% 
+  arrange(desc(tf_idf)) %>% 
+  slice(1:20) %>% 
+  mutate(rank = 1:20)
+
+top_john <- gospels %>% 
+  filter(book == "John") %>% 
+  arrange(desc(tf_idf)) %>% 
+  slice(1:20) %>% 
+  mutate(rank = 1:20)
+
+top_tf_idf <- rbind(rbind(top_matthew, top_mark, top_luke, top_john)) %>% 
+  select(book, word, n, tf_idf, rank) %>% 
+  arrange(tf_idf, rank)
+
+tf_idf_plot <- top_tf_idf %>% 
+  mutate(book = factor(book, 
+                       levels = c("Matthew", "Mark", "Luke", "John"))) %>% 
+  ggplot(aes(book, rank)) +
+  geom_text(aes(label = word, color = word)) +
+  scale_color_viridis_d(option = "plasma")+
+  scale_y_reverse(breaks = c(20:1)) +
+  guides(color = FALSE) +
+  labs(x = " ",
+       y = " ",
+       title = "Top 20 tf_idf words in 4 gospels",
+       subtitle = "Words are stacked by tf_idf from top to bottom.\nThe point of tf_idf statistics is intended to identify how importatn a word is to a each book.\nTF_IDF refers to term frequency_inverse term frequency",
+       caption = "Graphic: Sung Inkyung") +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(size = 11),
+        axis.text.y = element_blank(),
+        plot.margin = margin(1, 1, 1, 1))
+
+ggsave(here("figures", "MatthewMarkLukeJohn.png"), width = 24, height = 11, units = "cm")
+  
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
