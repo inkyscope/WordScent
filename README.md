@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Psalms using Afinn Sentiment Analysis
+![Afinn](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsamlsAfinn.png)
+
 ### Words in 4 Gospel Books
 ![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/figures/MatthewMarkLukeJohn.png)
 
@@ -31,9 +34,6 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Zipf's Law
 ![Zipf's law](https://github.com/inkyscope/inkyscroll/blob/master/figures/Zipf'sLawofNewTestament.png)
 
-### Words in bible
-![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/TestamentWords.png)
-
 ### Word frequency across books of bible
 ![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordFrequency.png)
 
@@ -42,6 +42,3 @@ We are silent after hearing the Word because the World is still speaking and dwe
 
 ### Sentiment Analysis of Job, Psalms, Proverbs, and Ecclesiates
 ![Sentiment Analysis](https://github.com/inkyscope/inkyscroll/blob/master/figures/BingSentimentAnalysis.png)
-
-### Psalms words network by [KJV](https://www.kingjamesbibleonline.org/)
-![Psalms words network](https://github.com/inkyscope/inkyscroll/blob/master/figures/psalms_scroll.png)
