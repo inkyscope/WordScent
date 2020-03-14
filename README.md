@@ -41,8 +41,3 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Word frequency across books of bible
 ![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordFrequency.png)
 
-### NRC using sentiment analysis of Psalms
-![Sentiment Analysis](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsSentimentFlow.gif)
-
-### Sentiment Analysis of Job, Psalms, Proverbs, and Ecclesiates
-![Sentiment Analysis](https://github.com/inkyscope/inkyscroll/blob/master/figures/BingSentimentAnalysis.png)
