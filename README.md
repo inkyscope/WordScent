@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Sentiment web of 4 gospels
+![polygon](https://github.com/inkyscope/inkyscroll/blob/master/figures/GospelsSentimentWeb.png)
+
 ### Psalms Sentiment Bisplines using NRC lexicon
 ![NRC](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsSentimentsBisplines.png)
 
