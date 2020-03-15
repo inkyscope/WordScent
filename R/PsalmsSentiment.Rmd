@@ -8,10 +8,11 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+### Source[tidytuesday by gkaramanis] (https://github.com/gkaramanis/tidytuesday/blob/master/2020-week03/passwords-bsplines.R)
 ```{r}
 library(tidyverse)
 library(tidytext)
+library(paletteer)
 library(here)
 
 ```
@@ -84,6 +85,7 @@ afinn_plot <- psalms_afinn %>%
                                 hjust = 1),
     axis.line = element_line(color = "#9d9fb0")
   )
+
 ggsave(here("figures", "PsamlsAfinn.png"), width = 34, height = 24, units="cm")
 
 ```
@@ -110,45 +112,61 @@ psalms_nrc <- psalms %>%
   inner_join(get_sentiments("nrc")) %>% 
   filter(!is.na(sentiment)) %>% 
   group_by(sentiment, word) %>% 
-  summarise(sum = n()) %>% 
+  summarise(frequency = n()) %>% 
   ungroup() %>% 
   mutate(sentiment = factor(sentiment),
-         sentiment = fct_reorder(sentiment, sum) ) %>% 
-  pivot_wider(names_from = sentiment, values_from = sum)
-
-psalms_nrc[is.na(psalms_nrc)] <- 0
-
+         sentiment = fct_reorder(sentiment, frequency)) %>% 
+  filter(frequency >= 3)
 
 ```
 
 ```{r}
-all = c(
-  paste(psalms_nrc[psalms_nrc$anger > 0,]$word, collapse=" "),
-  paste(psalms_nrc[psalms_nrc$anticipation > 0,]$word, collapse=" "),
-  paste(psalms_nrc[psalms_nrc$disgust > 0,]$word, collapse=" "),
-  paste(psalms_nrc[psalms_nrc$fear > 0,]$word, collapse=" "),
-  paste(psalms_nrc[psalms_nrc$joy > 0,]$word, collapse=" "),
-  paste(psalms_nrc[psalms_nrc$sadness > 0,]$word, collapse=" "),
-  paste(psalms_nrc[psalms_nrc$surprise > 0,]$word, collapse=" "),
-  paste(psalms_nrc[psalms_nrc$trust > 0,]$word, collapse=" ")
-)
-
-corpus = Corpus(VectorSource(all))
-tdm = TermDocumentMatrix(corpus, control=list(tolower=FALSE))
-tdm = as.matrix(tdm)
-tdm1 <- tdm[nchar(rownames(tdm)) < 11,]
-
-colnames(tdm) = c('anger', 'anticipation', 'disgust', 'fear', 'joy','sadness', 'surprise', 'trust')
-colnames(tdm1) <- colnames(tdm)
-comparison.cloud(tdm1, 
-                 random.order = FALSE,
-                 colors = c("#332288", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77", "#661100", "#CC6677", "#882255", "#AA4499"),
-                 title.size=1, max.words=250, 
-                 scale=c(2.5, 0.4),
-                 rot.per=0.4)
+bsplines <- psalms_nrc %>% 
+  mutate(
+    r = frequency/100,
+    x = lapply(r/2, function(x)
+    {y = rnorm(4, 1, r/5)
+    x*c(-1, 1, 1, -1) + y}),
+    y = lapply(r/2, function(x)
+    {y = rnorm(4, 1, r/5)
+    x*c(1, 1, -1, -1) + y})
+    ) %>%
+  unnest()
 ```
-
-
 ```{r}
+bsplines %>% 
+  ggplot() +
+  geom_bspline_closed(aes(x, y, group = word, 
+                          color = frequency, 
+                          size = frequency), 
+                      fill = NA) +
+  scale_color_paletteer_c("pals::isol")+
+  scale_size(range = c(0, 0.7), guide = FALSE) +
+  labs(x = "",
+       y = "",
+       title = "Classification of 10 sentiments of words extracted from Psalms book by NRC lexicon",
+       subtitle = "Every circle is a word. Radius, stroke width, and color represent its frequency through 150 chapters.",
+       caption = "Graphic: Sung Inkyung")+
+   guides(color = guide_colorbar(title = "Frequency", 
+                         title.position = "top", 
+                         title.hjust = 0.5, 
+                         barheight = 0.7)) +
+  facet_wrap(vars(toupper(sentiment)), ncol = 5) +
+  coord_fixed() +
+  theme_void() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 16, hjust = 0.5, 
+                              margin = margin(b = 20)),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, 
+                                 margin = margin(b = 50)),
+    plot.caption = element_text(size = 8,  color = "grey60",
+                                margin = margin(0, 0, 0, 0)),
+    strip.text = element_text(size = 9, 
+                              color = "#484e4a", 
+                              margin = margin(b = 10)),
+    plot.margin = margin(10, 10, 10, 10)
+  )
 
- 
+ggsave(here("figures", "PsalmsSentimentsBisplines.png"), width = 24, height = 21, units = "cm")
+```
