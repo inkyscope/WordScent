@@ -108,7 +108,7 @@ facet <- gospels_nrc %>%
   ggplot(aes(x = sentiment, y = value,
              group = interaction(book, sentiment),
              fill = book, color = book)) +
-  geom_polygon(aes(group = word), size = .2, alpha = .03, show.legend = F) +
+  geom_polygon(aes(group = word), size = .2, alpha = .5, show.legend = F) +
   scale_x_discrete(limits = order,
                    labels = c("Positive", "Joy", "Anticipation",
                               "Trust", "Surprise", "Negative",
