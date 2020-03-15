@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-### Source[tidytuesday by gkaramanis] (https://github.com/gkaramanis/tidytuesday/blob/master/2020-week03/passwords-bsplines.R)
+
 ```{r}
 library(tidyverse)
 library(tidytext)
@@ -89,7 +89,7 @@ afinn_plot <- psalms_afinn %>%
 ggsave(here("figures", "PsamlsAfinn.png"), width = 34, height = 24, units="cm")
 
 ```
-
+### Source[tidytuesday by gkaramanis] (https://github.com/gkaramanis/tidytuesday/blob/master/2020-week03/passwords-bsplines.R)
 ```{r}
 
 psalms_stop_word <- c(c("thy", "thou", "thine", "thee", "hast", "hath", "lord", "god", "ye", "yea"))
