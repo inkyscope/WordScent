@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Never combo in Psalms
+![Never](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsNever.PNG)
+
 ### Sentiment web of 4 gospels
 ![polygon](https://github.com/inkyscope/inkyscroll/blob/master/figures/GospelsSentimentWeb.png)
 
