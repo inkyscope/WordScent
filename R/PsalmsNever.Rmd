@@ -65,11 +65,11 @@ never_plot <- negated_words %>%
          hcaes(y = contribution,
                x = word2)) %>% 
   hc_add_theme(hc_theme_chalk()) %>% 
-  hc_title(text = "Words preceded by 'never' based on the contribution to AFINN sentiment values",
+  hc_title(text = "Words preceded by 'NEVER' based on the contribution to AFINN sentiment values",
            margin = 10,
            fontSize = "50px") %>% 
   hc_xAxis(title = list(text = NULL)) %>% 
-  hc_yAxis(title = list(text = NULL)) %>% 
+  hc_yAxis(title = list(text = "Contribution (Frequency*AFINN Value)")) %>% 
   hc_credits(enabled = TRUE,
              text = "Granphic: Sung Inkyung",
              style = list(
