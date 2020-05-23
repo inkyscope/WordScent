@@ -45,7 +45,7 @@ tidy_psalms %>%
   coord_flip() +
   theme_minimal()
 ```
-
+### Source[tidytuesday by Cedric Sherer] (https://github.com/Z3tt/TidyTuesday/blob/master/R/2020_19_AnimalCrossing.Rmd)
 ```{r}
 Psalms_books <- tidy_psalms %>% 
   mutate(
