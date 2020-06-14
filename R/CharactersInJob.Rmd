@@ -1,0 +1,123 @@
+---
+title: "Characters in Job"
+author: "sung inkyung"
+date: '2020 6 14'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## sources:[tidymodels by Julia Silge] (https://juliasilge.com/blog/best-hip-hop/)
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tidymodels)
+```
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book == "Job") %>% 
+    select(-c(citation, verse)) 
+```
+
+```{r}
+bible_tokenized <- bible %>%
+  mutate(book = factor(book)) %>% 
+  select(book, chapter, text) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  group_by(book, word, chapter) %>%
+  count(sort = TRUE) %>% 
+  ungroup() %>% 
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art",
+                      "shalt", "thee", "hath", "ye")) 
+```
+
+```{r}
+Job_words <- bible %>%
+  filter(book == "Job") %>%
+   mutate(
+    character = case_when(
+      chapter %in% c("1", "2", "3") ~ "Satan",
+    chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "40", "41") ~ "Job",
+    chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+    chapter %in% c("8", "18", "25") ~"Bildad",
+    chapter %in% c("11", "20") ~ "Zophar",
+    chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+    chapter %in% c("38", "39", "42") ~ "God",
+    TRUE ~ as.character(chapter)
+    )) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art",
+                      "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "eye")) %>% 
+  
+  add_count(word) %>% 
+  filter(n > 15)
+
+Job_characters <- Job_words %>% 
+  select(-book) %>% 
+  group_by(chapter, character, word) %>% 
+  summarize(count = sum(n)) %>% 
+  pivot_wider(names_from = word, values_from = count) %>% 
+  mutate_all(~replace(., is.na(.), 0))
+  
+# Principal component analysis
+
+pca_rec <- recipe(~., data = Job_characters) %>% 
+  update_role(chapter, character,new_role = "id") %>% 
+  step_normalize(all_predictors()) %>% 
+  step_pca(all_predictors())
+
+pca_prep <- prep(pca_rec)
+
+pca_prep 
+
+```
+```{r}
+tidied_pca <- tidy(pca_prep, 2)
+
+tidied_pca %>% 
+  filter(component %in% paste0("PC", 1:5)) %>% 
+  mutate(component = fct_inorder(component)) %>% 
+  ggplot(aes(value, terms, fill = terms)) +
+  geom_col(show.legend = F) +
+  facet_wrap(~component, nrow = 1) +
+  labs(y = "") +
+  theme_minimal()
+  
+
+```
+```{r}
+tidied_pca %>% 
+  filter(component %in% paste0("PC", 1:4)) %>% 
+  group_by(component) %>% 
+  top_n(10, abs(value)) %>% 
+  ungroup() %>% 
+  mutate(terms = reorder_within(terms, abs(value), component)) %>% 
+  ggplot(aes(abs(value), terms, fill = value > 0)) +
+  geom_col() +
+  facet_wrap(~component, scales = "free_y") +
+  scale_y_reordered() +
+  scale_fill_manual(values = c("#2f3136", "#f2ea99")) +
+  labs(x = "Absolute value of contribution",
+       y = "",
+       fill = "Positive?") +
+  theme_minimal()
+```
+```{r}
+juice(pca_prep) %>% 
+  ggplot(aes(PC3, PC4, label = chapter, group = character, color = character)) +
+  geom_point(alpha = .7, size = 9) +
+  geom_text(check_overlap = T, color = "black", fontface = "bold") +
+  scale_color_brewer(palette = "Accent") +
+  scale_color_discrete(breaks = c("Satan", "Eliphaz", "Bildad",  "Zophar", "Elihu", "God", "Job"),
+                       name = "Characters") +
+  labs(title = "How are the words distributed in the plane of the first two components over chapters in Job",
+       subtitle = "Characters are displayed from chapter 1 to chapter 42") +
+  theme_minimal() 
+  
+```
+
