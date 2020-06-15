@@ -8,12 +8,14 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## sources:[tidymodels by Julia Silge] (https://juliasilge.com/blog/best-hip-hop/)
+### sources:[tidymodels by Julia Silge] (https://juliasilge.com/blog/best-hip-hop/)
+### sources:[PCA] (https://blog.umetrics.com/what-is-principal-component-analysis-pca-and-how-it-is-used)
 
 ```{r}
 library(tidyverse)
 library(tidytext)
 library(tidymodels)
+library(paletteer)
 ```
 
 ```{r}
@@ -30,9 +32,7 @@ bible_tokenized <- bible %>%
   anti_join(stop_words) %>%
   group_by(book, word, chapter) %>%
   count(sort = TRUE) %>% 
-  ungroup() %>% 
-  filter(!word %in% c("thou", "thy", "thine", "hast", "art",
-                      "shalt", "thee", "hath", "ye")) 
+  ungroup() 
 ```
 
 ```{r}
@@ -40,7 +40,7 @@ Job_words <- bible %>%
   filter(book == "Job") %>%
    mutate(
     character = case_when(
-      chapter %in% c("1", "2", "3") ~ "Satan",
+      chapter %in% c("1", "2", "3") ~ "Angels",
     chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "40", "41") ~ "Job",
     chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
     chapter %in% c("8", "18", "25") ~"Bildad",
@@ -79,22 +79,26 @@ pca_prep
 ```{r}
 tidied_pca <- tidy(pca_prep, 2)
 
-tidied_pca %>% 
+p1 <- tidied_pca %>% 
   filter(component %in% paste0("PC", 1:5)) %>% 
   mutate(component = fct_inorder(component)) %>% 
   ggplot(aes(value, terms, fill = terms)) +
   geom_col(show.legend = F) +
   facet_wrap(~component, nrow = 1) +
+  scale_fill_discrete(h = c(0, 360) + 30, 
+                      c = 80, l = 45, 
+                      h.start = 0,
+                      direction = 1) +
   labs(y = "") +
   theme_minimal()
   
-
 ```
+
 ```{r}
-tidied_pca %>% 
+p2 <- tidied_pca %>% 
   filter(component %in% paste0("PC", 1:4)) %>% 
   group_by(component) %>% 
-  top_n(10, abs(value)) %>% 
+  top_n(15, abs(value)) %>% 
   ungroup() %>% 
   mutate(terms = reorder_within(terms, abs(value), component)) %>% 
   ggplot(aes(abs(value), terms, fill = value > 0)) +
@@ -104,20 +108,47 @@ tidied_pca %>%
   scale_fill_manual(values = c("#2f3136", "#f2ea99")) +
   labs(x = "Absolute value of contribution",
        y = "",
-       fill = "Positive?") +
+       fill = "Value > 0") +
   theme_minimal()
 ```
+
 ```{r}
-juice(pca_prep) %>% 
-  ggplot(aes(PC3, PC4, label = chapter, group = character, color = character)) +
+p3 <- juice(pca_prep) %>% 
+  ggplot(aes(PC3, PC4, label = chapter, 
+             group = character, 
+             color = character)) +
   geom_point(alpha = .7, size = 9) +
   geom_text(check_overlap = T, color = "black", fontface = "bold") +
-  scale_color_brewer(palette = "Accent") +
-  scale_color_discrete(breaks = c("Satan", "Eliphaz", "Bildad",  "Zophar", "Elihu", "God", "Job"),
-                       name = "Characters") +
-  labs(title = "How are the words distributed in the plane of the first two components over chapters in Job",
-       subtitle = "Characters are displayed from chapter 1 to chapter 42") +
-  theme_minimal() 
+  #scale_color_brewer(palette = "Accent") +
+  scale_colour_paletteer_d(breaks = c("Angels", "Eliphaz", "Bildad",  "Zophar", "Elihu", "God", "Job"),
+                           name = "Characters",
+                           "ggsci::default_locuszoom") +
+  labs(subtitle = "Numbers refer to each chapter and colors represent each character appearing according to the corresponding chapter in Job") +
+  theme_minimal()
   
+```
+
+```{r}
+library(patchwork)
+library(here)
+
+
+(p1 + p2) / p3 + plot_annotation(
+  title ="Words by Characters in the Book of Job based on Principal Component Analysis",
+  subtitle = "The figure below displays the relationships between words at the same time.\nWords contributing similar information are grouped together, that is, they are correlated.\nWISDOM & UNDERSTANDING are to be observed in each group.",
+  caption = "Source: Job in King James Bilble | Graphic: Sung InKyung") &
+  theme(plot.title = element_text(size = 16, 
+                                  face = "bold",
+                                  hjust = .5),
+        plot.subtitle = element_text(size = 13,
+                                     face = "bold",
+                                     hjust = .5),
+        plot.caption = element_text(size = 9,
+                                    hjust = 1))
+
+ 
+ ggsave(here("figures", "Job.png"), width = 36, height = 24, units = "cm")
+
+
 ```
 
