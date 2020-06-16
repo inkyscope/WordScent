@@ -19,7 +19,7 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Friends, Job and God
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/FriendsJobGod.png)
 
-### Characters in Job
+### Characters in the Book of Job
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/Job.png)
 
 ### Psalms WordPillars
