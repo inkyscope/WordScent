@@ -16,7 +16,10 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
-### Characters in Job
+### Friends, Job and God
+![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/FriendsJobGod.png)
+
+### Characters in the Book of Job
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/Job.png)
 
 ### Psalms WordPillars
