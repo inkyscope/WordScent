@@ -1,0 +1,102 @@
+---
+title: "Words Net of Characters in Job"
+author: "Sung Inkyung"
+date: '2020 6 21 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(igraph)
+library(ggraph)
+library(here)
+```
+
+
+```{r}
+job <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book == "Job") %>% 
+    select(-c(citation, verse)) 
+```
+
+
+```{r}
+
+job_words <- job %>% 
+   mutate(
+    character = case_when(
+      chapter %in% c("1", "2", "3") ~ "Satan",
+      chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "40", "41") ~ "Job",
+      chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+      chapter %in% c("8", "18", "25") ~"Bildad",
+      chapter %in% c("11", "20") ~ "Zophar",
+      chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+      chapter %in% c("38", "39", "42") ~ "God",
+      TRUE ~ as.character(chapter)
+      )) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art",
+                      "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldes", "lo")) %>% 
+  count(character, word, sort = T) %>% 
+  slice(1:300) %>% 
+  graph_from_data_frame()
+
+
+
+communities <- walktrap.community(job_words)
+
+V(job_words)$color <- as.character(membership(communities))
+
+V(job_words)$dgr <- degree(job_words, mode = "all")
+
+```
+
+
+```{r}
+
+## plot
+set.seed(2020)
+
+net_plot <- job_words %>% 
+  ggraph(layout = layout_nicely(job_words)) +
+  geom_node_point(
+    aes(color = color,
+        size = dgr)) +
+  geom_edge_fan(
+    aes(alpha = n),
+    color = "white",
+    arrow = grid::arrow(length = unit(.15, "cm"))) +
+  geom_node_text(
+    aes(label = name,
+        size = 9),
+    color = "white",
+    repel = T) +
+  scale_color_manual(values = c("#5e86bd", "#df5286", "#db6565", "#307a49", 
+                                "#d6b354",  "#7ed1f2", "#9e155e")) +
+  labs(title = "Word Network by Characters\nin the Book of Job",
+       caption = "Graphic: Sung Inkyung") +
+  theme(panel.background = element_rect(fill = "#25283d"),
+        plot.background = element_rect(fill = "#25283d",
+                                       color = "#25283d"),
+        legend.position = "none",
+        plot.title = element_text(color = "gray75",
+                                  size = 24,
+                                  hjust = .5,
+                                  face = "bold",
+                                  margin = margin(10, 0, 5, 0)),
+        plot.caption = element_text(color = "gray75",
+                                    hjust = .5,
+                                    margin = margin(0, 0, 15, 0)),
+        plot.margin = margin(20, 60, 10, 20))
+
+ggsave(here("figures", "WordsNetinJob.png"), width = 28, height = 18, units = "cm")
+
+```
+
+
+
