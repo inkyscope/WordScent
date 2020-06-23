@@ -15,6 +15,7 @@ library(tidytext)
 library(igraph)
 library(ggraph)
 library(here)
+
 ```
 
 
@@ -185,7 +186,7 @@ ggraph(layout) +
       label = name,
       filter = name %in% top_characters
     ),
-    size = 6, hjust = 0.5
+    size = 5, hjust = 0.5
   ) +
   geom_node_text(
     aes(
@@ -206,7 +207,7 @@ ggraph(layout) +
   scale_edge_alpha_manual(values = c(0.15, 1)) +
   coord_fixed() +
   labs(
-    title = "Characters connected to 300 Words through 42 Chapters of Job",
+    title = "Characters connected to Top 300 Words in the Book of Job",
     caption = "Graphic: Sung Inkyung"
   ) +
   theme_void() +
@@ -216,17 +217,14 @@ ggraph(layout) +
       face = 'bold', hjust = 0.5, size = 20, 
       margin = margin(t = 45, b = 3)
     ),
-    plot.subtitle = element_text(
-      face = 'plain', hjust = 0.5, size = 13, 
-      margin = margin(t = 5, b = 3)),
     plot.caption = element_text(
-      face = 'plain', color = '#dedede', 
-      size = 8, hjust = 1,
+      face = 'plain', color = '#a9a9a9', 
+      size = 9, hjust = 1,
       margin = margin(b = 20)
     )
   )
 
-ggsave(here("figures", "PersonaCirclesinJob.png"))
+ggsave(here("figures", "PersonaCirclesinJob.png"), width = 21, height = 21, units = "cm")
 ```
 
 ``
