@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Words Parallel
+![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordsParallelinJob.png)
+
 ### Words Network
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordsNetinJob.png)
 
