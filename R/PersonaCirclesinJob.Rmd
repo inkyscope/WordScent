@@ -31,12 +31,12 @@ job_words <- job %>%
    mutate(
     character = case_when(
       chapter %in% c("1", "2") ~ "Satan",
-    chapter %in% c("3", "6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "40", "41") ~ "Job",
+    chapter %in% c("3", "6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "42") ~ "Job",
     chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
     chapter %in% c("8", "18", "25") ~"Bildad",
     chapter %in% c("11", "20") ~ "Zophar",
     chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
-    chapter %in% c("38", "39", "42") ~ "God",
+    chapter %in% c("38", "39", "40", "41") ~ "God",
     TRUE ~ as.character(chapter)
     )) %>% 
   unnest_tokens(word, text) %>%
