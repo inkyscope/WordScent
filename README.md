@@ -34,7 +34,10 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Characters in the Book of Job
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/Job.png)
 
-### Psalms WordPillars
+### Psalms Circles
+![PsalmsCircles](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsCircles.png)
+
+### Psalms Word Pillars
 ![WordPillars](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsPillars.png)
 
 ### Never combo in Psalms
