@@ -127,7 +127,7 @@ plot <- jw %>%
         axis.text = element_blank(),
         axis.ticks = element_blank())
 
-  ggsave(here("figures", "WordsParadeinJob.png"), width = 25, height = 25, units = "cm")
+ggsave(here("figures", "WordsParadeinJob.png"), width = 25, height = 25, units = "cm")
   
 ```
 
