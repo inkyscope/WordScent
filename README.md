@@ -71,6 +71,11 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Zipf's Law
 ![Zipf's law](https://github.com/inkyscope/inkyscroll/blob/master/figures/Zipf'sLawofNewTestament.png)
 
+### Books by # of Characters
+![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/Treemapof%20Books.png)
+
+
+
 ### Word frequency across books of bible
 ![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordFrequency.png)
 
