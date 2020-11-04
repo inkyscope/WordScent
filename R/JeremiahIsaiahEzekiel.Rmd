@@ -36,7 +36,7 @@ book_by_words <- bible %>%
 
 ```{r}
 gospels_stop_word <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
-                         "ye", "yea", "saith", "thereof"))
+                         "ye", "yea", "saith", "thereof", "wherefore", "lo"))
 
 multiples <- count(book_by_words, book, word) %>% 
   count(word) %>% 
@@ -61,13 +61,13 @@ counts <- book_by_words %>%
                            TRUE ~ 0.5)) %>% 
   mutate(color = case_when(word == "judgment" ~ "#f8333c",
                            word == "multitude" ~ "#f8333c",
-                           word == "mouth" ~ "#f8333c",
+                           word == "righteousness" ~ "#00B295",
                            word == "soul" ~ "#00B295",
                            word == "word" ~ "#00B295",
                            TRUE ~ "black")) %>% 
   mutate(word = case_when(word == "judgment" ~ glue("**{word}**"),
                           word == "multitude" ~ glue("**{word}**"),
-                          word == "mouth" ~ glue("**{word}**"),
+                          word == "righteousness" ~ glue("**{word}**"),
                           word == "soul" ~ glue("**{word}**"),
                           word == "word" ~ glue("**{word}**"),
                            TRUE ~ word)) 
@@ -91,7 +91,7 @@ edge_set_two <- left_join(edge_lists[[2]],
 edge_sets <-  bind_rows(edge_set_one, edge_set_two) %>% 
   mutate(color = case_when(word == "judgment" ~ "#f8333c",
                            word == "multitude" ~ "#f8333c",
-                           word == "mouth" ~ "#f8333c",
+                           word == "righteousness" ~ "#00B295",
                            word == "soul" ~ "#00B295",
                            word == "word" ~ "#00B295",
                            TRUE ~ "black")) %>%  
@@ -120,7 +120,7 @@ plot <- ggplot() +
   scale_size_identity() +
   labs(x = NULL,
        y = NULL,
-       title = "Word Frequency in **Ezekiel**, **Isaiah** and **Jeremiah** of Major Prophets") +
+       title = "Word Nets in **Ezekiel**, **Isaiah** and **Jeremiah** via Major Prophets") +
   theme(plot.background = element_rect(fill = "#fbf7f4"),
         plot.title = element_markdown(hjust = 0.5,
                                       size = 30),
