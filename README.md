@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Major Prophets
+![Major Prophets](https://github.com/inkyscope/inkyscroll/blob/master/figures/JeremiahIsaiahEzekiel.png)
+
 ### Words Parade
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordsParadeinJob.png)
 
