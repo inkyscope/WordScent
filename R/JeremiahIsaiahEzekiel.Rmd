@@ -35,13 +35,13 @@ book_by_words <- bible %>%
 
 
 ```{r}
-gospels_stop_word <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
+prophets_stop_word <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
                          "ye", "yea", "saith", "thereof", "wherefore", "lo"))
 
 multiples <- count(book_by_words, book, word) %>% 
   count(word) %>% 
   filter(n > 18) %>% 
-  filter(!word %in% gospels_stop_word)
+  filter(!word %in% prophets_stop_word)
 
 
 ```
@@ -112,7 +112,7 @@ plot <- ggplot() +
                 aes(x = book, y = y_pos, label = word, hjust = hjust, color = color),  
                 fill = "#fbf7f4", label.color = NA) +
   geom_richtext(data = distinct(counts, book, hjust), 
-                aes(x = book, y = 420, label = str_to_title(book), hjust = hjust), 
+                aes(x = book, y = 415, label = str_to_title(book), hjust = hjust), 
                 size = 10, 
                 fill = "#fbf7f4", 
                 label.color = NA) +
@@ -120,10 +120,12 @@ plot <- ggplot() +
   scale_size_identity() +
   labs(x = NULL,
        y = NULL,
-       title = "Word Nets in **Ezekiel**, **Isaiah** and **Jeremiah** via Major Prophets") +
+       title = "Word Nets via Major Prophets; **Ezekiel**, **Isaiah** and **Jeremiah**",
+       caption = "**Graphic**: Sung Inyung") +
   theme(plot.background = element_rect(fill = "#fbf7f4"),
         plot.title = element_markdown(hjust = 0.5,
                                       size = 30),
+        plot.caption = element_markdown(),
         axis.text.y = element_blank(),
         axis.text.x = element_blank())
 
