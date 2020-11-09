@@ -1,0 +1,85 @@
+---
+title: "Ecclesiastes"
+author: "Sung Inkyung"
+date: '2020 11 9 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggtext)
+library(gggibbous)
+```
+### Source[tidytuesday by jake kaupp] (https://github.com/jkaupp/tidytuesdays/blob/master/2020/week24/R/analysis.R)
+```{r}
+time_between <- tribble(
+  ~from, ~to, 
+  "be born", "die",
+  "plant", "pluck up",
+  "kill", "heal",
+  "break down", "build up",
+  "weep", "laugh",
+  "mourn", "dance",
+  "cast away stones", "gather stones",
+  "embrace", "refrain from embracing",
+  "get", "lose",
+  "keep", "cast away",
+  "rend", "sew",
+  "keep silence", "speak",
+  "love", "hate",
+  "of war", "of peace",
+)
+
+df <- time_between %>% 
+  mutate(id = row_number()) %>% 
+  mutate(from = factor(from),
+         to = factor(to)) %>% 
+  mutate(end = seq(1:14)) %>% 
+  mutate(ratio = 0.8) 
+  
+  
+plot <- df %>% 
+  mutate(from = fct_reorder(from, -id)) %>% 
+  ggplot() +
+  geom_segment(aes(x = 0, xend = 10, y = from, yend = from), 
+               size = 1) +
+  geom_moon(aes(x = 0, y = from), ratio = 0.2, right = TRUE, 
+            fill = "#203650", size = 5) +
+  geom_moon(aes(x = 0, y = from), ratio = 0.8, right = FALSE, 
+            size = 5) +
+  geom_moon(aes(x = 10, y = from, ratio = ratio), right = TRUE, 
+            size = 5, fill = "#203650") +
+  geom_text(aes(x = 10, y = from, label = to), 
+            size = 5,
+            color = "#b22222",
+            nudge_x = .3, 
+            hjust = 0,
+            vjust = .3) +
+  labs(x = NULL,
+       y = NULL,
+       title = "A Time to    ",
+       subtitle = "Excerpted from Ecclesiastes Chapter3:2~8",
+       caption = "**Data**: KJV | **Graphic**: Sung Inkyung") +
+  scale_x_continuous(limits = c(0, 18),
+                     breaks = seq(0, 18, 6),
+                     expand = c(0.02, 0)) +
+  theme_light() +
+  theme(plot.background = element_rect(fill = "#cdaa7d"), 
+        panel.grid = element_blank(),
+        plot.title = element_text(size = 18,
+                                  face = "bold"),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_markdown(size = 9),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(color = "#163b57",
+                                   size = 13))
+
+ggsave(here::here("figures", "Ecclesiastes.png"), width = 24, height = 16, units = "cm")
+
+```
+
