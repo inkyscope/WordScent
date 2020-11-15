@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Ezekiel
+![Ezekiel](https://github.com/inkyscope/inkyscroll/blob/master/figures/Ezekiel_lord.png)
+
 ### Ecclesiastes Chapter3
 ![Ecclesiastes](https://github.com/inkyscope/inkyscroll/blob/master/figures/Ecclesiastes.png)
 
