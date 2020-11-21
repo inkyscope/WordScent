@@ -16,6 +16,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Word PackCircles
+![Circles](https://github.com/inkyscope/inkyscroll/blob/master/figures/BibleWordCircles.png)
+
 ### H O L Y
 ![HOLY](https://github.com/inkyscope/inkyscroll/blob/master/figures/holy.png)
 
