@@ -56,7 +56,7 @@ total_words <- bible_words %>%
 
 bible_words <- left_join(bible_words, total_words) %>% 
   mutate(ID = row_number()) %>% 
-  filter(n >= 50) 
+  filter(n >= 50)
 
 bible_words %>% 
   filter(Testament == "Old Testament") %>% 
@@ -88,8 +88,8 @@ labels_cir <- df %>%
 
 words <- df %>% 
   mutate(mark = str_c(ID, ". ", word, " - ", book),
-         axis_x = rep(1:4, each = 106, length = n()),
-         axis_y = rep(106:1, length = n())) %>% 
+         axis_x = rep(1:7, each = 61, length = n()),
+         axis_y = rep(61:1, length = n())) %>% 
   filter(!is.na(mark))
 
 plot_circle <- ggplot() +
@@ -109,12 +109,12 @@ plot_circle <- ggplot() +
 plot_word <- words %>% 
   ggplot(aes(axis_x, axis_y)) +
   geom_text(aes(label = mark),
-            size = 1.6,
+            size = 1.4,
             hjust = 0,
             color = "#d3dede") +
-  scale_x_continuous(limits = c(.9, 5),
-                     expand = c(0, 0))+
-  scale_y_continuous(limits = c(.5, 107.5),
+  scale_x_continuous(limits = c(.9, 8),
+                     expand = c(0.1, 0))+
+  scale_y_continuous(limits = c(.5, 61.5),
                      expand = c(0, 0)) +
   theme_void()
   
@@ -122,28 +122,26 @@ plot_word <- words %>%
 plot_patches <- plot_circle / plot_word + plot_layout(heights = c(1, .7)) +
   plot_annotation(
     title = "Words of All Books in King James Bible",
-    subtitle = "139 Words from 39 books by <span style='color:#019f66'>**Old Testament**</span><br>
-   29 Words from 27 books by <span style='color:#cc31b6'>**New Testament**</span><br>
+    subtitle = "427 words from 39 books by <span style='color:#019f66'>**Old Testament**</span> and<br>27 books by <span style='color:#cc31b6'>**New Testament**</span><br>
     Words appearing <span style='color:#fbe7b6'>**more than 50 times**</span> are selected from each Testament",
-    caption = "**Source**: King James Bible | **Graphic**: Sung Inkyung"
-  ) &
+    caption = "**Source**: King James Bible | **Graphic**: Sung Inkyung") &
   theme(plot.background = element_rect(fill = "#191c1b",
                                        color = "#191c1b"),
-        plot.title = element_text(size = 36, 
+        plot.title = element_text(size = 20, 
                                   face = "bold",
                                   color = "white",
                                   hjust = .5,
                                   margin = margin(t = 20, b = 10)),
-         plot.subtitle = element_markdown(size = 30, 
-                                          lineheight = .4,
-                                          color = "white",
-                                          hjust = 0.5,
-                                          margin = margin(b = 5)),
-        plot.caption = element_markdown(size = 16,
+        plot.subtitle = element_markdown(size = 14, 
+                                        lineheight = .7,
+                                        color = "white",
+                                         hjust = 0.5,
+                                         margin = margin(b = 5)),
+        plot.caption = element_markdown(size = 7,
                                         color = "#f5f5f5",
                                         hjust = 1, 
                                         margin = margin(t = 20, b= 5, r = 10)))
 
-ggsave(here::here("figures", "BibleWordCircles.png"), width = 14, height = 18, units = "cm")
+ggsave(here::here("figures", "BibleWordCircles.png"), width = 21, height = 24, units = "cm")
 
 ```
