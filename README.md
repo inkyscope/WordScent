@@ -80,8 +80,8 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Top Picks in Hebrews
 ![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
 
-### Books by # of Characters
-![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/Treemapof%20Books.png)
+### Books by Number of Characters
+![Words](https://github.com/inkyscope/inkyscroll/blob/master/2020/0711_BibleTreemap/0711_BibleBooksTreemap.png)
 
 ### WordBible Books by Word Frequency
 ![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/2019/1105_BibleFrequencyBar/1105_BibleBooksbyWordFrequency.png)
