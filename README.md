@@ -67,8 +67,8 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Psalms Sentiment Bisplines using NRC Lexicon
 ![NRC](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_PsalmsEmotionsBisplines/0307_PsalmsEmotionsBisplines.png)
 
-### Psalms Emotions
-![NRC](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsEmotions.png)
+### Emotions in Psalms
+![NRC](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_PsalmsEmotionsDendrogram/PsalmsEmotionsDendrogram.png)
 
 ### Psalms Using Afinn Sentiment Analysis
 ![Afinn](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_PsalmsAfinn/0307_PsamlsbyAfinnValue.png)
