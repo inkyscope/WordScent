@@ -80,7 +80,7 @@ pos_plot <- positive %>%
            show.legend = FALSE) +
   scale_y_continuous(limits = c(-700, 500), expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  paletteer::scale_fill_paletteer_c("gameofthrones::tyrell") +
+  paletteer::scale_fill_paletteer_c("ggthemes::Orange Light") +
   coord_polar() +
   geom_text(data = positive_words_labels,
             aes(x = factor(rowid),
@@ -132,7 +132,7 @@ neg_plot <- negative %>%
   scale_y_continuous(limits = c(-180, 10), 
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  paletteer::scale_fill_paletteer_c("gameofthrones::daenerys")+
+  paletteer::scale_fill_paletteer_c("ggthemes::Blue-Teal") +
   coord_polar() +
   geom_text(data = negative_words_labels,
             aes(x = factor(rowid),
