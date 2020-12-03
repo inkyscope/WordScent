@@ -1,0 +1,112 @@
+---
+title: "CharactersParallel"
+author: "Sung Inkyung"
+date: '2020 6 21'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggtext)
+library(tidytext)
+library(ggalluvial)
+library(ggsci)
+library(showtext)
+library(here)
+
+font_add_google("Roboto Mono", "Roboto Mono")
+showtext_auto()
+
+```
+
+
+```{r}
+job <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book == "Job") %>% 
+    select(-c(citation, verse)) 
+
+job_words <- job %>% 
+  filter(!chapter %in% c("1", "2")) %>% 
+   mutate(
+    character = case_when(
+    chapter %in% c("3", "6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "42") ~ "Job",
+    chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+    chapter %in% c("8", "18", "25") ~"Bildad",
+    chapter %in% c("11", "20") ~ "Zophar",
+    chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+    chapter %in% c("38", "39", "40", "41") ~ "God",
+    TRUE ~ as.character(chapter)
+    )) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art",
+                      "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldest", "lo", "uz")) 
+```
+
+
+```{r}
+words <- job_words %>% 
+  group_by(character, chapter, word) %>% 
+  filter(word %in% c("understanding", "wisdom", "dignity", "strength", "righteous", "words")) %>% 
+  add_count(word) %>% 
+  summarize(total = sum(n))
+  
+p <- words %>% 
+  ggplot(aes(axis1 = word, axis2 = character, axis3 = chapter, y = total)) +
+  geom_alluvium(aes(fill = character)) +
+  geom_stratum(fill = "grey70", 
+               color = "grey20", 
+               size = 0.03, 
+               width = 0.4) +
+   geom_text(stat = "stratum", 
+             color = "gray20",
+             family = "Roboto Mono",
+             size = 9,
+             infer.label = T) +
+  scale_x_discrete(limits = c("Word", "Character", "Chapter"),
+                   expand = c(0, 0),
+                   position = "top") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_futurama() +
+  labs(x = " ",
+       y = " ",
+       title = "Selected Words through Chapter 3 to 42 in the Book of Job",
+       subtitle = "First 2 chapters are removed; Conversation between God and Satan",
+       caption = "Graphic: Sung Inkyung") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 40,
+                                  family = "Roboto Mono",
+                                  face = "bold",
+                                  hjust = .5,
+                                  margin = margin(c(t = 20))),
+        plot.subtitle = element_text(size = 36,
+                                    family = "Roboto Mono",
+                                    face = "bold",
+                                    hjust = .5,
+                                    margin = margin(c(b = 10))),
+        plot.caption = element_text(size = 24,
+                                    family = "Roboto Mono",
+                                    hjust = .5,
+                                    margin = margin(c(t = 20, b = 20))),
+        axis.text.x = element_text(size = 30, 
+                                   color = "black", 
+                                   family = "Roboto Mono",
+                                   face = "bold"),
+        axis.text.y = element_text(size = 20, 
+                                     family = "Roboto Mono"),
+        axis.line = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = "bottom",
+        legend.key.width = unit(3, "lines"),
+        legend.key.height = unit(0.75, "lines"),
+        legend.spacing.x = unit(0.5, 'cm'),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 20),
+        plot.margin = margin(5, 5, 5, 5))
+
+ggsave(here("2020", "0621_JobParallel",  "0621_CharactersParallel.png"), width = 22, height = 25, units = "cm")
+```

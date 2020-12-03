@@ -1,0 +1,96 @@
+---
+title: "PsalmsSentiment"
+author: "Sung Inkyung"
+date: '2020.3.7'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(paletteer)
+library(here)
+
+```
+### source [Sentiment Analysis in R] (http://rstudio-pubs-static.s3.amazonaws.com/283881_efbb666d653a4eb3b0c5e5672e3446c6.html)
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book == "Psalms")
+
+psalms_stop_word <- c(c("thy", "thou", "thine", "thee", "hast", "hath", "lord", "god", "ye", "yea"))
+```
+
+```{r}
+psalms <- bible %>% 
+  select(-c("citation", "book", "verse")) %>% 
+  mutate(verse_number = row_number()) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!word %in% psalms_stop_word,
+         str_detect(word, "[a-z]"))
+
+psalms_afinn <- psalms %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  filter(!is.na(value)) %>% 
+  group_by(word, value) %>% 
+  summarise(count = sum(n())) %>% 
+  ungroup()
+  
+
+psamls_afinn <- 
+  unique(psalms_afinn[order(psalms_afinn$value), ]) %>% 
+  filter(count > 10) %>% 
+  mutate(value = factor(value))
+
+afinn_plot <- psalms_afinn %>% 
+  ggplot() +
+  geom_text(aes(value, count, label = word, color = value),
+            check_overlap = FALSE) +
+  scale_color_gradient(low = "#56b1f7",
+                       high = "#eba487") +
+  guides(color = FALSE) +
+  labs(x = "AFINN Value",
+       y = "Count",
+       title = "Sentiment analysis of Psalms using the AFINN lexicon",
+       subtitle = "AFINN lexicon assigns words with a score that runs between -5 and 5, with negative scores\nindicating negative sentiment and positive scores indicating positive sentiment.",
+       caption = "Source: King James Bible | Graphic: Sung Inkyung") +
+  theme_minimal() +
+  theme(
+    plot.background = element_rect(fill = "#1a1c2e"),
+    plot.title = element_text(size = 18, 
+                              face = "bold",
+                              color = "#f2f3f5",
+                              margin = margin(t= 20, b = 8)),
+    plot.subtitle = element_text(size = 14, 
+                                 lineheight = 1.1,
+                                 color = "#e6e7eb",
+                                 margin = margin(b = 20)),
+    plot.caption = element_text(size = 9,
+                                color = "#e6e7eb",
+                                 margin = margin(t = 10,
+                                                 r = 10,
+                                                 b = 20)),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.y = element_line(color = "#21243a"),
+    panel.grid.major.x = element_line(color = "#21243a"),
+    axis.text = element_text(color = "#e6e7eb", size = 10),
+    axis.text.x = element_text(margin = margin(t = 5)),
+    axis.text.y = element_text(margin = margin(r = 5)),
+    axis.title = element_text(size = 9, color = "#e6e7eb"),
+    axis.ticks = element_line(color = "#babcd1"),
+    axis.title.x = element_text(margin = margin(t = 15),
+                                hjust = .5),
+    axis.title.y = element_text(margin = margin(r = 20),
+                                hjust = .5),
+    axis.line = element_line(color = "#9d9fb0")
+  )
+
+ggsave(here("2020", "0307_PsalmsAfinn", "0307_PsamlsbyAfinnValue.png"), width = 34, height = 24, units = "cm")
+
+```
+

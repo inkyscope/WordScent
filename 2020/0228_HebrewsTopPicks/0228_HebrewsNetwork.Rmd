@@ -1,0 +1,123 @@
+---
+title: "Hebrews Network"
+author: "Sung Inkyung"
+date: '2020 02 28'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggraph)
+library(igraph)
+library(widyr)
+```
+
+
+```{r}
+Hebrews <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book == "Hebrews")
+
+bigrams <- Hebrews %>% 
+  filter(!str_detect(text, "[0-9]"),
+         !str_detect(text, "ye|thou|saith|thy|thee|thee|hath|god|lord|dai")) %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) 
+  
+  
+
+bigrams %>% 
+  count(bigram, sort = TRUE)
+
+bigrams_separated <- bigrams %>% 
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>% 
+  filter(!word1 %in%  stop_words$word) %>% 
+  filter(!word2 %in% stop_words$word)
+
+bigram_counts <- bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+bigrams_united <- bigrams_filtered %>% 
+  unite(bigram, word1, word2, sep = " ")
+
+bigram_tf_idf <- bigrams_united %>% 
+  count(book, bigram) %>% 
+  bind_tf_idf(bigram, book, n) %>% 
+  arrange(desc(tf_idf))
+```
+
+
+```{r}
+bigram_counts
+
+bigram_graph <- bigram_counts %>% 
+  filter(word1 %in% c("eternal", "faith", "lord", "word", "living", "confidence", "covenant", "endless", "entertain", "evil", "gospel", "heavenly", "hope", "lord", "love", "obtained", "patiently", "offer", "righteousness", "salvation", "true", "heart", "sacrifice", "world")) %>% 
+  graph_from_data_frame()
+
+
+set.seed(2020)
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha =n),
+                 show.legend = FALSE) +
+  geom_node_point(color = "#849b96", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+```
+
+
+```{r}
+Hebrews_words <- Hebrews %>% 
+  mutate(section = row_number()) %>% 
+  filter(section > 0) %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|saith|thy|thee|thee|hath|god|lord|dai"),
+         !word %in% stop_words$word)
+
+
+word_pairs <- Hebrews_words %>% 
+  pairwise_count(word, section, sort = TRUE)
+
+word_cors <- Hebrews_words %>% 
+  group_by(word) %>% 
+  filter(n() > 2) %>% 
+  pairwise_cor(word, section, sort = TRUE)
+
+word_cors %>% 
+  filter(item1 == "faith")
+
+word_cors %>% 
+  filter(item1 %in% c("faith", "word", "holy", "sin")) %>% 
+  group_by(item1) %>% 
+  top_n(6) %>% 
+  ungroup() %>% 
+  mutate(item2 = reorder(item2, correlation)) %>% 
+  ggplot(aes(item2, correlation, fill = item1))+
+  geom_bar(stat = "identity",
+           show.legend = FALSE) +
+  facet_wrap(~item1, scales = "free") +
+  coord_flip() +
+  labs(x = " ",
+       y = "correlation") +
+  theme_minimal()
+```
+
+```{r}
+plot_cors <- word_cors %>% 
+  filter(correlation > .3) %>% 
+  graph_from_data_frame() %>% 
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "#849b96", size = 3) + ## "#a09f9d"
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+ggsave(here::here("2020", "0228_HebrewsNetwork", "0228_HebrewsNetwork.png"), width = 24, height = 16, units = "cm")
+```
+

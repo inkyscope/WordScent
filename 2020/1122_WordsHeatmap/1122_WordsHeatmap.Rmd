@@ -1,0 +1,102 @@
+---
+title: "Words Heatmap"
+author: "Sung Inkyung"
+date: '2020 11 22'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), 
+                            "New Testament", "Old Testament"))
+
+
+bible_stop_words <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
+                         "ye", "yea", "saith", "thereof", "wherefore", "lo", "aaron", "aaron's", "aaronites", "abarim"))
+
+
+bible_words <- bible %>% 
+  select(-citation, -verse) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!word %in% bible_stop_words) %>% 
+  count(book, word, Testament, sort = T)
+
+total_words <- bible_words %>% 
+  group_by(book) %>% 
+  summarise(total = sum(n)) %>% 
+  arrange(-total)
+
+bible_words <- left_join(bible_words, total_words) %>% 
+  mutate(ID = row_number()) 
+```
+
+
+```{r}
+plot_heatmap <- bible_words %>% 
+  mutate(book = fct_lump(book, 10)) %>% 
+  filter(book != "Other") %>% 
+  filter(n >= 20) %>% 
+  ggplot(aes(x = word, y = total, fill = n)) +
+  geom_tile() +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_fill_distiller(palette = "Oranges", 
+                       direction = 1) +
+  guides(fill = guide_colourbar(title = "Frequency",
+                                title.position = "top")) +
+  facet_wrap(~ book, ncol = 2, scales = "free") +
+  labs(title = "Word Frequency by Book",
+       subtitle = "Words repeated more than 20 times",
+       caption = "**Graphic**: Sung Inkyung") +
+  theme_minimal() +
+  theme(legend.position = c(0.84, 1.065), 
+        legend.direction = "horizontal",
+        legend.key.width = unit(2.6, "line"),
+        legend.key.height = unit(1, "line"),
+        plot.title = element_text(face = "bold", 
+                                  size = 44, 
+                                  margin = margin(b = 7)),
+        plot.subtitle = element_text(size = 36,
+                                     margin = margin(b = 13)),
+        plot.caption = element_markdown(size = 16,
+                                    margin = margin(t = 20, r = 20, b= 20)),
+        strip.text.x = element_text(size = 32, 
+                                    hjust = 0, 
+                                    face = "bold"),
+        panel.grid = element_blank(),
+        axis.text.x = element_text(angle = 90, 
+                                   vjust = .5, 
+                                   size = 5),
+        axis.text.y = element_blank(),
+        axis.title = element_blank(),
+        axis.ticks = element_line(colour = "grey60"),
+        axis.ticks.y = element_blank(),
+        plot.margin = margin(22, 10, 10, 10))
+
+ggsave(here::here("2020", "1122_WordsHeatmap", "1122_WordsHeatmap.png"), width = 32, height = 20, units = "cm")
+        
+```
+

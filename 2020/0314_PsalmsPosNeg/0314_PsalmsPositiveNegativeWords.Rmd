@@ -1,0 +1,172 @@
+---
+title: "PsalmsPositiveNegativeWords"
+author: "Sung Inkyung"
+date: '2020.3.14'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(paletteer)
+library(Matrix)
+library(widyr)
+library(glmnet)
+library(here)
+
+```
+### source [Sentiment Analysis in R] (http://rstudio-pubs-static.s3.amazonaws.com/283881_efbb666d653a4eb3b0c5e5672e3446c6.html)
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book == "Psalms")
+```
+
+```{r}
+psalms_stop_word <- c(c("thy", "thou", "thine", "thee", "hast", "hath", "lord", "god", "ye", "yea"))
+
+psalms <- bible %>% 
+  select(-c("citation", "book", "verse")) %>% 
+  mutate(id = row_number()) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!word %in% psalms_stop_word,
+         str_detect(word, "[a-z]"))
+
+psalms %>% 
+  count(word, sort = TRUE) %>% 
+  head(20) %>% 
+  mutate(word = fct_reorder(word, n)) %>% 
+  ggplot(aes(word, n)) +
+  geom_col() +
+  coord_flip()
+
+
+psalms_afinn <- psalms %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  filter(!is.na(value)) %>% 
+  group_by(word, value) %>% 
+  summarise(count = sum(n())) %>% 
+  ungroup() %>% 
+  mutate(id = row_number(),
+         contribution = value*count) 
+```
+```{r}
+positive <- psalms_afinn %>% 
+  arrange(contribution) %>% 
+  mutate(direction = ifelse(contribution < 0, "Negative", "Positive")) %>% 
+  filter(direction == "Positive") %>% 
+  na.omit() %>% 
+  top_n(120, abs(contribution)) %>% 
+  rowid_to_column()
+
+positive_words_labels <- positive %>%
+  mutate(n = n(),
+    angle = 90 - 360 * (rowid - 0.5) / n,
+    hjust = ifelse(angle < -90, 0, 1),
+    angle = ifelse(angle < -90, angle + 180, angle))
+
+
+pos_plot <- positive %>% 
+  mutate(rowid = factor(rowid)) %>% 
+  filter(!is.na(contribution)) %>% 
+  na.omit() %>% 
+  ggplot(aes(rowid, contribution)) +
+  geom_col(aes(fill = contribution), 
+           na.rm = TRUE,
+           show.legend = FALSE) +
+  scale_y_continuous(limits = c(-700, 500), expand = c(0, 0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  paletteer::scale_fill_paletteer_c("gameofthrones::tyrell") +
+  coord_polar() +
+  geom_text(data = positive_words_labels,
+            aes(x = factor(rowid),
+                y = -1,
+                label = word,
+                hjust = hjust,
+                angle = angle),
+            color = "white",
+            size = 4, 
+            inherit.aes = FALSE,
+            na.rm = TRUE) +
+  annotate("text",
+           x = 0,
+           y = -700,
+           label = "Psalms\nPositive\nWords",
+           color = "#e5ee8e",
+           size = 9) +
+  theme(plot.background = element_rect(fill = "#3b3c36"),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_blank())
+```
+
+
+```{r}
+negative <- psalms_afinn %>% 
+  arrange(contribution) %>% 
+  mutate(direction = ifelse(contribution < 0, "Negative", "Positive")) %>% 
+  filter(direction == "Negative") %>% 
+  top_n(120, abs(contribution)) %>% 
+  rowid_to_column()
+
+negative_words_labels <- negative %>%
+  mutate(n = n(),
+    angle = 90 - 360 * (rowid - 0.5) / n,
+    hjust = ifelse(angle < -90, 1, 0),
+    angle = ifelse(angle < -90, angle + 180, angle))
+
+
+neg_plot <- negative %>% 
+  mutate(rowid = factor(rowid)) %>% 
+  ggplot(aes(rowid, contribution)) +
+  geom_col(aes(fill = contribution), 
+           na.rm = TRUE,
+           show.legend = FALSE) +
+  scale_y_continuous(limits = c(-180, 10), 
+                     expand = c(0, 0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  paletteer::scale_fill_paletteer_c("gameofthrones::daenerys")+
+  coord_polar() +
+  geom_text(data = negative_words_labels,
+            aes(x = factor(rowid),
+                y = 1,
+                label = word,
+                hjust = hjust,
+                angle = angle),
+            color = "white",
+            size = 4, 
+            inherit.aes = FALSE,
+            na.rm = TRUE) +
+  annotate("text",
+           x = 0,
+           y = -180,
+           label = "Psalms\nNegative\nWords",
+           color = "#456e82",
+           size = 13) +
+  theme(plot.background = element_rect(fill = "#3b3c36"),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_blank())
+
+```
+
+```{r}
+library(patchwork)
+
+pos_plot + neg_plot +
+  plot_annotation(caption = "Graphic: Sung Inkyung")
+
+ggsave(here ("2020", "0314_PsalmsPosNeg", "0314_PsalmsPositiveNegativeWords.png"), width = 40, height = 40, units = "cm")
+```
+
+

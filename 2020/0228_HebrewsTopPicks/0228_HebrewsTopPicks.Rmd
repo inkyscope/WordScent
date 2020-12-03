@@ -1,0 +1,152 @@
+---
+title: "Hebrews"
+author: "Sung Inkyung"
+date: '2020 2 28'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(here)
+```
+
+
+```{r}
+Hebrews <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book == "Hebrews")
+
+characters <- Hebrews %>% 
+  summarize(characters = sum(nchar(text))) %>% 
+  arrange(desc(characters))
+
+library(wordcloud)
+
+Hebrews %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(word) %>% 
+  with(wordcloud(word, n, max.words = 100))
+
+library(reshape2)
+
+Hebrews %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  count(word, sentiment, sort = TRUE) %>% 
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>% 
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 100)
+```
+
+
+```{r}
+frequency <- Hebrews %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|saith|thy|thee|thee|hath|god|lord|dai")) %>% 
+  count(word, sort = TRUE)
+
+  frequency %>% 
+    filter(n >= 10) %>% 
+    mutate(word = fct_reorder(word, n)) %>% 
+    ggplot(aes(word, n)) +
+    geom_col()+
+    coord_flip()
+    
+```
+
+```{r}
+new_word <- Hebrews %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!str_detect(word, "[0-9]"),
+         !str_detect(word, "ye|thou|saith|thy|thee|thee|hath|god|lord|dai")) %>% 
+  mutate(rank = row_number(),
+         n = 1) %>% 
+  select(chapter, word, rank, n)
+
+View(new_word)
+
+```
+
+
+```{r}
+top_picks <- new_word %>% 
+  group_by(chapter, word) %>% 
+  mutate(popularity = 1988 - rank) %>% 
+  tally(popularity) %>% 
+  top_n(1) %>% 
+  mutate(top_1 = TRUE) %>% 
+  ungroup() %>% 
+  select(word, top_1)
+
+
+word <- new_word %>% 
+  left_join(top_picks, by = "word") %>% 
+   mutate(top_1 = case_when(
+    is.na(chapter|top_1) ~ 1,
+    TRUE ~ 0
+  )) %>% 
+  arrange(desc(rank))
+
+
+View(word)
+
+chapter_order <- new_word %>% 
+  group_by(chapter) %>% 
+  tally()
+
+```
+
+```{r}
+word_plot <- word %>% 
+  mutate(chapter = factor(chapter)) %>% 
+  ggplot(aes(fct_relevel(chapter, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"), 
+             y = n,
+             label = word, color = top_1)) +
+  geom_text(position = "stack", 
+            stat = "identity",
+            size = 5,
+            show.legend = FALSE,
+            color = "#cccc00" ) +
+  annotate("text", x = 1, y = 106, label = "angels", color = "#cd1076", size = 5)+
+  annotate("text", x = 2, y = 130, label = "angels", color = "#cd1076", size = 5)+
+  annotate("text", x = 3, y = 114, label = "house", color = "#cd1076", size = 5)+
+  annotate("text", x = 4, y = 110, label = "rest", color = "#cd1076", size = 5)+
+  annotate("text", x = 5, y = 85, label = "priest", color = "#cd1076", size = 5)+
+  annotate("text", x = 6, y = 132, label = "promise", color = "#cd1076", size = 5)+
+  annotate("text", x = 7, y = 186, label = "priest", color = "#cd1076", size = 5)+
+  annotate("text", x = 8, y = 89, label = "covenant", color = "#cd1076", size = 5)+
+  annotate("text", x = 9, y = 202, label = "blood", color = "#cd1076", size = 5)+
+  annotate("text", x = 10, y = 222, label = "offering", color = "#cd1076", size = 5)+
+  annotate("text", x = 11, y = 317, label = "faith", color = "#cd1076", size = 5)+
+  annotate("text", x = 12, y = 219, label = "set", color = "#cd1076", size = 5)+
+  annotate("text", x = 13, y = 145, label = "remember", color = "#cd1076", size = 5)+
+  
+  labs(x = "Chapter of Hebrews",
+       y = "Frequency of words",
+       title = "Top Word in Each Chapter of Hebrews",
+       subtitle = "Inspired by ToughTalk Jazzband ablumb MY World",
+       caption = "Source: King James Bible | Graphic: Sung Inkyung") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(size = 20,
+                                  margin = margin(b = 5)),
+        plot.subtitle = element_text(size = 16,
+                                     margin = margin(b = 15)),
+        plot.caption = element_text(size = 9),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        axis.text.x = element_text(size = 9))
+  
+  ggsave(here::here("2020", "0228_HebrewsTopPicks", "0228_HebrewsTopPicks.png"), width = 35, height = 15, units = "cm")
+```
+

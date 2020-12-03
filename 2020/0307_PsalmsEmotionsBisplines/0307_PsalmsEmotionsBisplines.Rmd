@@ -1,0 +1,106 @@
+---
+title: "PsalmsEmotionsBisplines"
+author: "Sung Inkyung"
+date: '2020.3.7'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggforce)
+library(paletteer)
+library(here)
+
+```
+### source [Sentiment Analysis in R] (http://rstudio-pubs-static.s3.amazonaws.com/283881_efbb666d653a4eb3b0c5e5672e3446c6.html)
+### Source[tidytuesday by gkaramanis] (https://github.com/gkaramanis/tidytuesday/blob/master/2020-week03/passwords-bsplines.R)
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book == "Psalms")
+```
+
+
+```{r}
+psalms_stop_word <- c(c("thy", "thou", "thine", "thee", "hast", "hath", "lord", "god", "ye", "yea")) 
+
+psalms <- bible %>% 
+  select(-c("citation", "book", "verse")) %>% 
+  mutate(verse_number = row_number()) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(!word %in% psalms_stop_word,
+         str_detect(word, "[a-z]"))
+  
+
+psalms %>% 
+  count(verse_number, sort = TRUE)
+
+psalms_nrc <- psalms %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  filter(!is.na(sentiment)) %>% 
+  group_by(sentiment, word) %>% 
+  summarise(frequency = n()) %>% 
+  ungroup() %>% 
+  mutate(sentiment = factor(sentiment),
+         sentiment = fct_reorder(sentiment, frequency)) %>% 
+  filter(frequency >= 3)
+
+```
+
+```{r}
+bsplines <- psalms_nrc %>% 
+  mutate(
+    r = frequency/100,
+    x = lapply(r/2, function(x)
+    {y = rnorm(4, 1, r/5)
+    x*c(-1, 1, 1, -1) + y}),
+    y = lapply(r/2, function(x)
+    {y = rnorm(4, 1, r/5)
+    x*c(1, 1, -1, -1) + y})
+    ) %>%
+  unnest()
+```
+
+```{r}
+
+plot_bisplines <- bsplines %>% 
+  ggplot() +
+  geom_bspline_closed(aes(x, y, group = word, 
+                          color = frequency, 
+                          size = frequency), 
+                      fill = NA) +
+  scale_color_paletteer_c("pals::isol")+
+  scale_size(range = c(0, 0.7), guide = FALSE) +
+  labs(x = "",
+       y = "",
+       title = "Classification of 10 Sentiments of Words Extracted from Psalms book by NRC Lexicon",
+       subtitle = "Every circle is a word. Radius, stroke width, and color represent its frequency through 150 chapters.",
+       caption = "Graphic: Sung Inkyung")+
+   guides(color = guide_colorbar(title = "Frequency", 
+                         title.position = "top", 
+                         title.hjust = 0.5, 
+                         barheight = 0.7)) +
+  facet_wrap(vars(toupper(sentiment)), ncol = 5) +
+  coord_fixed() +
+  theme_void() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 16, hjust = 0.5, 
+                              margin = margin(b = 7)),
+    plot.subtitle = element_text(size = 14, hjust = 0.5, 
+                                 margin = margin(b = 50)),
+    plot.caption = element_text(size = 9,  color = "grey60",
+                                margin = margin(t = 15)),
+    strip.text = element_text(size = 9, 
+                              color = "#484e4a", 
+                              margin = margin(b = 10)),
+    plot.margin = margin(10, 10, 10, 10)
+  )
+
+ggsave(here("2020", "0307_PsalmsEmotionsBisplines", "0307_PsalmsEmotionsBisplines.png"), width = 24, height = 22, units = "cm")
+```
