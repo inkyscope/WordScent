@@ -1,8 +1,8 @@
 # inkyscroll
 a personal scribble of textmining with bible for a word network(thread, stitch) along with visual supports
 
-"The speech, the Word which establishes and binds together the fellowship, is accompanied by silence. ... We are silent before hearing the
-Word because our thoughts are already directed to the Word, ... We are silent after hearing the Word because the Word is still speaking and dwelling within us"  
+"The speech, the Word which establishes and binds together the fellowship, is accompanied by silence. ... We are silent **before** hearing the
+Word because our thoughts are already directed to the Word, ... We are silent **after** hearing the Word because the Word is still speaking and dwelling within us"  
 from _**Life Togehter**_  by Dietrich Bonhoeffer
 
 -------------------------------------------------------------------------------------------------------------------------------------
@@ -80,12 +80,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Top Picks in Hebrews
 ![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
 
-### Word Pairings in Revelation
-![word pairings](https://github.com/inkyscope/inkyscroll/blob/master/figures/RevelationWordPairings.png)
-
 ### Books by # of Characters
 ![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/Treemapof%20Books.png)
 
-### Word Frequency Across Bible Books
-![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordFrequency.png)
+### WordBible Books by Word Frequency
+![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/2019/1105_BibleFrequencyBar/1105_BibleBooksbyWordFrequency.png)
 
