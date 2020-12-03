@@ -1,0 +1,194 @@
+---
+title: "bible_ZipfLaw"
+author: "Sung Inkyung"
+date: '2019 11 5 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(scales)
+library(paletteer)
+library(patchwork)
+library(here)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), "New Testament", "Old Testament"))
+```
+
+
+```{r tf-idf: Testament level}
+testament_count <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(Testament, word, sort = TRUE) 
+
+total_count <- testament_count %>% 
+  group_by(Testament) %>% 
+  summarise(total = sum(n))
+
+testament_total_count <- left_join(testament_count, total_count)
+
+testament_total_count <- testament_total_count %>% 
+  bind_tf_idf(word, Testament, n)
+
+testament_total_count$Testament <- factor(testament_total_count$Testament,
+                                          levels = c("Old Testament", "New Testament"))
+
+testament_total_count %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(Testament) %>% 
+  top_n(15) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, tf_idf, fill = Testament)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual(values = c("Old Testament" = "#112358",
+                               "New Testament" = "#dd2a7b")) +
+  coord_flip() +
+  facet_wrap(~ Testament, ncol =2, scales = "free") +
+  labs(x = "",
+       y = "tf_idf",
+       title = "Highest tf-idf words in New and Old Testament",
+       subtitle = "Most of highest tf-idf words are related to representative people appeared in new and old testaments") +
+  theme_minimal()
+```
+
+```{r tf-idf: Old Testament}
+
+old_testament <- bible %>% 
+  filter(Testament == "Old Testament")
+
+book_count <- old_testament %>% 
+  unnest_tokens(word, text) %>% 
+  count(book, word, sort = TRUE)
+
+total_count <- book_count %>% 
+  group_by(book) %>% 
+  summarize(total = sum(n))
+
+book_total_count <- left_join(book_count, total_count)
+
+book_total_count %>% 
+  mutate(ratio = n / total) %>% 
+  top_n(10, ratio) %>% 
+  ggplot(aes(ratio, fill = book)) +
+  geom_histogram(show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~book, ncol = 2)
+
+old_book_tf_idf <- book_total_count %>% 
+  bind_tf_idf(word, book, n) %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) 
+  
+
+image <- png::readPNG("C:/Users/inkyscope/Documents/projectR/inkyscroll/images/gourd.png")
+gourd <- grid::rasterGrob(image, interpolate = T)
+
+tol18rainbow = c("#771155", "#AA4488", "#CC99BB", "#114477", "#4477AA", "#77AADD", "#117777", "#44AAAA", "#77CCCC", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788")
+
+old_plot <- old_book_tf_idf %>% 
+  group_by(book) %>% 
+  filter(tf_idf >= 0.013) %>% 
+  ungroup() %>% 
+  ggplot(aes(word, tf_idf, fill = word)) +
+  geom_col(show.legend = FALSE) +
+  annotation_custom(gourd, xmin = 1.5, xmax = 10, ymin = 0.019, ymax = 0.043) +
+  scale_fill_manual (values = tol18rainbow) +
+  labs(x = "", 
+       y = "tf-idf") +
+  coord_flip() +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 12),
+        axis.text.x = element_text(size = 9),
+        plot.margin = margin(12, 12, 0, 12))
+
+old_plot
+  
+
+```
+
+```{r tf-idf: New Testament}
+new_testament <- bible %>% 
+  filter(Testament == "New Testament")
+
+new_book_count <- new_testament %>% 
+  unnest_tokens(word, text) %>% 
+  count(book, word, sort = TRUE)
+
+new_total_count <- new_book_count %>% 
+  group_by(book) %>% 
+  summarize(total = sum(n))
+
+new_book_total_count <- left_join(new_book_count, new_total_count)
+
+
+new_book_tf_idf <- new_book_total_count %>% 
+  bind_tf_idf(word, book, n) %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(book) %>% 
+  filter(tf_idf >= 0.011) %>% 
+  ungroup()
+
+image <- png::readPNG("C:/Users/inkyscope/Documents/projectR/inkyscroll/images/2John12.png")
+paper <- grid::rasterGrob(image, interpolate = T)
+
+new_plot <- new_book_tf_idf %>% 
+  ggplot(aes(word, tf_idf, fill = word)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual (values = tol18rainbow)  +
+  annotation_custom(paper, xmin = 2, xmax = 7, ymin = 0.0065, ymax = 0.029) +
+  labs(x = "", 
+       y = "tf-idf") +
+  coord_flip() +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 12),
+        axis.text.x = element_text(size = 9),
+        plot.margin = margin(12, 12, 0, 12))
+
+new_plot
+```
+
+```{r}
+title <- ggplot(data.frame(x =1:1, y = 1:10)) +
+  labs(title = "Leading TF-IDF words in each book of the Old and New Testament",
+       subtitle = "Words from Old Testament are name of people while words from New Testament are mostly extracted from 2John or 3John",
+       caption = "Image on Old Testament: Jonah sits below the gourd vine JMM 1995.28.259 by Mas Heppner") +
+  theme(legend.position="none",
+        panel.grid = element_blank(),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 11),
+        plot.caption = element_text(size = 9,
+                                    hjust = 0))
+
+
+title + old_plot + new_plot + plot_layout(nrow = 1, widths = c(0, 0.5, 0.5))
+
+ggsave(here("2019", "1105_TF-IDF_FrequencyBar", "1105_TF-IDF_Bar.png"), width = 11, height = 6, units = "in")
+```

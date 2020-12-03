@@ -105,6 +105,7 @@ revelation_sentiment <- revelation_classified %>%
   theme_minimal()
 
 ```
+
 ```{r}
 nrc_joy <- get_sentiments("nrc") %>% 
   filter(sentiment == "joy")
@@ -131,6 +132,7 @@ joy_plot <-  revelation_classified %>%
   
 
 ```
+
 ```{r}
 revelation_tf_idf <- revelation_classified %>% 
   unnest_tokens(word, text) %>% 
@@ -155,7 +157,7 @@ revelation_tf_idf %>%
   ungroup() %>% 
   ggplot(aes(word, tf_idf, fill = structure)) +
   geom_col(show.legend = FALSE) +
-  scale_fill_paletteer_d(ggsci, legacy_tron) +
+  scale_fill_paletteer_d("ggsci::legacy_tron") +
   labs(x = "",
        y = "tf-idf",
        title = "Highest tf_idf words in each structure of Revelation") +
@@ -206,7 +208,7 @@ bigram_tf_idf$facet = factor(bigram_tf_idf$structure,
   ungroup() %>% 
   ggplot(aes(bigram, tf_idf, fill = structure)) +
   geom_col(show.legend = FALSE) +
-  scale_fill_paletteer_d(ggsci, legacy_tron) +
+  scale_fill_paletteer_d("ggsci::legacy_tron") +
   labs(x = "",
        y = "tf-idf",
        title = "Highest tf_idf bigram in each structure of Revelation") +
@@ -353,5 +355,5 @@ title <- ggplot(data.frame(x = 1:2, y = 1:20)) +
 
 ```{r}
 title + p1 + p2 + plot_layout(nrow = 1, widths = c(0, 1, 1))
-ggsave(here::here("figures", "RevelationWordPairings.png"), width = 35, height = 17, units = "cm")
+ggsave(here::here("2019", "1123_RevelationNetwork", "1123_RevelationWordPairings.png"), width = 35, height = 17, units = "cm")
 ```

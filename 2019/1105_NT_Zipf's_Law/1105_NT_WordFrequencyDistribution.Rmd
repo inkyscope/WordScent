@@ -1,0 +1,151 @@
+---
+title: "NT_Zipf's_Law"
+author: "Sung Inkyung"
+date: '2019 11 5'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(scales)
+library(paletteer)
+library(patchwork)
+library(here)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), "New Testament", "Old Testament"))
+```
+
+```{r Zipf's Law}
+new_testament_word <- bible %>% 
+  filter(Testament == "New Testament") %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(book, word, sort = T)
+```
+
+
+```{r Zipf's Law}
+freq_by_rank <- new_testament_word %>% 
+  group_by(book) %>% 
+  mutate(total = sum(n),
+         rank = row_number(),
+         frequency = n / total)
+
+lower_rank <- freq_by_rank %>% 
+  filter(rank < 300)
+
+lm(log10(frequency) ~ log10(rank), data = lower_rank)
+
+top_book <- freq_by_rank %>%
+  count(book, total) %>% 
+  filter(n == max(n)) %>% 
+  top_n(10, n)
+
+colors <- set_names(grey.colors(27),
+                     pull(top_book, book))
+
+colors[["John"]] <- "#dd2a7b"
+colors[["1 John"]] <- "#954bff"
+colors[["2 John"]] <- "#ffbc58"
+colors[["3 John"]] <- "#56ae87"
+colors[["Revelation"]] <- "#112358"
+
+
+freq_by_rank_plot <- freq_by_rank %>% 
+  ggplot(aes(rank, frequency, color = book)) +
+  geom_abline(intercept = -0.7982, slope = -0.9873,
+              color = "#094276", 
+              linetype = 2) +
+  geom_line(aes(color = book),
+            show.legend = FALSE) +
+  geom_text(aes(x = 5, y = 1), 
+            label="Revelation", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 2.8, y = 0.053, 
+           xend = 4.7, yend = 0.6, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 16, y = 0.5), 
+            label="1 John", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 10, y = 0.0215, 
+           xend = 16, yend = 0.3, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 53, y = 0.23), 
+            label="2 John", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 32, y = 0.01, 
+           xend = 53, yend = 0.14, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 160, y = 0.1), 
+            label="3 John", 
+            color = "black", 
+            size=3.5) +
+  annotate(geom = "curve", 
+           x = 107, y = 0.0035, 
+           xend = 160, yend = 0.065, 
+           curvature = .2, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(3, "mm"))) +
+  geom_text(aes(x = 300, y = 0.00015), 
+            label="John", 
+            color = "black", 
+            size = 3.5) +
+  annotate(geom = "curve", 
+           x = 805, y = 0.00017, 
+           xend = 400, yend = 0.00015, 
+           curvature = -.3, 
+           color="grey50",
+           size = 0.5,
+           arrow = arrow(length = unit(4, "mm"))) +
+  scale_x_log10() +
+  scale_y_log10() +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  labs(x = "log(rank order)",
+       y = "log(word frquency)",
+       title = "Zipf's Law Based on Word Frequency Distribution with New Testament Books",
+       subtitle = "Books written by John and revelation are highlighted showing deviations especially at low rank\nwhereas deviations at tails are not uncommon.") +
+  theme(legend.position = "none",
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 15)) +
+  theme_minimal()
+
+ggsave(here("2019", "1105_NT_Zipf's_Law", "1105_NT_WordFrequencyDistribution.png"), width = 9, height = 7, units = "in")
+```
