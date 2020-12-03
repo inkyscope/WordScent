@@ -37,7 +37,7 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Words Parade
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0628_JobPolar/0628_CharactersPolar.png)
 
-### Persona Circles
+### Characters in Circles
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0623_JobCircles/0623_CharactersCircles.png)
 
 ### Words Parallel
@@ -52,42 +52,39 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Characters in the Book of Job
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/Job.png)
 
-### Psalms Circles
+### Chapters in Psalms
 ![PsalmsCircles](https://github.com/inkyscope/inkyscroll/blob/master/2020/0705_PsalmsCircles/0705_PsalmsCircles.png)
 
 ### Psalms Word Pillars
 ![WordPillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0523_PsalmsPillars/0523_PsalmsPillars.png)
 
-### Never combo in Psalms
+### Never Combo in Psalms
 ![Never](https://github.com/inkyscope/inkyscroll/blob/master/2020/0402_PsalmsNeverHighchart/0402_PsalmsNeverCombo.PNG)
 
-### Sentiment web of 4 gospels
+### Sentiment Web of 4 Gospels
 ![polygon](https://github.com/inkyscope/inkyscroll/blob/master/2020/0315_GospelsSentimentWeb/0315_GospelsSentimentPolygon.png)
 
 ### Psalms Sentiment Bisplines using NRC Lexicon
 ![NRC](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_PsalmsEmotionsBisplines/0307_PsalmsEmotionsBisplines.png)
 
-### Psalms Sentiment Classification using NRC lexicon
+### Psalms Emotions
 ![NRC](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsEmotions.png)
 
-
-### Psalms using Afinn Sentiment Analysis
+### Psalms Using Afinn Sentiment Analysis
 ![Afinn](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_PsalmsAfinn/0307_PsamlsbyAfinnValue.png)
 
 ### Words in 4 Gospel Books
 ![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_FourGospels/0307_MatthewMarkLukeJohn.png)
 
-### Word pillars in Hebrews
+### Top Picks in Hebrews
 ![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
 
-### Word pairings in Revelation
+### Word Pairings in Revelation
 ![word pairings](https://github.com/inkyscope/inkyscroll/blob/master/figures/RevelationWordPairings.png)
-
 
 ### Books by # of Characters
 ![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/Treemapof%20Books.png)
 
-
-### Word frequency across books of bible
+### Word Frequency Across Bible Books
 ![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordFrequency.png)
 
