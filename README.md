@@ -80,12 +80,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Top Picks in Hebrews
 ![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
 
-### Word Pairings in Revelation
-![word pairings](https://github.com/inkyscope/inkyscroll/blob/master/figures/RevelationWordPairings.png)
-
 ### Books by # of Characters
 ![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/Treemapof%20Books.png)
 
-### Word Frequency Across Bible Books
-![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordFrequency.png)
+### WordBible Books by Word Frequency
+![Word frequency](https://github.com/inkyscope/inkyscroll/blob/master/2019/1105_BibleFrequencyBar/1105_BibleBooksbyWordFrequency.png)
 
