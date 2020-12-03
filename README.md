@@ -35,7 +35,7 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ![Major Prophets](https://github.com/inkyscope/inkyscroll/blob/master/2020/1104_JeremiahIsaiahEzekiel/1104_JeremiahIsaiahEzekiel.png)
 
 ### Words Parade
-![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordsParadeinJob.png)
+![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0628_JobPolar/0628_CharactersPolar.png)
 
 ### Persona Circles
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0623_JobCircles/0623_CharactersCircles.png)
@@ -59,7 +59,7 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ![WordPillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0523_PsalmsPillars/0523_PsalmsPillars.png)
 
 ### Never combo in Psalms
-![Never](https://github.com/inkyscope/inkyscroll/blob/master/2020/0402_PsalmsNeverHighchart/0402_PsalmsNeverCombo.Rmd)
+![Never](https://github.com/inkyscope/inkyscroll/blob/master/2020/0402_PsalmsNeverHighchart/0402_PsalmsNeverCombo.PNG)
 
 ### Sentiment web of 4 gospels
 ![polygon](https://github.com/inkyscope/inkyscroll/blob/master/2020/0315_GospelsSentimentWeb/0315_GospelsSentimentPolygon.png)
