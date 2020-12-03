@@ -1,5 +1,5 @@
 ---
-title: "Persona in Job"
+title: "CharactersCircles"
 author: "Sung Inkyung"
 date: '2020 6 23'
 output: html_document
@@ -207,7 +207,7 @@ ggraph(layout) +
   scale_edge_alpha_manual(values = c(0.15, 1)) +
   coord_fixed() +
   labs(
-    title = "Characters connected to Top 300 Words in the Book of Job",
+    title = "Characters Connected to Top 300 Words in the Book of Job",
     caption = "Graphic: Sung Inkyung"
   ) +
   theme_void() +
