@@ -17,34 +17,34 @@ We are silent after hearing the Word because the World is still speaking and dwe
 
 --------------------------------------------------------------------------------------------------------------------------------------
 ### Word PackCircles
-![Circles](https://github.com/inkyscope/inkyscroll/blob/master/figures/BibleWordCircles.png)
+![Circles](https://github.com/inkyscope/inkyscroll/blob/master/2020/1121_BibleWordsCircles/1121_BibleWordsCircles.png)
 
 ### H O L Y
-![HOLY](https://github.com/inkyscope/inkyscroll/blob/master/figures/holy.png)
+![HOLY](https://github.com/inkyscope/inkyscroll/blob/master/2020/1118_Holy/1118_Holy.png)
 
 ### Bible Books
-![Bible Books](https://github.com/inkyscope/inkyscroll/blob/master/figures/BibleBooksTrees.png)
+![Bible Books](https://github.com/inkyscope/inkyscroll/blob/master/2020/1118_BibleBooksTrees/1118_BibleBooksTree.png)
 
 ### Ezekiel
-![Ezekiel](https://github.com/inkyscope/inkyscroll/blob/master/figures/Ezekiel_lord.png)
+![Ezekiel](https://github.com/inkyscope/inkyscroll/blob/master/2020/1115_Ezekiel/1115_Ezekiel_Lord.png)
 
 ### Ecclesiastes Chapter3
-![Ecclesiastes](https://github.com/inkyscope/inkyscroll/blob/master/figures/Ecclesiastes.png)
+![Ecclesiastes](https://github.com/inkyscope/inkyscroll/blob/master/2020/1109_Ecclesiastes/1109_Ecclesiastes.png)
 
-### Major Prophets
-![Major Prophets](https://github.com/inkyscope/inkyscroll/blob/master/figures/JeremiahIsaiahEzekiel.png)
+### Jeremiah Isaiah Ezekiel
+![Major Prophets](https://github.com/inkyscope/inkyscroll/blob/master/2020/1104_JeremiahIsaiahEzekiel/1104_JeremiahIsaiahEzekiel.png)
 
 ### Words Parade
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordsParadeinJob.png)
 
 ### Persona Circles
-![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/PersonaCirclesinJob.png)
+![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0623_JobCircles/0623_CharactersCircles.png)
 
 ### Words Parallel
-![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordsParallelinJob.png)
+![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0621_JobParallel/0621_CharactersParallel.png)
 
 ### Words Network
-![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/WordsNetinJob.png)
+![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0621_JobNetwork/0621_CharactersNet.png)
 
 ### Friends, Job and God
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/FriendsJobGod.png)
@@ -53,32 +53,32 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/Job.png)
 
 ### Psalms Circles
-![PsalmsCircles](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsCircles.png)
+![PsalmsCircles](https://github.com/inkyscope/inkyscroll/blob/master/2020/0705_PsalmsCircles/0705_PsalmsCircles.png)
 
 ### Psalms Word Pillars
-![WordPillars](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsPillars.png)
+![WordPillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0523_PsalmsPillars/0523_PsalmsPillars.png)
 
 ### Never combo in Psalms
-![Never](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsNever.PNG)
+![Never](https://github.com/inkyscope/inkyscroll/blob/master/2020/0402_PsalmsNeverHighchart/0402_PsalmsNeverCombo.Rmd)
 
 ### Sentiment web of 4 gospels
-![polygon](https://github.com/inkyscope/inkyscroll/blob/master/figures/GospelsSentimentWeb.png)
+![polygon](https://github.com/inkyscope/inkyscroll/blob/master/2020/0315_GospelsSentimentWeb/0315_GospelsSentimentPolygon.png)
 
-### Psalms Sentiment Bisplines using NRC lexicon
-![NRC](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsSentimentsBisplines.png)
+### Psalms Sentiment Bisplines using NRC Lexicon
+![NRC](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_PsalmsEmotionsBisplines/0307_PsalmsEmotionsBisplines.png)
 
 ### Psalms Sentiment Classification using NRC lexicon
 ![NRC](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsalmsEmotions.png)
 
 
 ### Psalms using Afinn Sentiment Analysis
-![Afinn](https://github.com/inkyscope/inkyscroll/blob/master/figures/PsamlsAfinn.png)
+![Afinn](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_PsalmsAfinn/0307_PsamlsbyAfinnValue.png)
 
 ### Words in 4 Gospel Books
-![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/figures/MatthewMarkLukeJohn.png)
+![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0307_FourGospels/0307_MatthewMarkLukeJohn.png)
 
 ### Word pillars in Hebrews
-![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/figures/HebrewsTopPicks.png)
+![word pillars](https://github.com/inkyscope/inkyscroll/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
 
 ### Word pairings in Revelation
 ![word pairings](https://github.com/inkyscope/inkyscroll/blob/master/figures/RevelationWordPairings.png)
