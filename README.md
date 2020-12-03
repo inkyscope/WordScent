@@ -83,15 +83,9 @@ We are silent after hearing the Word because the World is still speaking and dwe
 ### Word pairings in Revelation
 ![word pairings](https://github.com/inkyscope/inkyscroll/blob/master/figures/RevelationWordPairings.png)
 
-### Inverse Document Frequency and tf-idf
-![tf-idf](https://github.com/inkyscope/inkyscroll/blob/master/figures/tf-idf.png)
-
-### Zipf's Law
-![Zipf's law](https://github.com/inkyscope/inkyscroll/blob/master/figures/Zipf'sLawofNewTestament.png)
 
 ### Books by # of Characters
 ![Words](https://github.com/inkyscope/inkyscroll/blob/master/figures/Treemapof%20Books.png)
-
 
 
 ### Word frequency across books of bible
