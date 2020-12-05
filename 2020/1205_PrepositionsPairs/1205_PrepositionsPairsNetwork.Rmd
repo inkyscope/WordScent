@@ -1,0 +1,118 @@
+---
+title: "PrepositionsPairs"
+author: "Sung Inkyung"
+date: '2020 12 05'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(igraph)
+library(ggraph)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), "New Testament", "Old Testament"))
+
+```
+
+
+```{r}
+bible_stop_word <- c("his", "him", "a", "their", "all", "my", "me", "them", "that", "all", "her", "your", "her",  "this", "and", "it", "us", "it", "mine", "those", "my", "an", "any", "our", "to", "whom", "and", "of", "these", "what", "which", "whose", "one", "himself", "themselves", "at", "you", "unto", "no", "by", "you", "for", "among", "thence", "before", "off", "i", "he", "ever", "we", "there", "if", "in", "thus", "us",
+                     "thee", "thou", "thine", "thy", "ye", "lo", "whosoever", "therewith",
+                     "jerusalem", "egypt", "israel", "jordan", "beelzebub", "macedonia", "moses", "henceforth")
+
+bible_bigrams <- bible %>% 
+  select(-citation, -chapter, -verse) %>% 
+  unnest_tokens(bigram, text, toke = "ngrams", n = 2) 
+
+bigrams_separate <- bible_bigrams %>% 
+  separate(bigram, c("word1", "word2"), sep = " ") %>% 
+  filter(!word2 %in% stop_words$word)
+
+
+df_preposition <- bigrams_separate  %>% 
+  rename(preposition = word1,
+         word = word2) %>% 
+  filter(preposition %in% c("in",  "through", "with",  "by", "for", "from")) %>% 
+  filter(!word %in% bible_stop_word) %>% 
+  count(preposition, word, sort = T) %>% 
+  filter(n >= 8) %>% 
+  graph_from_data_frame()
+
+
+
+communities <- walktrap.community(df_preposition)
+
+V(df_preposition)$color <- as.character(membership(communities))
+
+V(df_preposition)$dgr <- degree(df_preposition, mode = "all")
+
+ 
+
+```
+
+```{r}
+## plot
+set.seed(2020)
+
+net_plot <- df_preposition %>% 
+  ggraph(layout = layout_nicely(df_preposition)) +
+  geom_node_point(
+    aes(color = color,
+        size = dgr)) +
+  geom_edge_fan(
+    aes(alpha = n),
+    color = "white",
+    arrow = grid::arrow(length = unit(.15, "cm"))) +
+  geom_node_text(
+    aes(label = name,
+        size = 9),
+    color = "white",
+    repel = T) +
+  scale_color_manual(values = c("#ffce07", "#0cbb06", "#9e1252", "#c685d6", 
+                                "#59a19f",  "#8b645f")) +
+  labs(title = "Preposition Pairs Network",
+       subtitle = "**god**, **faith** and **righteousness** are core words linked to selected prepositions most frequently.",
+       caption = "**Graphic**: Sung Inkyung") +
+  theme(panel.background = element_rect(fill = "#3a425d"),
+        plot.background = element_rect(fill = "#3a425d",
+                                       color = "#3a425d"),
+        legend.position = "none",
+        plot.title = element_text(size = 24,
+                                  hjust = .5,
+                                  color = "gray75",
+                                  face = "bold",
+                                  margin = margin(t = 10, b = 7)),
+        plot.subtitle = element_markdown(color = "gray75",
+                                         size = 16,
+                                         hjust = .5,
+                                         margin = margin(b = 15)),
+        plot.caption = element_markdown(color = "gray75",
+                                    hjust = 1,
+                                    margin = margin(t = 30, b = 20)),
+        plot.margin = margin(20, 60, 10, 20))
+
+ggsave(here::here("2020", "1205_PrepositionsPairs", "1205_PrepositionsPairsNetwork.png"), width = 28, height = 18, units = "cm")
+```
+
