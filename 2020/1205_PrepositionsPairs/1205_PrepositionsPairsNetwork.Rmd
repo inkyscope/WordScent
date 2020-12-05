@@ -19,20 +19,7 @@ library(ggraph)
 
 
 ```{r}
-bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
-  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
-                                        "John", "Acts", "Romans", 
-                                        "1 Corinthians", 
-                                        "2 Corinthians",  "Galatians",
-                                        "Ephesians", "Philippians",
-                                        "Colossians", 
-                                        "1 Thessalonians",
-                                        "2 Thessalonians", 
-                                        "1 Timothy", "2 Timothy",
-                                        "Titus","Philemon",
-                                        "Hebrews", "James", "1 Peter",
-                                        "2 Peter", "1 John", "2 John",
-                                        "3 John","Jude", "Revelation"), "New Testament", "Old Testament"))
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") 
 
 ```
 
@@ -93,7 +80,7 @@ net_plot <- df_preposition %>%
   scale_color_manual(values = c("#ffce07", "#0cbb06", "#9e1252", "#c685d6", 
                                 "#59a19f",  "#8b645f")) +
   labs(title = "Preposition Pairs Network",
-       subtitle = "**god**, **faith** and **righteousness** are core words linked to selected prepositions most frequently.",
+       subtitle = "**god**, **faith** and **righteousness** are core words linked to selected prepositions most repeatedly",
        caption = "**Graphic**: Sung Inkyung") +
   theme(panel.background = element_rect(fill = "#3a425d"),
         plot.background = element_rect(fill = "#3a425d",
