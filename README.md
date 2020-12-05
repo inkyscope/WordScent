@@ -17,6 +17,12 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Distribution of Body Parts 
+![Circles](https://github.com/inkyscope/inkyscroll/blob/master/2020/1205_BodyParts/1205_BodyParts.png)
+
+### Prepositions Pairs Network
+![Circles](2020/1205_PrepositionsPairs/1205_PrepositionsPairsNetwork.png)
+
 ### Word PackCircles
 ![Circles](https://github.com/inkyscope/inkyscroll/blob/master/2020/1121_BibleWordsCircles/1121_BibleWordsCircles.png)
 
@@ -43,9 +49,6 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 
 ### Words Parallel
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0621_JobParallel/0621_CharactersParallel.png)
-
-### Words Network
-![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0621_JobNetwork/0621_CharactersNet.png)
 
 ### Characters in the Book of Job
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/2019/0807_JobWordCloud/0807_CharactersWordcloud.png)
