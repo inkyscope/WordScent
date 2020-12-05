@@ -47,11 +47,8 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Words Network
 ![Job](https://github.com/inkyscope/inkyscroll/blob/master/2020/0621_JobNetwork/0621_CharactersNet.png)
 
-### Friends, Job and God
-![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/FriendsJobGod.png)
-
 ### Characters in the Book of Job
-![Job](https://github.com/inkyscope/inkyscroll/blob/master/figures/Job.png)
+![Job](https://github.com/inkyscope/inkyscroll/blob/master/2019/0807_JobWordCloud/0807_CharactersWordcloud.png)
 
 ### Chapters in Psalms
 ![PsalmsCircles](https://github.com/inkyscope/inkyscroll/blob/master/2020/0705_PsalmsCircles/0705_PsalmsCircles.png)
