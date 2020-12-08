@@ -1,7 +1,7 @@
 ---
 title: "CharactersCircles"
 author: "Sung Inkyung"
-date: '2020 6 23'
+date: '2020 06 23'
 output: html_document
 ---
 
@@ -12,10 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(tidytext)
+library(ggtext)
 library(igraph)
 library(ggraph)
 library(here)
-
 ```
 
 
@@ -31,77 +31,76 @@ job_words <- job %>%
    mutate(
     character = case_when(
       chapter %in% c("1", "2") ~ "Satan",
-    chapter %in% c("3", "6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "42") ~ "Job",
-    chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
-    chapter %in% c("8", "18", "25") ~"Bildad",
-    chapter %in% c("11", "20") ~ "Zophar",
-    chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
-    chapter %in% c("38", "39", "40", "41") ~ "God",
-    TRUE ~ as.character(chapter)
-    )) %>% 
+      chapter %in% c("3", "6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31", "42") ~ "Job",
+      chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+      chapter %in% c("8", "18", "25") ~"Bildad",
+      chapter %in% c("11", "20") ~ "Zophar",
+      chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+      chapter %in% c("38", "39", "40", "41") ~ "God",
+      TRUE ~ as.character(chapter)
+      )) %>% 
   unnest_tokens(word, text) %>%
   anti_join(stop_words) %>%
   filter(!word %in% c("thou", "thy", "thine", "hast", "art",
-                      "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "shouldest", "uz")) %>% 
-  add_count(word)
-
-job_words %>% 
-  filter(character == "Job") %>% 
-  arrange(desc(n)) %>% 
-  filter(n > 20) %>%  
-  ungroup() %>% 
-  mutate(word = fct_reorder(word, n)) %>% 
-  ggplot(aes(n, word)) +
-  geom_col()
+                      "shalt", "thee", "hath", "ye", "yea", "thereof",
+                      "doth", "canst", "wilt", "shouldest", "uz")) 
 ```
 
 
 ```{r}
 characters <- c("Satan", "Job", "Eliphaz", "Bildad","Zophar", "Elihu", "God")
 
+# number of words to display
 number_of_words <- 300
 
 top_words <- job_words %>% 
+  filter(character %in% characters) %>% 
   group_by(word) %>% 
-  summarise(total_word = sum(n)) %>% 
-  arrange(desc(total_word)) %>% 
+  add_count(word, name = "count") %>% 
+  summarise(total_word = sum(count)) %>% 
+  arrange(-total_word) %>% 
   head(number_of_words) %>% 
   select(word, total_word)
   
-
-top_characters_per_words <- job_words %>% 
+# all main characters per word
+top_characters_per_word <- job_words %>% 
   filter(word %in% top_words$word,
          character %in% characters) %>% 
-  arrange(word, desc(n)) %>% 
+  add_count(word, name = "count") %>% 
+  arrange(word, desc(count)) %>% 
   group_by(word) %>% 
   mutate(main = row_number() == 1, # main word of character should be opaque
-         total_word = sum(n)) %>% 
+         total_word = sum(count)) %>% 
   ungroup() %>% 
-  select(character, word, n, total_word, main)
+  select(character, word, count, total_word, main)
 
 
   # only follwoing characters found in given words
 
-(top_characters <- top_characters_per_words %>% 
+(top_characters <- top_characters_per_word %>% 
     pull(character) %>% 
     unique %>% 
     sort)
 
-top_characer_colors <- c('#16a085', '#abcdef', '#123456',
-                         '#d3ffce', '#fa4d57','#ffcf40',
-                         '#dabca3')
+top_characters_colors <- c('#c8b029', 
+                         '#7a72e5', 
+                         '#145e98',
+                         '#ab5797', 
+                         '#dad0c0',
+                         '#2b2a5c',
+                         '#f06529')
 
-names(top_characer_colors) <- c("Satan", "Job", "Eliphaz", "Bildad","Zophar", "Elihu", "God")
+names(top_characters_colors) <- c("Bildad", "Eliphaz", "Satan", "God", "Job", "Elihu", "Zophar")
 ```
 
 
 ```{r}
-edges1 <- top_characters_per_words %>% 
-  transmute(from = character, to = word, total_word, main)
+edges1 <- top_characters_per_word %>% 
+  transmute(from = character, to = word, total_word = count, main)
 
-edges2 <- top_characters_per_words %>% 
-  count(character, wt = n, name = 'total_word') %>% 
-  transmute(from = "",
+edges2 <- top_characters_per_word %>% 
+  count(character, wt = count, name = 'total_word') %>% 
+  transmute(from = " ",
             to = character,
             total_word,
             main = TRUE)
@@ -111,19 +110,19 @@ edges <- bind_rows(edges1, edges2)
 
 
 ```{r}
-vertices1 <- top_characters_per_words %>% 
+vertices1 <- top_characters_per_word %>% 
   filter(main) %>% 
   transmute(node = word, character, total_word, level = 1)
 
 vertices2 <- edges2 %>% 
   transmute(node = to, character = to, total_word, level = 2)
 
-vertices3 <- tibble(node = "", character = NA, total_word = 0, 
+vertices3 <- tibble(node = " ", character = NA, total_word = 0, 
                     level = 3)
 
 vertices <- bind_rows(vertices1, vertices2, vertices3) %>% 
-  mutate(radius = total_word**(1.8),
-         character = factor(character, names(top_characer_colors))) %>% 
+  mutate(radius = total_word**(1.8), # scaling circles
+         character = factor(character, names(top_characters_colors))) %>%
   arrange(level, character, node)
 
 graph <- graph_from_data_frame(edges, vertices = vertices)
@@ -135,18 +134,17 @@ layout <- create_layout(graph, layout = 'circle')
 
 outer_circle <- layout %>% 
   filter(level == 1) %>% 
-  mutate(character = factor(character, names(top_characer_colors))) %>%
+  mutate(character = factor(character, names(top_characters_colors))) %>%
   arrange(character, desc(name)) %>% 
   mutate(x = cos((row_number() - 1) / number_of_words *2 * pi),
          y = sin((row_number() - 1) / number_of_words * 2 * pi))
 
 # positioning circle centers manually by specifying polar coords
-angles <- c(3, 43, 119, 178, 255, 350, 190, 0)
-radii <- c(0.8, 0.5, 0.6, 0.65, 0.45, 0.6, 0.7, 0)
+angles <- c(3, 43, 119, 160, 255, 190, 340,0)
+radii <- c(0.8, 0.5, 0.6, 0.4, 0.45, 0.7, 0.38, 0)
 centers <- tibble(
   x = radii * cos(angles / 180 * pi),
-  y = radii * sin(angles / 180 * pi)
-)
+  y = radii * sin(angles / 180 * pi))
 
 inner_circle <- bind_cols(centers, 
                           select(filter(layout, 
@@ -162,69 +160,60 @@ ggraph(layout) +
   geom_edge_diagonal(
     aes(edge_color = node1.character,
         edge_alpha = as.factor(main)),
-    edge_width = 0.3, show.legend = F
-  ) +
+    edge_width = 0.3, 
+    show.legend = F) +
   geom_node_point(
-    aes(size = radius, color = character),
-    alpha = 0.6, show.legend = F
-  ) +
+    aes(size = radius, 
+        color = character),
+    alpha = 0.6,
+    show.legend = F) +
   geom_node_text(
-    aes(
-      x = 1.0175 * x,
-      y = 1.0175 * y,
-      label = name,
-      angle = -((-node_angle(x, y) + 90) %% 180) + 90,
-      filter = !(name %in% top_characters)
-    ),
+    aes(x = 1.0175 * x,
+        y = 1.0175 * y,
+        label = name,
+        angle = -((-node_angle(x, y) + 90) %% 180) + 90,
+        filter = !(name %in% top_characters)),
     size = 2, 
-    hjust = 'outward'
-  ) +
-  geom_node_text(
-    aes(
-      x = x,
-      y = y,
-      label = name,
-      filter = name %in% top_characters
-    ),
-    size = 5, hjust = 0.5
-  ) +
-  geom_node_text(
-    aes(
-      x = x,
-      y = y - 0.045,
-      label = ifelse(
-        total_word > 1000,
-        format(total_word, big.mark = ','),
-        total_word
-      ),
-      filter = name %in% top_characters
-    ),
-    size = 3, hjust = 0.5
-  ) +
-  scale_edge_color_manual(values = top_characer_colors) +
-  scale_color_manual(values = top_characer_colors) +
-  scale_size_area(max_size = 110) +
+    hjust = "outward") +
+  geom_node_text(aes(x = x,
+                     y = y,
+                     label = name,
+                     filter = name %in% top_characters),
+                 size = 5, 
+                 hjust = 0.5) +
+  geom_node_text(aes(x = x,
+                     y = y - 0.045,
+                     label = ifelse(total_word > 1000,
+                                    format(total_word, big.mark = ','),
+                                    total_word),
+                     filter = name %in% top_characters),
+                 size = 3.5, 
+                 hjust = 0.5) +
+  scale_edge_color_manual(values = top_characters_colors) +
+  scale_color_manual(values = top_characters_colors) +
+  scale_size_area(max_size = 120) +
   scale_edge_alpha_manual(values = c(0.15, 1)) +
   coord_fixed() +
   labs(
     title = "Characters Connected to Top 300 Words in the Book of Job",
-    caption = "Graphic: Sung Inkyung"
+    caption = "**Graphic**: Sung Inkyung"
   ) +
   theme_void() +
   theme(
     legend.position = c(0.645, 0.51),
-    plot.title = element_text(
-      face = 'bold', hjust = 0.5, size = 20, 
-      margin = margin(t = 45, b = 3)
-    ),
-    plot.caption = element_text(
-      face = 'plain', color = '#a9a9a9', 
-      size = 9, hjust = 1,
-      margin = margin(b = 20)
-    )
-  )
+    plot.title = element_text(size = 20,
+                              face = 'bold', 
+                              hjust = 0.5, 
+                              margin = margin(t = 20, b = 15)),
+    plot.caption = element_markdown(size = 9,
+                                    face = 'plain', 
+                                    color = '#a9a9a9',
+                                    hjust = 1,
+                                    margin = margin(b = 20)))
 
-ggsave(here("2020", "0623_JobCircles", "0623_CharactersCircles.png"), width = 21, height = 21, units = "cm")
+ggsave(here("2020", "0623_JobCircles", "0623_CharactersCircles.png"), width = 23, height = 23.5, units = "cm")
+
+### Readjusted(Dec 08, 2020): colors, positions of characters in the circle
 ```
 
 ``
