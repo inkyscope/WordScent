@@ -82,13 +82,13 @@ top_characters_per_word <- job_words %>%
     unique %>% 
     sort)
 
-top_characters_colors <- c('#c8b029', 
+top_characters_colors <- c('#ab5797', 
                          '#7a72e5', 
                          '#145e98',
-                         '#ab5797', 
+                         '#c8b029', 
                          '#dad0c0',
-                         '#2b2a5c',
-                         '#f06529')
+                         '#f06529',
+                         '#2b2a5c')
 
 names(top_characters_colors) <- c("Bildad", "Eliphaz", "Satan", "God", "Job", "Elihu", "Zophar")
 ```
@@ -140,8 +140,8 @@ outer_circle <- layout %>%
          y = sin((row_number() - 1) / number_of_words * 2 * pi))
 
 # positioning circle centers manually by specifying polar coords
-angles <- c(3, 43, 119, 160, 255, 190, 340,0)
-radii <- c(0.8, 0.5, 0.6, 0.4, 0.45, 0.7, 0.38, 0)
+angles <- c(3, 43, 119, 160, 270, 190, 340,0)
+radii <- c(0.56, 0.5, 0.6, 0.4, 0.42, 0.7, 0.62, 0)
 centers <- tibble(
   x = radii * cos(angles / 180 * pi),
   y = radii * sin(angles / 180 * pi))
