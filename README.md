@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Words in Ephesians
+![AtoZ](https://github.com/inkyscope/inkyscroll/blob/master/2020/1213/1213_Ephesians.png)
+
 ### Distribution of Body Parts 
 ![Circles](https://github.com/inkyscope/inkyscroll/blob/master/2020/1205_BodyParts/1205_BodyParts.png)
 
