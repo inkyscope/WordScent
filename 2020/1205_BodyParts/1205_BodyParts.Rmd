@@ -82,10 +82,10 @@ plot <- bodyparts%>%
             size = 3.5,
             color = "black") +
   #geom_text(aes(x = "hand", y = 0, label = "0"), hjust = 0.8, size = 2) +
-  geom_text(aes(x = "hand", y = 300, label = "300"), hjust = -1.6, size = 2) +
-  geom_text(aes(x = "hand", y = 600, label = "600"), hjust = -2.6, size = 2) +
-  geom_text(aes(x = "hand", y = 900, label = "900"), hjust = 3.7, size = 2) +
-  geom_text(aes(x = "hand", y = 1200, label = "1200"), hjust = 2.3, size = 2) +
+  geom_text(aes(x = "hand", y = 300, label = "300"), hjust = -1.8, size = 4) +
+  geom_text(aes(x = "hand", y = 600, label = "600"), hjust = -2.8, size = 4) +
+  geom_text(aes(x = "hand", y = 900, label = "900"), hjust = 3.7, size = 4) +
+  geom_text(aes(x = "hand", y = 1200, label = "1200"), hjust = 2.3, size = 4) +
   scale_x_discrete(limits = rev,
                    labels = c("hand", "face", "mouth", "head", "feet", "eye")) +
   scale_y_continuous(limits = c(0, 1500)) +
@@ -97,7 +97,7 @@ plot <- bodyparts%>%
   theme_void() +
   theme(
     legend.position = "bottom",
-    legend.text = element_text(size = 8), 
+    legend.text = element_text(size = 11), 
     legend.key.size = unit(0.2, "line"),
     legend.key.width = unit(3, "line"),
     legend.background = element_rect(colour ="#cea912",
@@ -108,14 +108,16 @@ plot <- bodyparts%>%
     panel.background = element_rect(colour = "#cea912",
                                     fill = "#cea912"),
     plot.title = element_text(color = "black", 
-                              size = 16, 
+                              size = 20, 
+                              face = "bold",
                               hjust = 0.5, 
                               margin = margin(t = 20, b = 7)),
     plot.subtitle = element_markdown(color = "black", 
-                                     size = 11, 
+                                     size = 13, 
+                                     lineheight = .8,
                                      hjust = 0.5),
     plot.caption = element_markdown(color= "black", 
-                                    size = 8, 
+                                    size = 11, 
                                     hjust = 1, 
                                     margin = margin(t = 30, b = 20, r = 20)),
     axis.text.x = element_blank(),
@@ -124,7 +126,7 @@ plot <- bodyparts%>%
 ```
 
 ```{r}
-plot_total + plot + plot_layout(ncol = 2, widths=c(1, 2))
+# plot_total + plot + plot_layout(ncol = 2, widths=c(1, 2))
 
-ggsave(here::here("2020", "1205_BodyParts", "1205_BodyParts.png"), width = 34, height = 20, units = "cm")
+ggsave(here::here("2020", "1205_BodyParts", "1205_BodyParts.png"), width = 28, height = 30, units = "cm")
 ```
