@@ -1,0 +1,90 @@
+---
+title: "Ephesians"
+author: "Sung Inkyung"
+date: '2020 12 13'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(ggrepel)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book == "Ephesians")
+
+Ephesians_words <- bible %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  mutate(word = str_remove_all(word, ",|'s|'s|\\."),
+           word = tolower(word)) %>% 
+  filter(word != "ye")
+```
+
+```{r}
+words_rate <-Ephesians_words %>% 
+  group_by(book) %>% 
+  count(word, sort = TRUE) %>% 
+  left_join(Ephesians_words %>% 
+              group_by(book) %>% 
+              summarise(total = n())) %>% 
+  ungroup()
+
+
+linking <- words_rate%>%
+  group_by(word) %>% 
+  mutate(first_letter = substr(word, 1, 1),
+         rate = n / total) %>% 
+  group_by(first_letter) %>% 
+  mutate(rank = row_number(desc(rate))) %>% 
+  arrange(first_letter, rank) %>% 
+  ungroup() %>% 
+  mutate(
+    txt_color = round(runif(n = 464, min = 1, max = 2)),
+    txt_size = rchisq(n = 464, df = 10)
+  ) %>% 
+  arrange(txt_color)
+
+
+plot_linking <- linking %>% 
+  ggplot() + 
+  geom_text_repel(aes(x = first_letter, y = rank, 
+                      label = word,
+                color = factor(txt_color), size = txt_size),
+             position = position_jitter(width = 1, height = 2),
+             segment.color = NA,
+             force = 2) +
+  labs(title = "Ephesians",
+       caption = "**Graphic**: Sung Inkyung") + 
+  scale_size_continuous(range(2, 6)) + 
+  scale_color_manual(values = c("#411f46", "#ffffff")) +
+  scale_y_reverse(name = "RATIO OF WORDS IN EPHESIANS") +
+  scale_x_discrete(name = "STARTING WITH A FROM THE LEFT TO Z TO THE RIGHT") +
+  guides(size = FALSE, color = FALSE) + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "#3c92b7",
+                                       color = "transparent"),
+        panel.background = element_rect(fill = "#3c92b7",
+                                        color = "transparent"),
+        plot.title = element_text(size = 80, 
+                                  color = "#ffffff",
+                                  margin = margin(b = 10)),
+        plot.caption = element_markdown(size = 11,
+                                        color = "#411f46"),
+        axis.title.x = element_text(size = 18,
+                                    color = "#fde074"),
+        axis.title.y = element_text(size = 18,
+                                    color = "#fde074",
+                                    angle = 90),
+        plot.margin = margin(20, 10, 20, 10)) +
+  ggsave(here::here("2020", "1213", "1213_Ephesians.png"), width = 40, height = 18, units = "cm")
+```
+
