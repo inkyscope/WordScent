@@ -85,6 +85,6 @@ plot_linking <- linking %>%
                                     color = "#fde074",
                                     angle = 90),
         plot.margin = margin(20, 10, 20, 10)) +
-  ggsave(here::here("2020", "1213", "1213_Ephesians.png"), width = 40, height = 18, units = "cm")
+  ggsave(here::here("2020", "1213", "1213_Ephesians.png"), width = 44, height = 22, units = "cm")
 ```
 
