@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Clothe Yourselves With
+![Closet](https://github.com/inkyscope/inkyscroll/blob/master/2020/1218_ClotheYourselfWith/1218_ClotheYourselfWith.png)
+
 ### Words Tapestry of Ephesians
 ![AtoZ](https://github.com/inkyscope/inkyscroll/blob/master/2020/1213/1213_Ephesians.png)
 
