@@ -139,5 +139,5 @@ p <- graph %>% ggraph(layout = 'dendrogram', circular = TRUE) +
                                           color = "transparent"),
           plot.caption = element_markdown(size = 18))
 
-ggsave(here::here("2020", "1218_ClotheYourselfWith", "1218_ClotheYourselfWith.png"), width = 45, height = 42.5, units = "cm")
+ggsave(here::here("2020", "1218_ClotheYourselfWith", "1218_ClotheYourselvesWith.png"), width = 45, height = 42.5, units = "cm")
 ```
