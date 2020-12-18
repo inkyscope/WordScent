@@ -1,0 +1,143 @@
+---
+title: "Closet"
+author: "Sung Inkyung"
+date: '2020 12 18'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(tidygraph)
+library(ggraph)
+```
+### the wicked: "Romans 1:29", "Romans 1:30", "Romans 1:31", "1 Peter 4:3"
+
+```{r}
+## NIV: Galatians 5:22",, 2 Peter 1:5-7, James 3:17
+
+clothes <- c("love", "joy", "peace", "forbearance", "kindness", "goodness", "faithfulness", "gentleness", "self-control",
+             "pure", "peace-loving",  "considerate", "submissive", "full of mercy", "good fruit", "impartial", "sincere",
+             "faith",  "goodness", "knowledge", "self-control", "perseverance", "godliness", "mutual affection", "love")
+
+library(tibble)
+
+apostles_words <- tribble(
+  ~ category, ~ name,
+  "Paul", "love",
+  "Paul", "joy",
+  "Paul", "peace",
+  "Paul", "forbearance",
+  "Paul", "kindness",
+  "Paul", "goodness",
+  "Paul", "faithfulness",
+  "Paul", "gentleness",
+  "Paul", "self-control",
+  "Peter", "faith",
+  "Peter", "goodness",
+  "Peter", "knowledge",
+  "Peter", "self control",
+  "Peter", "perseverance",
+  "Peter", "godliness",
+  "Peter", "mutual\naffection",
+  "Peter", "love",
+  "James", "pure",
+  "James", "peace\nloving",
+  "James", "considerate",
+  "James", "submissive",
+  "James", "mercy",
+  "James", "good fruit",
+  "James", "impartial",
+  "James", "sincere")
+
+
+```
+
+
+```{r}
+category_color <- tibble(category = c("Paul", "Peter", "James"),
+       color = c("#f09729", "#038db2", "#6e6b95"))
+
+apostles_words <- apostles_words %>% 
+  left_join(category_color)
+
+
+nodes <- tibble(node = c("root",
+                         unique(apostles_words$category),
+                         unique(apostles_words$name))) %>% 
+  mutate(level = case_when(node == "root" ~ 1,
+                           node%in%category_color$category ~ 2,
+                           TRUE ~ 3))
+```
+
+
+```{r}
+edge1 <-  apostles_words %>% 
+  distinct(category) %>% 
+  mutate(from = "root") %>% 
+  left_join(category_color) %>% 
+  rename(to = category)
+
+edge2 <- apostles_words %>% 
+  left_join(category_color) %>% 
+  select(to = name, from = category,
+         color)
+
+edges <- bind_rows(edge1, edge2)
+
+graph <- tbl_graph(nodes, edges)
+```
+
+
+```{r}
+apostles <- create_layout(graph,  layout = 'dendrogram', 
+                          circular = TRUE) %>% 
+  left_join(apostles_words, by = c("node" = "name")) %>% 
+  left_join(category_color, by = c("node" = "category")) %>% 
+  mutate(color = coalesce(color.x, color.y)) %>% 
+  select(-color.x, -color.y)
+
+```
+```{r}
+p <- graph %>% ggraph(layout = 'dendrogram', circular = TRUE) + 
+    geom_edge_diagonal(width = 1) +
+    geom_node_point(size = 2.5) +
+    geom_node_text(data = filter(apostles, level == 2), 
+                   aes(label = toupper(node), color = color, 
+                       x = 0.75 * x, y = 0.75 * y, 
+                       hjust = c(.9, 1, 0.6), 
+                       vjust = c(4, 1.3, -3)), size = 9) +
+    geom_node_text(data = filter(apostles, level == 3), 
+                   aes(label = node, color = color,
+                       x = x*1.02, 
+                       y = y*1.02, 
+                       angle = -((-node_angle(x, y) + 90) %% 180) + 90, 
+                       hjust = ifelse(between(node_angle(x, y), 90, 270), 1, 0)),
+                   size = 6) +
+    geom_label(aes(x = 0.035, y = 0.045, 
+                   label = "CLOTHE\nYOURSELF\nWITH"), 
+               size = 13, 
+               fontface = "bold",
+               fill = "white", 
+               label.size = 0) +
+    scale_edge_color_identity() +
+    scale_color_identity() +
+    theme(axis.text.x = element_blank(),
+          axis.text.y = element_blank()) +
+    labs(x = NULL,
+         y = NULL,
+         caption = " **Graphic**: Sung Inkyung") +
+    coord_equal(clip = "off") +
+    theme(plot.background = element_rect(fill = "white",
+                                         color = "transparent"),
+          panel.background = element_rect(fill = "white",
+                                          color = "transparent"),
+          plot.caption = element_markdown(size = 18))
+
+ggsave(here::here("2020", "1218_ClotheYourselfWith", "1218_ClotheYourselfWith.png"), width = 45, height = 42.5, units = "cm")
+```
