@@ -120,7 +120,7 @@ p <- graph %>% ggraph(layout = 'dendrogram', circular = TRUE) +
                        hjust = ifelse(between(node_angle(x, y), 90, 270), 1, 0)),
                    size = 6) +
     geom_label(aes(x = 0.035, y = 0.045, 
-                   label = "CLOTHE\nYOURSELF\nWITH"), 
+                   label = "CLOTHE\nYOURSELVES\nWITH"), 
                size = 13, 
                fontface = "bold",
                fill = "white", 
