@@ -1,0 +1,94 @@
+---
+title: "Untitled"
+author: "Sung Inkyung"
+date: '2020 12 19 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggtext)
+```
+pal <- color("muted")(7)
+plot_scheme(colour("muted")(7))
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
+
+```
+
+
+```{r}
+words_2020 <-  c("knowledge",  "understanding", "wisdom",
+                 "humble", "pray", "faith", "grace")
+
+bible_words <- bible %>% 
+  select(book, text) %>% 
+  unnest_tokens(word, text) %>% 
+  filter(word %in% words_2020) %>% 
+  count(book, word)
+```
+
+
+```{r}
+set.seed(123)
+
+axis_ <- tibble(axis_x = runif(211),
+                 axis_y = runif(211))
+
+df_words <- bible_words %>% 
+  bind_cols(axis_) %>% 
+  mutate(label = str_c(word, "\n",
+                       book, "\n",
+                       n))
+
+p1 <- df_words %>% 
+    ggplot() +
+    geom_point(data = df_words, 
+               aes(axis_x, axis_y, size = n), 
+               colour =  "#ff4500",
+               alpha = 0.7) +
+    geom_point(data = df_words, 
+               aes(axis_x, axis_y), 
+               colour = "#170b07", #"#b2d4b2"
+               size = 1.7 ) +
+    geom_text(data = df_words %>% filter(n > 20),
+              aes(axis_x, axis_y, 
+                  label = label),
+              size = 5, 
+              fontface = "bold",
+              color = "gray80") +
+   scale_size(range = c(2, 70)) +
+   xlim(-0.02, 1) +
+   labs(title = "Words 2020",
+        subtitle = "Words that have dwelled in my mind like a well-embedded nail while listening to the Bible audio throughout 2020",
+   caption = "**Graphic**: Sung Inkyung") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#170b07",
+                                       color = NA),
+        panel.background = element_rect(fill = "#170b07",
+                                        color = NA),
+        plot.title = element_text(size = 36,
+                                  color = "gray80",
+                                  face = "bold",
+                                  hjust = 0.5),
+        plot.subtitle = element_text(size = 17, 
+                                     color = "gray80",
+                                    hjust = 0.5),
+        plot.caption = element_markdown (size = 14,
+                                         color = "gray80",
+                                        hjust = .5),
+        panel.grid.major  = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        plot.margin = margin(20, 20, 20, 20)) +
+  ggsave(here::here("2020", "1219_Words_2020", "1219_EmbeddedWords_2020.png"), width = 34, height = 38, units = "cm")
+    
+```
+
