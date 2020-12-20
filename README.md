@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Embedded Words in 2020
+![Words](https://github.com/inkyscope/inkyscroll/blob/master/2020/1219_Words_2020/1219_EmbeddedWords_2020.png)
+
 ### Clothe Yourselves With
 ![Closet](https://github.com/inkyscope/inkyscroll/blob/master/2020/1218_ClotheYourselfWith/1218_ClotheYourselvesWith.png)
 
