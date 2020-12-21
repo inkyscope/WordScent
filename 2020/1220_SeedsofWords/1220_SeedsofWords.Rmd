@@ -66,14 +66,14 @@ rect <- data.frame(
 ```{r}
 legend_order <- c("dwell", "glory", "peace", "spirit", "time", "word", "lord")
 colors <- c('#00ff00', '#08b8b8', '#0000ff', 
-            '#e591b4', '#f05e23', '#f8db6e', '#a54f34')
+            '#e591b4', '#e8215a', '#fcdb40', '#6a2225')
 
 plot <- bible %>% 
   ggplot() + 
   geom_rect(data = rect, 
             aes(xmin = x1, xmax = x2,
                 ymin = y1, ymax = y2), 
-            fill = "#e8c14d") +
+            fill = "#d8b361") +
   geom_jitter(aes(x = 1, y = word_level + 2, 
                  color = word), 
               size = 2.5,
@@ -82,17 +82,17 @@ plot <- bible %>%
            size = 11,
            label="L O R D",
            fontface = "bold",
-           color= '#a54f34') +
+           color= '#6a2225') +
   annotate(geom="text", x = .4, y = 4, 
            size = 7,
            label="W O R D",
            fontface = "bold",
-           color= '#f8db6e') +
+           color= '#fcdb40') +
   annotate(geom="text", x = .4, y = 5, 
            size = 7,
            label="T I M E",
            fontface = "bold",
-           color= '#f05e23') +
+           color= '#e8215a') +
   annotate(geom="text", x = .4, y = 6, 
            size = 7,
            label="S P I R I T",
@@ -120,14 +120,14 @@ plot <- bible %>%
        caption = "**Graphic**: Sung Inkyung") + 
   theme_void() + 
   theme(legend.position = "none",
-        plot.background = element_rect(fill = '#012333', 
-                                       color = "#012333"),
+        plot.background = element_rect(fill = '#081a3d', 
+                                       color = "#081a3d"),
         panel.background = element_blank(),
         plot.title = element_text(size = 48,
                                   color = "#e4eaed",
                                   hjust = .5,
                                   margin = margin(t = 30, b= 10)),
-        plot.caption = element_markdown(size = 11,
+        plot.caption = element_markdown(size = 13,
                                         color = "#e4eaed",
                                         hjust = .5,
                                         margin = margin(t = 20, b = 10)),
