@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Embedded Words in 2020"
 author: "Sung Inkyung"
 date: '2020 12 19 '
 output: html_document
@@ -69,9 +69,9 @@ p1 <- df_words %>%
    caption = "**Graphic**: Sung Inkyung") +
   theme_minimal() +
   theme(legend.position = "none",
-        plot.background = element_rect(fill = "#170b07",
+        plot.background = element_rect(fill = "#242120",
                                        color = NA),
-        panel.background = element_rect(fill = "#170b07",
+        panel.background = element_rect(fill = "#242120",
                                         color = NA),
         plot.title = element_text(size = 36,
                                   color = "gray80",
