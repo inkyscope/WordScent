@@ -1,0 +1,173 @@
+---
+title: "Untitled"
+author: "Sung Inkyung"
+date: '2020 12 19 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(ggraph)
+library(tidygraph)
+library(ggimage)
+library(glue)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
+
+```
+
+
+```{r}
+words_2020 <-  c("knowledge", "understanding", "wisdom",
+                 "humble", "pray", "faith", "grace")
+books_2020 <-  c("Acts", "Romans", "1 Corinthians", "Ephesians", "James",  
+                 "Genesis", "Exodus", "Proverbs", "Psalms", "Daniel")
+                  
+bible_words <- bible %>% 
+  select(book, text) %>% 
+  unnest_tokens(word, text) %>% 
+  filter(word %in% words_2020,
+         book %in% books_2020) 
+  
+  
+plot <- bible_words %>% 
+  count(word, book, sort = T) %>% 
+  ggplot(aes(x = n, y = word, fill = book)) +
+  geom_col(show.legend = F) +
+  facet_wrap(~ book) +
+  theme_minimal()
+
+```
+
+```{r}
+words <- bible_words %>% 
+  mutate(word_book = as.character(glue("{word}_{book}")))
+
+nodes <- tibble(node = c("root", 
+                         unique(words$word), 
+                         unique(words$word_book))) %>% 
+  mutate(levels = case_when(
+    node == "root" ~ 1,
+    node %in% unique(words$word) ~ 2,
+    node %in% unique(words$word_book) ~ 3,
+    TRUE ~ 4)) %>% 
+  left_join(count(words, word, book, name = "number") %>% 
+            mutate(word_book = as.character(glue("{word}_{book}"))),
+            by = c("node" = "word_book")) %>% 
+  mutate(book = factor(book, levels = c("Acts", "Romans", "1 Corinthians", "Ephesians", "James", 
+                 "Genesis", "Exodus", "Proverbs", "Psalms", "Daniel")),
+         book = fct_rev(book)) %>% 
+  arrange(levels, word, book)
+```
+
+
+```{r}
+library(khroma)
+pal <- color("muted")(7)
+plot_scheme(colour("muted")(7))
+
+
+edges1 <- words %>% 
+  distinct(word) %>% 
+  mutate(from = "root") %>% 
+  rename(to = word)
+
+edges2 <- words %>% 
+  distinct(word, word_book) %>% 
+  arrange(word, word_book) %>% 
+  select(from = word, to = word_book)
+
+color_edges <- tibble(
+  word = c("knowledge", "understanding", "wisdom",
+           "humble", "pray", "faith", "grace"),
+  color = pal)
+
+edges <- bind_rows(edges1, edges2) %>% 
+  left_join(color_edges, by = c("to" = "word")) %>% 
+  left_join(color_edges, by = c("from" = "word")) %>% 
+  mutate(color = coalesce(color.x, color.y)) %>% 
+  select(-color.x, -color.y) 
+```
+
+
+```{r}
+graph_data <- tbl_graph(nodes, edges)
+
+img <- here::here("2020", "1219_Words_2020", "word.png")
+```
+
+
+```{r}
+words_2020_plot <- graph_data %>% 
+  ggraph(layout = "partition") +
+  geom_edge_diagonal(aes(color = color), alpha = .6) +
+  geom_node_text(aes(x = x, y = y,
+                     label = book, 
+                     filter = levels == 3, color = word),
+                 size = 11, 
+                 hjust = 1, vjust = 1, 
+                 lineheight = 1.7) +
+  geom_node_text(aes(label = node, 
+                     filter = levels == 2, color = node), 
+                 size = 13, 
+                 vjust = 0.5, fontface = "bold") +
+  geom_node_point(aes(filter = levels == 2, 
+                      color = node), 
+                  size = 120, 
+                  alpha = 0.4) +
+  geom_node_point(aes(filter = levels == 2, 
+                      color = node), 
+                  size = 130, shape = 1) +
+  geom_node_range(aes(y = y + 0.02, 
+                      yend = y + 1.5 * number/max(nodes$number, 
+                                                  na.rm = TRUE), 
+                      x = x, xend = x, 
+                      filter = levels == 3, 
+                      color = word), 
+                  size = 12) +
+  geom_node_text(aes(x = x, y = y + 1.5 * number/max(nodes$number, na.rm = TRUE), 
+                     label = number, 
+                     filter = levels == 3, 
+                     color = word), 
+                 nudge_y = 0.025, 
+                 size = 10, 
+                 #fontface = "bold", 
+                 hjust = 0, vjust = 0.5) +
+  geom_image(data = filter(nodes, levels == 1), 
+             aes(x = 25.3, y = 1.25, image = img), 
+             size = 0.09, asp = 1) + 
+  scale_color_manual(values = c("knowledge" = "#CC6677", "grace" = "#44AA99", "pray" = "#88CCEE",
+                                "humble" = "#117733", "wisdom" = "#DDCC77",
+                                "understanding" = "#332288", "faith" = "#882255")) +
+  scale_edge_color_identity() +
+  labs(title = "**W O R D S 2 0 2 0**",
+       subtitle = "Words that have dwelled in my heart like a well-embedded nail while listening to Bible audio throughout 2020",
+      caption = "**Graphic**: Sung Inkyung") +
+  coord_flip() +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white", 
+                                        color = "white"),
+        plot.title = element_markdown(size = 80, 
+                                      color = "#2c4358", 
+                                      hjust = 0.5),
+        plot.subtitle = element_text(size = 48, 
+                                     color = "#2c4358", 
+                                     hjust = 0.5,
+                                     margin = margin(t = 20)),
+        plot.caption = element_markdown(size = 35, 
+                                       color = "#c4b5a4"),
+        plot.margin = margin(20, 20, 20, 20)) 
+
+  ggsave(here::here("2020", "1219_Words_2020", "1219_Words_2020.png"), width = 90, height = 100,  units = "cm")
+  
+```
+
