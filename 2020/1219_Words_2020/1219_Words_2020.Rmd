@@ -18,7 +18,7 @@ library(tidygraph)
 library(ggimage)
 library(glue)
 ```
-
+###Source[tidytuesday by kaustaveSen] (https://github.com/kaustavSen/tidytuesday/blob/master/2020/week_50_women_2020.R)
 
 ```{r}
 bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")

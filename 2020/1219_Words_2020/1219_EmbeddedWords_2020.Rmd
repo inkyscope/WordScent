@@ -64,19 +64,19 @@ p1 <- df_words %>%
               color = "gray80") +
    scale_size(range = c(2, 70)) +
    xlim(-0.02, 1) +
-   labs(title = "Words 2020",
-        subtitle = "Words that have dwelled in my mind like a well-embedded nail while listening to the Bible audio throughout 2020",
-   caption = "**Graphic**: Sung Inkyung") +
+   labs(title = "**W O R D S 2 0 2 0**",
+       subtitle = "Words that have dwelled in my heart like a well-embedded nail while listening to Bible audio throughout 2020",
+      caption = "**Graphic**: Sung Inkyung") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect(fill = "#242120",
                                        color = NA),
         panel.background = element_rect(fill = "#242120",
                                         color = NA),
-        plot.title = element_text(size = 36,
-                                  color = "gray80",
-                                  face = "bold",
-                                  hjust = 0.5),
+        plot.title = element_markdown(size = 36,
+                                      color = "gray80",
+                                      face = "bold",
+                                      hjust = 0.5),
         plot.subtitle = element_text(size = 17, 
                                      color = "gray80",
                                     hjust = 0.5),
