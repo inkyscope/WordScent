@@ -1,7 +1,7 @@
 ---
-title: "Untitled"
+title: "Similarity in Psalms"
 author: "Sung Inkyung"
-date: '2021 1 5 '
+date: '2021 1 5'
 output: html_document
 ---
 
