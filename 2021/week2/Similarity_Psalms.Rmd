@@ -1,0 +1,89 @@
+---
+title: "Untitled"
+author: "Sung Inkyung"
+date: '2021 1 5 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(widyr)
+library(tidygraph)
+library(ggraph)
+library(igraph)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
+  
+
+psalms_similarity <- bible %>% 
+  filter(book == "Psalms") %>% 
+  select(book, chapter, text) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(chapter, word) %>% 
+  add_count(word, wt = n, name = "word_total") %>% 
+  filter(word_total > 30) %>% 
+  pairwise_similarity(chapter, word, n, upper = F, sort = T)
+  
+  
+```
+
+
+```{r}
+graph_tbl <- psalms_similarity %>% 
+  as_tbl_graph()
+
+plot <-
+  ggraph(graph_tbl, layout = "star") +
+  geom_edge_link(aes(edge_colour = similarity)) +
+  scale_edge_colour_gradientn(colors = scico::scico(100, palette = "nuuk"),
+       name = NULL,
+       limits = c(0, 1.01)) +
+  coord_fixed(clip = "off") +
+  labs(title = "Similarity of **Psalms**",
+       subtitle = "The illustrated below shows the similarity between 150 chapters<br>in the book of Psalms. Of the words that appeared more than 30 times,<br><span style = 'color:#edec97'>**chapter 44**</span> and <span style = 'color:#edec97'>**80**</span> have the highest similarity.",
+       caption = "**Source**: King James bible | **Graphic**: Sung Inkyung") +
+  theme_void() +
+  theme(legend.position = "top",
+        legend.key.height = unit(.6, "lines"),
+        legend.key.width = unit(3, "lines"),
+        legend.title = element_text(size = 12,
+                                    color = "#334455", ),
+        legend.text = element_text(size = 9,
+                                   color = "#334455"),
+        plot.background = element_rect(fill = "#556677",
+                                       color = "#556677"),
+        plot.title = element_markdown(size = 16,
+                                      color = "#bbccdd",
+                                      face = "bold",
+                                      hjust = .5,
+                                      margin = margin(t = 5, b = 10)),
+        plot.subtitle = element_markdown(size = 12,
+                                         color = "#bbccdd",
+                                         hjust = .5,
+                                         lineheight = 1.1,
+                                         margin = margin(b = 20)),
+        plot.caption = element_markdown(size = 9,
+                                        color = "#bbccdd", 
+                                       margin = margin(t = 25)),
+        plot.title.position = "plot",
+        plot.margin = margin(20, 20, 20, 20)) 
+
+ggsave(here::here("2021", "week2", "Similarity_Psalms.png"), width = 20, height = 20, units = "cm")
+```
+
+```{r}
+library(scico)
+scico(15, palette = "nuuk")
+```
+
+
