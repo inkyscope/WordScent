@@ -48,15 +48,15 @@ theme_word <- function() {
                                         color = "#864a40", 
                                         hjust = 0.5,
                                         margin = margin(t = 10, b = 5)),
-          plot.subtitle = element_markdown(size = 24,
+          plot.subtitle = element_markdown(size = 20,
                                            color = "#864a40", 
                                            hjust = 0.5,
                                            margin = margin(b = 15)),
           plot.caption = element_text(color = "#cbb080", 
-                                      size = 12,
+                                      size = 15,
                                       margin = margin(t = 25, b = 20)),
           axis.title = element_text(color = "#864a40", 
-                                    size = 14),
+                                    size = 17),
           axis.ticks = element_blank(),
           axis.text.x = element_text(size = 13,
                                      color = "#864a40"),
@@ -71,10 +71,10 @@ plot_word_ridgegs <- df_bible %>%
                       color = "#a5791f",
                       fill =  "#a77d42",
                       show.legend = F) +
-  labs(x = "Frequency of Word Across Books of Bible",
-       y = "Top 651 Words by Frequency\nRetracing Chapter Waves",
+  labs(x = "Frequency of Word",
+       y = "Top 651 Words by Frequency\nSurfing Waves of Bible Chapters",
        title = "**Ebbs and Flows of Words**",
-       subtitle = "like **righteousness** appears in Matthew Chapter3:15 and<br>reappear in Ephesians Chapter 4:24",
+       subtitle = "like **righteousness** appears in Matthew Chapter3:15 and<br>reappears in Ephesians Chapter 4:24",
        caption = "Graphic: Sung Inkyung") +
   theme_word()
 
@@ -83,5 +83,4 @@ ggsave(here::here("2021", "W3_WordRidges", "W3_WordEbbsFlows.png"), width = 30, 
 ```
 
 
-```
 
