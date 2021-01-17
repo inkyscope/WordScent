@@ -1,0 +1,165 @@
+---
+title: "Bible Words on Klee_palette"
+author: "Sung Inkyung"
+date: '2021 1 17'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source[tidytuesday by MaiaPelletier] (https://github.com/MaiaPelletier/tidytuesday/blob/master/R/2021_Week03_TateArt.R)
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggfittext)
+library(ggtext)
+library(colorfindr)
+library(glue)
+library(cowplot)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(Testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), 
+                            "New Testament", "Old Testament"))
+
+
+bible_stop_words <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
+                         "ye", "yea", "saith", "thereof", "wherefore", "lo", "aaron", "aaron's", "aaronites", "abarim"))
+```
+
+
+```{r}
+set.seed(123)
+
+top_words <- bible %>% 
+  select(book, text) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(! word %in% bible_stop_words) %>% 
+  count(word, sort = T) %>% 
+  mutate(
+    x = map_dbl(n, function(n) runif(1)),
+    y = map_dbl(n, function(n) runif(1)),
+    top_word = ifelse(row_number() <= 10, "yes", "no"),
+    word_rank = row_number()
+    )
+
+klee_palette <- get_colors("C:/Users/inkyscope/Documents/projectR/inkyscroll/images/PaulKleecastle-and-sun-1928.jpg") %>% 
+make_palette(n = 15)
+
+klee_palette <- c(
+  white = klee_palette[1],
+  neutral = klee_palette[10],
+  klee_palette[4],
+  klee_palette[7],
+  klee_palette[8],
+  klee_palette[10],
+  klee_palette[15]
+)
+
+plot_main <- top_words %>% 
+  ggplot() +
+  geom_point(
+    data = top_words %>% 
+      filter(top_word == "no"),
+    aes(x, y, size = n, fill = n),
+    alpha = 1,
+    color = klee_palette[1],
+    shape = 21,
+    show.legend = F
+  ) +
+  geom_point(
+    data = top_words %>% 
+      filter(top_word == "yes"),
+    aes(x, y, size = n, color = top_word),
+    alpha = .6,
+    fill = klee_palette[3],
+    shape = 21,
+    show.legend = F
+  ) +
+  geom_point(
+    data = top_words %>% 
+      filter(top_word == "yes"),
+    aes(x, y, size = n),
+    shape = 1, 
+    color = "#d6b390",
+    stroke = 1.7
+  ) +
+  geom_text(
+    data = top_words %>% 
+      filter(top_word == "yes"),
+    aes(x, y, label = word_rank),
+    color = "white",
+    size = 4.5
+  ) +
+  scale_size(range = c(1, 30),
+             guide = guide_none()) +
+  scale_fill_gradientn(colors = rev(klee_palette[-c(1, 2)])) +
+  labs(title = "BIBLE WORDS") +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#998899",
+                                       color = NA),
+        panel.background = element_rect(fill = klee_palette[1],
+                                        color = "#440055",
+                                        size = 5),
+        plot.title = element_text(size = 24, 
+                                  color = "white",
+                                  face = "bold",
+                                  margin = margin(t = 10)),
+        plot.margin = margin(10, 120, 10, 20))
+
+plot_top_words <- top_words %>% 
+  top_n(10, n) %>% 
+  mutate(n = scales::comma(n, accracy = 1)) %>% 
+  mutate(word_label = glue("{word_rank}. {word}: {n}")) %>% 
+  ggplot(aes(x = 1, y = -word_rank)) +
+  geom_text(aes(label = word_label),
+            size = 2.5) +
+  labs(title = "TOP 10 WORDS") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#e8e3e8", 
+                                        color = "#1c0c1c", 
+                                        size = 1),
+        plot.margin = margin(5, 50, 5, 50),
+        plot.title = element_text(color = "white",
+                                  size = 8, 
+                                  hjust = 0.5, 
+                                  margin = margin(0, 0, 5, 0)))
+
+plot_note <- "Each circle represents\na word which has appeared\nin the books of bible.\n\n The area of each circle is\nproportional to its own\nfrequency across bible books.\n\n The outlined dark red circles\nindicate top ten words.\n\nColors inspired by\nCastle and Sun 1928\nby Paul Klee."
+caption <- "Graphic: Sung Inkyung"
+
+
+ggdraw(plot_main) +
+  draw_plot(plot_top_words, 
+            height = .4, 
+            width = .4, 
+            x = .675,
+            y = .05) +
+  draw_label(plot_note, 
+            x = .875, y = .7,
+            size = 7, 
+            color = "#334444") +
+  draw_label(caption, x = .002, y = .2,
+            size = 7, 
+            color = "#423e42",
+            angle = 90) +
+  ggsave(here::here("2021", "W4_WordPainting", "W4_WordPainting.png"))
+
+```
+
