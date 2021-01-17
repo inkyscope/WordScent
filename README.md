@@ -17,6 +17,12 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Word Canvas
+![Word Painting](https://github.com/inkyscope/inkyscroll/blob/master/2021/W4_WordPainting/W4_WordPainting.png)
+
+### Ebbs and Flows
+![Word Surfing](https://github.com/inkyscope/inkyscroll/blob/master/2021/W3_WordRidges/W3_WordEbbsFlows.png)
+
 ### WORDS 2020
 ![Words](https://github.com/inkyscope/inkyscroll/blob/master/2020/1219_Words_2020/1219_Words_2020.png)
 
