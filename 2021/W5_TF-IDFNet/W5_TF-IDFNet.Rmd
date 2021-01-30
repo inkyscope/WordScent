@@ -117,15 +117,18 @@ plot_new <- lay %>%
   theme_void() +
   theme(plot.background = element_rect(fill = "#808080", 
                                        color = NA),
-        plot.title = element_markdown(size = 12,
-                                 margin = margin(b = 5)),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 9),
+        plot.title = element_markdown(size = 16,
+                                 margin = margin( b = 5)),
         plot.subtitle = element_markdown(size = 11,
                                          lineheight = 1.1,
                                           margin = margin(b = 35)),
-        plot.caption = element_text(size =7,
-                                    margin = margin(t = 20)),
+        plot.caption = element_text(size = 8,
+                                    color = "gray75",
+                                    margin = margin(t = 30)),
         panel.grid = element_blank(),
-        plot.margin = margin(10, 10, 10, 10))
+        plot.margin = margin(20, 20, 20, 20))
 
 ggsave(here::here("2021", "W5_TF-IDFNet", "W5_TF_IDFNet.png"), dpi = 320, widt = 21, height = 15, units = "cm")
 
