@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### TF-IDF Net
+![TF-IDF Net](https://github.com/inkyscope/inkyscroll/blob/master/2021/W5_TF-IDFNet/W5_TF_IDFNet.png)
+
 ### Word Canvas
 ![Word Painting](https://github.com/inkyscope/inkyscroll/blob/master/2021/W4_WordPainting/W4_WordPainting.png)
 
