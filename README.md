@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### 2021 Word Flower
+![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W1_WordFlower/2021_WordFlower.png)
+
 ### Random Sample Words
 ![random sample](https://github.com/inkyscope/inkyscroll/blob/master/2021/W6_WordTree/W6_RandomWordsTree.png)
 
