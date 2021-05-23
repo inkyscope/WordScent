@@ -1,0 +1,207 @@
+---
+title: "Paul Words"
+author: "Sung Inkyung"
+date: '2021 5 23'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source[tidytuesday by charlie gallagher](https://github.com/charlie-gallagher/tidy-tuesday/blob/master/women_of_2020/women.R)
+```{r}
+library(tidyverse)
+library(igraph)
+library(tidygraph)
+library(ggraph)
+
+```
+
+
+```{r}
+paul <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/paul.csv") 
+
+v1 <- data.frame(
+   word = "PAUL",
+   level = 1,
+   category = NA,
+   leaf = F,
+   root = T) 
+
+v2 <- paul %>% 
+  select(word = category) %>% unique() %>% 
+  mutate(level = 2, 
+         category = word, 
+         leaf = F,
+         root = F)
+
+v3 <- paul %>% 
+   select(word, category) %>% 
+   mutate(level = 3,
+          leaf = T,
+          root = F)
+ 
+ v <- rbind(v1, v2, v3)
+ 
+ rm(list = c('v1', 'v2', 'v3'))
+ 
+ e <- paul %>% 
+   mutate(from = "PAUL") %>% 
+   select(from, to = category, category = category) %>% 
+   unique() %>% 
+   rbind(select(paul, from = category, to = word, category = category)) %>% 
+   arrange(from)
+ 
+ paul_graph <- graph_from_data_frame(
+   d = e,
+   vertices = v)
+```
+
+
+```{r}
+ # Proper ordering of categories
+ category_order <- c("Fruit_of_the_Spirit", "Think_about_Whatever_is", "Love", "The_Wicked")
+ label <- c("FRUITS OF\nTHE SPIRIT", "THINK ABOUT\nWHATEVER IS", "LOVE", "The WICKED")
+ 
+ # Convert to tbl_graph and modify category
+ paul_graph <- as_tbl_graph(paul_graph) %>% 
+   activate(edges) %>% 
+   mutate(category = factor(category, 
+                            levels = category_order)) %>% 
+   activate(nodes) %>% 
+   mutate(category = factor(category,
+                            levels = category_order))
+ 
+ # Generate data for graph objects
+ # Banners dataset derived from graph's ggraph dataset
+ 
+ xranges <- ggraph(paul_graph, 
+                   layout = "tree")$data %>% 
+   filter(level == 3) %>% 
+   group_by(category) %>% 
+   summarise(xmin = min(x) - .5,
+             xmax = max(x) + .5) %>% 
+   mutate(ymin = -2,
+          ymax = 3, 
+          category = toupper(category),
+          category = factor(category,
+                            levels = toupper(category_order)))
+ 
+ banner_colors <- c('#90a69b', '#708a8c', '#4f8093', '#213c5e')
+ 
+```
+
+
+```{r}
+# Graph
+ 
+ ggraph(paul_graph, 
+        layout = "tree") +
+   geom_rect(data = xranges,
+             aes(xmin = xmin, xmax = xmax,
+                 ymin = ymin, ymax = ymax,
+                 fill = category)) +
+   geom_node_point(aes(color = category,
+                       filter = leaf)) +
+   geom_node_text(aes(label = name, 
+                      filter = leaf),
+                  angle = -90, 
+                  hjust = 0,
+                  size = 4, 
+                  nudge_y = -.05,
+                  color = "white") +
+   geom_edge_diagonal(aes(color = category)) +
+   geom_text(data = xranges,
+           aes(x = (xmin + xmax) / 2,
+               y = ymin, 
+               label = label),
+           color = '#b4dcdf', 
+           fontface = 'bold', 
+           angle = -90, 
+           hjust = 1, vjust = 0.6, 
+           nudge_y = 0.1, 
+           lineheight = 0.7,
+           size = 9) +
+   geom_text(data = NULL, 
+             aes(x = 0, y = 2.9, 
+                 label = "PAUL'S\nWORDS"),
+             color = '#e4e1d8',
+             fontface = 'bold',
+             size = 17, lineheight = 0.8, 
+             hjust = 0.5, vjust = 1) +
+   geom_text(data = NULL,
+            aes(x = 0, y = 2.35, 
+                label = "I N B I B L E"),
+            color = '#e4e1d8', 
+            size = 12,
+            hjust = 0.5, vjust = 1) + 
+   geom_text(data = NULL, aes(x = 0, y = 2.05, 
+                              label = "PAUL"),
+             hjust = 0.5, size = 7,
+             color = 'white') +
+   geom_text(data = NULL, 
+             aes(x = 31, y = -1.85, 
+                 label = "Source: KJV\nGraphic: Sung Inkyung"),
+             hjust = 1, 
+             size = 3.5, 
+             color = '#e4e1d8') +
+   scale_x_continuous(expand = c(0,0)) + 
+   scale_y_continuous(expand = c(0,0)) +
+   scale_color_brewer(type = "seq", 
+                      palette = "GnBu") +
+   scale_edge_color_brewer(type = "seq",
+                           palette = "GnBu") + 
+   scale_fill_manual(values = banner_colors) +  
+   guides(color = F, 
+          fill = F, 
+          edge_color = F) +
+   theme_void() + 
+   theme(plot.background = element_rect(fill = '#213c5e', 
+                                        color = NA))
+
+    ggsave(here::here("2021", "W21_PaulWords", "PaulWords.png"), width = 30, height = 38, units = "cm")
+    
+```
+
+
+
+```{r}
+bible <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv")
+
+galatians <- bible %>%
+  filter(book == "Galatians" &
+           chapter == 5 &
+           verse %in% c(22:26))
+
+philippians <- bible %>%
+  filter(book == "Philippians" &
+           chapter == 4 &
+           verse == 8)
+
+
+corinthians <- bible %>%
+  filter(book == "1 Corinthians" &
+           chapter == 13 &
+           verse %in% c(4:7))
+
+romans <- bible %>%
+  filter(book == "Romans" &
+           chapter == 1 &
+           verse %in% c(29:31))
+
+df <- bind_rows(galatians, philippians, corinthians, romans) %>%
+  select(-citation)
+
+df_words <- df %>%
+  unnest_tokens(word, text) %>%
+  anti_join(get_stopwords()) %>%
+  count(book, word)
+
+
+
+
+```
+
+
+
+```{r}
