@@ -20,6 +20,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Paul's Words
 ![Paul's Words](https://github.com/inkyscope/inkyscroll/blob/master/2021/W21_PaulWords/PaulWords.png)
 
+### Word Pairs of Ephesians
+![Word Pairs](https://github.com/inkyscope/inkyscroll/blob/master/2021/W17_WordCross/EphesiansKnitting.png)
+
 ### 2021 Word Flower
 ![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W1_WordFlower/2021_WordFlower.png)
 
