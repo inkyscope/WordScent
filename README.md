@@ -50,9 +50,6 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Clothe Yourselves With
 ![Closet](https://github.com/inkyscope/inkyscroll/blob/master/2020/1218_ClotheYourselfWith/1218_ClotheYourselvesWith.png)
 
-### Words Tapestry of Ephesians
-![AtoZ](https://github.com/inkyscope/inkyscroll/blob/master/2020/1213/1213_Ephesians.png)
-
 ### Distribution of Body Parts 
 ![Circles](https://github.com/inkyscope/inkyscroll/blob/master/2020/1205_BodyParts/1205_BodyParts.png)
 
