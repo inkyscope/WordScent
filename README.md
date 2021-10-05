@@ -20,6 +20,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Paul's Words
 ![Paul's Words](https://github.com/inkyscope/inkyscroll/blob/master/2021/W21_PaulWords/PaulWords.png)
 
+### Word Pairs of Ephesians
+![Word Pairs](https://github.com/inkyscope/inkyscroll/blob/master/2021/W17_WordCross/EphesiansKnitting.png)
+
 ### 2021 Word Flower
 ![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W1_WordFlower/2021_WordFlower.png)
 
@@ -46,9 +49,6 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 
 ### Clothe Yourselves With
 ![Closet](https://github.com/inkyscope/inkyscroll/blob/master/2020/1218_ClotheYourselfWith/1218_ClotheYourselvesWith.png)
-
-### Words Tapestry of Ephesians
-![AtoZ](https://github.com/inkyscope/inkyscroll/blob/master/2020/1213/1213_Ephesians.png)
 
 ### Distribution of Body Parts 
 ![Circles](https://github.com/inkyscope/inkyscroll/blob/master/2020/1205_BodyParts/1205_BodyParts.png)
