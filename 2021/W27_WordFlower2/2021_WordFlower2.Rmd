@@ -1,0 +1,228 @@
+---
+title: "WordsFlower2"
+author: "Sung Inkyung"
+date: '2021 10 6'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+
+```
+
+
+```{r}
+library(ggforce)
+library(tidyverse)
+library(paletteer)
+
+word_apr <- c("show", "nurse", "make", "let", "keep", "drive", "bring", "dispose")
+paletteer_d("ggthemes::Nuriel_Stone") ##april_colors
+cols_apr <- c("#8175AAFF", "#6FB899FF", "#31A1B3FF", "#CCB22BFF", "#A39FC9FF", "#94D0C0FF", "#959C9EFF", "#027B8EFF", "#9F8F12FF")
+
+
+k <- 4
+theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
+x <- cos(k * theta) * cos(theta)
+y <- cos(k * theta) * sin(theta)
+
+exodus <- cut(theta, 2*k, labels = word_apr)
+
+df_flower <- tibble(x = x, y = y, exodus = exodus)
+
+plot_legend_labels <- 
+  tibble(
+    label = word_apr,
+    angle_degrees = (90 - 360 * (1:8) / 8),
+    angle_radians = angle_degrees * pi / 180,
+    angle_text = ifelse(angle_degrees < -90, 
+                        angle_degrees + 180, 
+                        angle_degrees),
+    x = 0.5 * cos(angle_radians),
+    y= 0.5 * sin(angle_radians)
+  )
+
+fill_apr <- tibble(line = word_apr, 
+                             fill = pals::parula(8))
+
+plot_legend_data <-
+  df_flower %>% 
+  left_join(fill_apr, by = c("exodus" = "line")) 
+
+
+
+plot_apr <- 
+  ggplot(plot_legend_data) +
+  geom_polygon(aes(x = x, y = y, 
+                   fill = fill, 
+                   color = fill), 
+               size = 1.1) +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 0.2), 
+              fill = "#672146", 
+              color = "#672146", 
+              size = 3.5) +
+  geom_text(data = plot_legend_labels, 
+            aes(x = x, y = y, label = label, 
+                angle = angle_text), 
+            color = "#ffdab9", 
+            size = 6, 
+            fontface = "bold") +
+  geom_text(aes(x = 0, y = 0, label = "2021\nApril"), 
+            color = "#c6f070",  
+            size = 4.5, 
+            fontface = "bold") +
+  scale_fill_identity() +
+  scale_color_identity() +
+  coord_equal() +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#bcb7dc", 
+                                   color = "#bcb7dc")
+  )
+```
+
+```{r}
+word_may <- c("journey", "warn", "grumble", "quarrel", "misuse", "invite", "mistreat", "reject")
+
+paletteer_d("beyonce::X90") ##may_colors
+cols_may <- c("#795998FF", "#7D4D7FFF", "#954C84FF", "#AD5A88FF", "#D05F95FF", "#DAA7ABFF", "#F0A9A7FF", "#E7B7B2FF")
+
+
+k <- 4
+theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
+x <- cos(k * theta) * cos(theta)
+y <- cos(k * theta) * sin(theta)
+
+exodus <- cut(theta, 2*k, labels = word_may)
+
+df_flower <- tibble(x = x, y = y, exodus = exodus)
+
+plot_legend_labels <- 
+  tibble(
+    label = word_may,
+    angle_degrees = (90 - 360 * (1:8) / 8),
+    angle_radians = angle_degrees * pi / 180,
+    angle_text = ifelse(angle_degrees < -90, 
+                        angle_degrees+180, 
+                        angle_degrees),
+    x = 0.5 * cos(angle_radians),
+    y= 0.5 * sin(angle_radians)
+  )
+
+fill_may <- tibble(line = word_may, 
+                   fill = cols_may)
+
+plot_legend_data <-
+  df_flower %>% 
+  left_join(fill_may, by = c("exodus" = "line")) 
+
+
+
+plot_may <- 
+  ggplot(plot_legend_data) +
+  geom_polygon(aes(x = x, y = y, 
+                   fill = fill, 
+                   color = fill), 
+               size = 1.1) +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 0.2), 
+              fill = "#bd007c", 
+              color = "#bd007c", 
+              size = 3.5) +
+  geom_text(data = plot_legend_labels, 
+            aes(x = x, y = y, label = label, 
+                angle = angle_text), 
+            color = "#ffdab9", 
+            size = 6, 
+            fontface = "bold") +
+  geom_text(aes(x = 0, y = 0, label = "2021\nMay"), 
+            color = "#30d5c8",  
+            size = 4.5, 
+            fontface = "bold") +
+  scale_fill_identity() +
+  scale_color_identity() +
+  coord_equal() +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#c36902", 
+                                   color = "#c36902")
+  )
+```
+
+```{r}
+word_jun <- c("sustain", "shine", "spread", "surround", "set", "silence", "separate", "show")
+
+paletteer_d("palettetown::electrike") ##june_colors
+cols_jun <- c("#98D880FF", "#68B078FF", "#181818FF", "#508858FF", "#405040FF", "#F8E820FF", "#D0D018FF", "#A8C040FF")
+
+k <- 4
+theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
+x <- cos(k * theta) * cos(theta)
+y <- cos(k * theta) * sin(theta)
+
+exodus <- cut(theta, 2*k, labels = word_jun)
+
+df_flower <- tibble(x = x, y = y, exodus = exodus)
+
+plot_legend_labels <- 
+  tibble(
+    label = word_jun,
+    angle_degrees = (90 - 360 * (1:8) / 8),
+    angle_radians = angle_degrees * pi / 180,
+    angle_text = ifelse(angle_degrees < -90, 
+                        angle_degrees+180, 
+                        angle_degrees),
+    x = 0.5 * cos(angle_radians),
+    y= 0.5 * sin(angle_radians)
+  )
+
+fill_jun <- tibble(line = word_jun, 
+                   fill = cols_jun)
+
+plot_legend_data <-
+  df_flower %>% 
+  left_join(fill_jun, by = c("exodus" = "line")) 
+
+
+
+plot_jun <- 
+  ggplot(plot_legend_data) +
+  geom_polygon(aes(x = x, y = y, 
+                   fill = fill, 
+                   color = fill), 
+               size = 1.1) +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 0.2), 
+              fill = "#9a0026", 
+              color = "#9a0026", 
+              size = 3.5) +
+  geom_text(data = plot_legend_labels, 
+            aes(x = x, y = y, label = label, 
+                angle = angle_text), 
+            color = "#ffdab9", 
+            size = 6, 
+            fontface = "bold") +
+  geom_text(aes(x = 0, y = 0, label = "2021\nJune"), 
+            color = "#00ff85",  
+            size = 4.5, 
+            fontface = "bold") +
+  scale_fill_identity() +
+  scale_color_identity() +
+  coord_equal() +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#ff7986", 
+                                   color = "#ff7986")
+  )
+```
+
+```{r}
+library(patchwork)
+
+final <- plot_apr|plot_may|plot_jun
+
+ ggsave(here::here("2021", "W27_WordFlower2", "2021_WordFlower2.png"), dpi = 300, width = 45, height = 15, units = "cm")
+```
+
