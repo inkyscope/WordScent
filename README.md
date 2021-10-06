@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Distribution of FAITH, LOVE, HOPE
+![FAITH, LOVE, HOPE](https://github.com/inkyscope/inkyscroll/blob/master/2021/W40_FaithLoveHope/W40_Distribution_of_FaithLovehope.png)
+
 ### Paul's Words
 ![Paul's Words](https://github.com/inkyscope/inkyscroll/blob/master/2021/W21_PaulWords/PaulWords.png)
 
