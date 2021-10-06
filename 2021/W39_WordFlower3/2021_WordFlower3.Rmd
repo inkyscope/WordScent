@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 ```{r}
 library(ggforce)
 library(tidyverse)
@@ -17,7 +18,7 @@ library(paletteer)
 word_jul <- c("act", "do", "distinguish", "fashion", "counsel", "place", "brighten", "mourn")
 
 paletteer_d("Redmonder::qMSOGn")
-cols_jul <- c("#E3DED1FF", "#455F51FF", "#549E39FF", "#8AB833FF", "#C0CF3AFF", "#029676FF", "#4AB5C4FF", "#098975FF")
+cols_jul <- c("#A9BA9DFF", "#455F51FF", "#549E39FF", "#8AB833FF", "#C0CF3AFF", "#029676FF", "#4AB5C4FF", "#098975FF")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
