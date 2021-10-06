@@ -9,11 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-
-
-```
-
 
 ```{r}
 library(ggforce)
@@ -21,9 +16,9 @@ library(tidyverse)
 library(paletteer)
 
 word_apr <- c("show", "nurse", "make", "let", "keep", "drive", "bring", "dispose")
-paletteer_d("ggthemes::Nuriel_Stone") ##april_colors
-cols_apr <- c("#8175AAFF", "#6FB899FF", "#31A1B3FF", "#CCB22BFF", "#A39FC9FF", "#94D0C0FF", "#959C9EFF", "#027B8EFF", "#9F8F12FF")
 
+paletteer_d("palettetown::electrike") ##april_colors
+cols_apr <- c("#98D880FF", "#68B078FF", "#181818FF", "#508858FF", "#405040FF", "#F8E820FF", "#D0D018FF", "#A8C040FF")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
@@ -47,7 +42,7 @@ plot_legend_labels <-
   )
 
 fill_apr <- tibble(line = word_apr, 
-                             fill = pals::parula(8))
+                   fill = cols_apr)
 
 plot_legend_data <-
   df_flower %>% 
@@ -155,8 +150,8 @@ plot_may <-
 ```{r}
 word_jun <- c("sustain", "shine", "spread", "surround", "set", "silence", "separate", "show")
 
-paletteer_d("palettetown::electrike") ##june_colors
-cols_jun <- c("#98D880FF", "#68B078FF", "#181818FF", "#508858FF", "#405040FF", "#F8E820FF", "#D0D018FF", "#A8C040FF")
+paletteer_d("ggsci::light_green_material") ##june_colors
+cols_jun <- c("#8175AAFF", "#6FB899FF", "#31A1B3FF", "#CCB22BFF", "#A39FC9FF", "#94D0C0FF", "#959C9EFF", "#027B8EFF")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
@@ -225,4 +220,3 @@ final <- plot_apr|plot_may|plot_jun
 
  ggsave(here::here("2021", "W27_WordFlower2", "2021_WordFlower2.png"), dpi = 300, width = 45, height = 15, units = "cm")
 ```
-
