@@ -41,7 +41,7 @@ job_words <- job %>%
   filter(!word %in% c("thou", "thy", "thine", "hast", "art", "mine",
                       "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldes", "lo")) %>% 
   count(character, word, sort = T) %>% 
-  slice(1:30)
+  slice(1:40)
 ```
 
 
@@ -71,7 +71,6 @@ pal <- c("#1b5e65", "#b35253") # job, friends
 
 plot <- df %>% 
   ggplot() +
-  geom_vline(xintercept = 0, color = pal[3], size = 0.6) +
   as_reference(
     geom_rect(aes(xmin = -0.5,
                   xmax = -0.5 + (prc),
@@ -106,19 +105,19 @@ plot <- df %>%
     bg_layer = "Friends",
     blend_type = "in"
   ) +
-  annotate("text", x = -0.15, y = 27.5, 
+  annotate("text", x = -0.12, y = 43, 
            label = "More Job", angle = 90, 
            color = pal[1],  fontface = "bold", size = 9) +
-  annotate("text", x = 0.15, y = 5, 
+  annotate("text", x = 0.12, y = 6.5, 
            label = "More His Friends", angle = 270, 
            color = pal[2],  fontface = "bold", size = 9) +
   #caption
-  annotate("text", x = -0.48, y = 12.5, 
+  annotate("text", x = -0.48, y = 17.5, 
            label = "Source: KJV | Graphic: Sung Inkyung", 
            angle = 90,
            hjust = 0, 
            color = "grey30", 
-           size = 5) +
+           size = 6) +
   scale_size_identity() +
   coord_cartesian(expand = FALSE, 
                   clip = "off") +
@@ -130,10 +129,10 @@ plot <- df %>%
                                    color = NA),
     plot.title = element_text(face = "bold", 
                               hjust = 0.5, 
-                              size = 30, 
+                              size = 34, 
                               margin = margin(5, 0, 20, 0)),
     plot.margin = margin(20, 0, 20, 0)
   )
 
-ggsave(here::here("2021", "W44_Job_Friends", "Job_Friends.png"), width = 30, height = 35, units = "cm")
+ggsave(here::here("2021", "W44_Job_Friends", "Job_Friends.png"), width = 32, height = 40, units = "cm")
 ```
