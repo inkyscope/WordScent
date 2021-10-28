@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Job vs His Friends
+![Job vs His friends](https://github.com/inkyscope/inkyscroll/blob/master/2021/W44_Job_Friends/Job_Friends.png)
+
 ### Distribution of FAITH, LOVE, HOPE
 ![FAITH, LOVE, HOPE](https://github.com/inkyscope/inkyscroll/blob/master/2021/W40_FaithLoveHope/W40_Distribution_of_FaithLovehope.png)
 
