@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Word Calendar
+![Word Calendar](https://github.com/inkyscope/inkyscroll/blob/master/2021/W45_WordCalendar/WordCalendar.png)
+
 ### Job vs His Friends
 ![Job vs His friends](https://github.com/inkyscope/inkyscroll/blob/master/2021/W44_Job_Friends/Job_Friends.png)
 
