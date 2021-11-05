@@ -1,4 +1,4 @@
-# Morning by Morning: WordScent
+# Morning by Morning: WordSpice
 a personal take on words in bible(KJV and NIV)
 
 "The speech, the Word which establishes and binds together the fellowship, is accompanied by silence. ... We are silent **before** hearing the
