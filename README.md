@@ -1,5 +1,5 @@
-# inkyscroll
-a personal sketch on the bible word network 
+# Morning by Morning: WordScent
+a personal take on words in bible(KJV and NIV)
 
 "The speech, the Word which establishes and binds together the fellowship, is accompanied by silence. ... We are silent **before** hearing the
 Word because our thoughts are already directed to the Word, ... We are silent **after** hearing the Word because the Word is still speaking and dwelling within us"  
