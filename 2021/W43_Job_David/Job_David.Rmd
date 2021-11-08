@@ -1,0 +1,317 @@
+---
+title: "Job & David"
+author: "Sung Inkyung"
+date: '2021 10 31'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source[Textmining with R by Julia Silge & David Robinson] (https://www.tidytextmining.com/twitter.html)
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(scales)
+```
+
+
+```{r}
+df <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  filter(book %in% c("Job", "Psalms")) %>% 
+  select(-c(citation, verse))
+
+job <- df %>% 
+  filter(book == "Job",
+         chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31")) 
+
+david <- df %>% 
+  filter(book == "Psalms",
+         chapter %in% c(3:9, 11:32, 34:41, 51:65, 68:70, "86", "101", "103", 108:110, "122", "124", "131", "133", 138:145)) 
+
+words <- c("thou", "thy", "thine", "hast", "art", "mine", "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldes", "lo")
+
+job_david <- bind_rows(job, david) %>% 
+  mutate(person = case_when(book == "Job" ~ "Job",
+                            book == "Psalms" ~ "David")) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(get_stopwords()) %>% 
+  filter(!word %in% words,
+         str_detect(word, "[a-z]")) 
+```
+
+
+```{r}
+df_tf_idf <- job_david %>% 
+  group_by(person) %>% 
+  count(word, sort = T) %>% 
+  filter(n > 10) %>% 
+  slice_max(word, n = 50) %>% 
+  arrange(word) %>% 
+  ungroup() %>% 
+  mutate(word = factor(word, unique(word))) %>% 
+  ungroup() %>% 
+  bind_tf_idf(word, person, n) %>% 
+  arrange(desc(tf_idf)) %>% 
+  mutate(tf_idf = round(tf_idf, 4)) %>% 
+  filter(!word %in% c("us", "also", "one"))
+```
+
+
+```{r}
+plot1 <- df_tf_idf %>% 
+  group_by(person) %>% 
+  slice_max(tf_idf, n = 15) %>% 
+  ungroup() %>% 
+  ggplot(aes(tf_idf, reorder_within(word, tf_idf, person), 
+             fill = person)) +
+  geom_col(alpha = 0.7, 
+           show.legend = F) +
+  geom_text(aes(label = n,
+                hjust = 1.2,
+                size = 3, 
+                color = "#fbe9c3")) +
+  scale_fill_manual(values = c("Job" = "#15404e", "David" = "#4288ae")) +
+  scale_y_reordered() +
+  facet_wrap(~person, 
+             scales = "free") +
+  labs(x = "",
+       y = "",
+       title = "<span style ='color:#15404e'>**Job**</span> and <span style = 'color:#4288ae'>**David**</span>",
+       subtitle = "Top 15 of highest tf_idf words by Job and David") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#fbe9c3",
+                                       color = NA),
+        plot.title = element_markdown(size = 24, 
+                                      hjust = 0.5, 
+                                      margin = margin(b = 5)),
+        plot.subtitle = element_markdown(size = 16, 
+                                      hjust = 0.5, 
+                                      margin = margin(b = 15)),
+        axis.text.y = element_text(size = 12, 
+                                   face = "bold", 
+                                   colour = "#3e445e", 
+                                   margin = margin(0,-5,0,0)),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        strip.text.x = element_text(size = 12,
+                                    face = "bold", 
+                                    colour = "#3e445e"),
+        plot.margin = margin(20,20,30,30))
+
+plot1
+
+ggsave(here::here("2021", "W43_Job_David", "Job_David.png"), dpi = 300, width = 24, height = 16, units = "cm")
+```
+
+
+```{r}
+frequency <- job_david %>% 
+  group_by(person) %>% 
+  count(word, sort = T) %>% 
+  mutate(freq = round(n/n(), 3))
+
+frequency <- frequency %>% 
+  select(person, word, freq) %>% 
+  pivot_wider(names_from = person, 
+              values_from = freq) %>% 
+  arrange(Job, David)
+
+ggplot(frequency, aes(Job, David)) +
+  geom_jitter(alpha = 0.3,
+              size = 2.5, 
+              width = 0.25,
+              height = 0.25) +
+  geom_text(aes(label = word),
+            check_overlap = TRUE, 
+            vjust = 1.5) +
+   geom_abline(color = "#e95c4b",
+              size = 1.2) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  labs(title = "Comparing the frequency of words used by Job and David") +
+  theme_light()
+```
+
+
+```{r}
+# Comparing word usage
+
+word_ratios <- job_david %>% 
+  count(word, person) %>% 
+  group_by(word) %>% 
+  filter(sum(n) >= 10) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = person,
+              values_from = n,
+              values_fill = 0) %>% 
+  mutate_if(is.numeric, list(~(. + 1))) %>% 
+  mutate(logratio = log(Job / David),
+         hjust = ifelse(logratio > 0, 1.1, -0.1)) %>% 
+  arrange(desc(logratio)) 
+```
+        
+        
+        title = "<span style = 'color:#4288ae'>**More from David**</span> and <span style ='color:#15404e'>**More from Job**</span>",
+       caption = "Source: KJV | Graphic: Sung Inkyung"
+
+```{r}
+plot2 <- word_ratios %>% 
+  group_by(logratio < 0) %>% 
+  slice_max(abs(logratio), n = 15) %>% 
+  ungroup() %>% 
+  mutate(word = reorder(word, logratio)) %>% 
+ggplot(aes(logratio, word, fill = logratio < 0)) +
+  geom_col(width = 1.5,
+           show.legend = FALSE) +
+  geom_text(aes(label = word,
+                hjust = hjust),
+            size = 3.5,
+            color = "#dbe5f1") +
+  scale_fill_manual(values = c("#15404e", "#4288ae")) +
+  scale_y_discrete(breaks = NULL) +
+  annotate("text",
+           x = 0.07, y = 8,
+           label = "More from David",
+           color = "#4288ae",
+           size = 5.5,
+           fontface = "bold",
+           angle = 90) +
+  annotate("text",
+           x = - 0.08, y = 23,
+           label = "More from Job",
+           color = "#15404e",
+           size = 6,
+           fontface = "bold",
+           angle = 90) +
+  labs(x = "",
+       y = "") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#fbe9c3",
+                                       color = NA),
+        plot.title = element_markdown(size = 28,
+                                      hjust = 0.5, 
+                                      margin = margin(b = 7)),
+        plot.caption = element_text(size = 10,
+                                  colour = "#4d8679", 
+                                  hjust = 0.5, 
+                                  margin = margin(t = 20,  b = 5)),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank())
+
+plot2
+
+ggsave(here::here("2021", "W43_Job_David", "Job_David_Ratios.png"), dpi = 300, width = 24, height = 16, units = "cm")
+
+```
+
+### Source[tidymodels by Julia Silge] (https://juliasilge.com/blog/netflix-titles/)
+```{r do not run yet}
+#building models for coming future project:#Error in svm_linear() : could not find function "svm_linear"
+
+library(tidymodels)
+
+job_david_model <- bind_rows(job, david) %>% 
+  mutate(person = case_when(book == "Job" ~ "Job",
+                            book == "Psalms" ~ "David"))
+
+set.seed(123)
+
+job_david_split <- job_david_model %>% 
+  select(person, text) %>% 
+  initial_split(strata = person)
+
+job_david_train <- training(job_david_split)
+job_david_test <- testing(job_david_split)
+
+set.seed(123)
+job_david_folds <- vfold_cv(job_david_train, strata = person)
+job_david_folds
+
+#feature engineering
+library(textrecipes)
+library(themis)
+
+job_david_rec <- recipe(person ~ text,
+                        data = job_david_train) %>% 
+  step_tokenize(text) %>% 
+  step_tokenfilter(text, max_tokens = 1e3) %>% 
+  step_tfidf(text) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_smote(person)
+
+job_david_rec
+```
+
+
+```{r}
+svm_spec <- svm_linear() %>% # svm_linear()
+  set_mode("classification") %>%
+  set_engine("LiblineaR")
+
+job_david_wf <- workflow() %>% 
+  add_recipe(job_david_rec) %>% 
+  add_modeld(svm_spec)
+
+job_david_wf
+
+doParallel::registerDoParallel()
+set.seed(123)
+svm_rs <- fit_resamples(
+  job_david_wf,
+  job_david_folds,
+  metrics = metric_set(accuracy, recall, precision),
+  control = control_resamples(save_pred = TRUE)
+)
+
+collect_metrics(svm_rs)
+
+svm_rs %>% 
+  conf_mat_resampled(tidy = FALSE) %>% 
+  autoplot()
+
+#fit and evaluate final model
+
+final_fitted <- last_fit(
+  job_david_wf,
+  job_david_split,
+  metrics = metric_set(accuracy, recall, precision)
+  )
+  
+  collect_metrics(final_fitted)
+)
+
+collect_predictions(final_fitted) %>% 
+  conf_mat(person, .pred.class)
+
+job_david_fit <- pull_workflow_fit(final_fitted$.workflow[1])
+
+tidy(job_david_fit) %>% 
+  arrange(estimate)
+
+tidy(job_david_fit) %>% 
+  filter(term != "Bias") %>% 
+  group_by(sign = estimate > 0) %>% 
+  slice_max(abs(estimate), n = 15) %>% 
+  ungroup() %>% 
+  mutate(term = str_remove(term, "tfidf_description_"),
+         sign = if_else(sign, "More from David", "More from Job")) %>% 
+  ggplot(aes(abs(estimate), fct_reorder(term, absestimate)),
+         fill = sign) +
+  geom_col(alpha = 0.8,
+           show.legend = FALSE) +
+  facet_wrap(~sign, 
+             scales = "free") +
+  labs(x = "Coefficient from linear SVM",
+       y = "",
+       title = "Which words are most predictive of Job vs David",
+       subtitle = "Words selected chapters from book of Job and Psalms in the bible")
+ 
+```
+
