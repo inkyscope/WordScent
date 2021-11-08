@@ -168,46 +168,45 @@ ggplot(aes(logratio, word, fill = logratio < 0)) +
            show.legend = FALSE) +
   geom_text(aes(label = word,
                 hjust = hjust),
-            size = 3.5,
+            size = 4.5,
             color = "#dbe5f1") +
   scale_fill_manual(values = c("#15404e", "#4288ae")) +
   scale_y_discrete(breaks = NULL) +
   annotate("text",
-           x = 0.07, y = 8,
+           x = 0.085, y = 7.7,
            label = "More from David",
            color = "#4288ae",
-           size = 5.5,
+           size = 10,
            fontface = "bold",
            angle = 90) +
   annotate("text",
-           x = - 0.08, y = 23,
+           x = - 0.095, y = 23,
            label = "More from Job",
            color = "#15404e",
-           size = 6,
+           size = 10,
            fontface = "bold",
            angle = 90) +
   labs(x = "",
-       y = "") +
+       y = "",
+       caption = "Source: KJV | Graphic: Sung InKyung") +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_rect(fill = "#fbe9c3",
                                        color = NA),
-        plot.title = element_markdown(size = 28,
-                                      hjust = 0.5, 
-                                      margin = margin(b = 7)),
-        plot.caption = element_text(size = 10,
+        plot.caption = element_text(size = 11,
                                   colour = "#4d8679", 
                                   hjust = 0.5, 
-                                  margin = margin(t = 20,  b = 5)),
+                                  margin = margin(t = 20)),
         axis.title.y = element_blank(),
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.grid.major = element_blank())
+        panel.grid.major = element_blank(),
+        plot.margin = margin(20, 20, 20, 20))
 
 plot2
 
-ggsave(here::here("2021", "W43_Job_David", "Job_David_Ratios.png"), dpi = 300, width = 24, height = 16, units = "cm")
+ggsave(here::here("2021", "W43_Job_David", "Job_David_Ratios.png"), dpi = 300, width = 28, height = 24, units = "cm")
 
 ```
 
