@@ -20,6 +20,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Word Calendar
 ![Word Calendar](https://github.com/inkyscope/inkyscroll/blob/master/2021/W45_WordCalendar/WordCalendar.png)
 
+### Job ❤️‍🔥 David
+![Job vs David](https://github.com/inkyscope/WordSpice/blob/master/2021/W43_Job_David/Job_David_Ratios.png)
+
 ### Job vs His Friends
 ![Job vs His friends](https://github.com/inkyscope/inkyscroll/blob/master/2021/W44_Job_Friends/Job_Friends.png)
 
