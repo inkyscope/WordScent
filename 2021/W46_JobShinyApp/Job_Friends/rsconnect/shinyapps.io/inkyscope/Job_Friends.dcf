@@ -1,0 +1,14 @@
+name: Job_Friends
+title: Job_Friends
+username:
+account: inkyscope
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5078783
+bundleId: 5235346
+url: https://inkyscope.shinyapps.io/Job_Friends/
+when: 1636531557.73905
+lastSyncTime: 1636531557.73905
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: job_his_friends.PNG

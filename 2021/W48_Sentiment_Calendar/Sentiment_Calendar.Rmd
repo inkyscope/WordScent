@@ -1,0 +1,136 @@
+---
+title: "sentiment_calendar"
+author: "Sung Inkyung"
+date: '2021 11 10'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(lubridate)
+```
+
+
+```{r}
+word_calendar <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/wordcalendar.csv") %>% 
+  select(month, day, word) %>% 
+  mutate(month = month.name[month])
+```
+
+
+```{r}
+# Calendar
+cal <- tibble(
+  date = seq(ymd(20210101), ymd(20211231), by = 1)
+) %>% 
+  mutate(week = as.numeric(format(date, "%U"))) 
+  
+sentiment_calendar <- cbind(cal, word_calendar) %>% 
+  left_join(get_sentiments("nrc")) %>%
+  mutate_if(is.character, ~replace(., is.na(.), "neutral")) %>% 
+  group_by(date, sentiment, word) %>% 
+  mutate(counts = n()) %>% 
+  mutate(weekday = weekdays(date),
+         weekday = case_when(weekday == "일요일" ~ "Sun",
+                             weekday == "월요일" ~ "Mon",
+                             weekday == "화요일" ~ "Tue",
+                             weekday == "수요일" ~ "Wed",
+                             weekday == "목요일" ~ "Thur",
+                             weekday == "금요일" ~ "Fri",
+                             weekday == "토요일" ~ "Sat"),
+         weekday = factor(weekday, c("Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat")),
+         month = factor(month, c("January", "February", "March", "April",
+                                 "May", "June", "July", "August",
+                                 "September", "October", "November", "December")),
+         week = week(date),
+         label = paste0(weekday, "<br>", day))
+
+#View(sentiment_calendar)
+
+
+  #duplicated(sentiment_calendar)
+
+duplicates <- sentiment_calendar %>% 
+  group_by(date) %>% 
+  summarise(counts = n())
+
+```
+
+```{r}
+library(paletteer)
+paletteer_d("basetheme::royal")
+```
+
+
+
+```{r}
+pals <- c(positive = "#1175BBFF",
+          negative = "#B33941FF",
+          trust = "#2E8B57FF", 
+          anticipation = "#4AC6AEFF",
+          fear = "#997950FF",
+          joy = "#E93FBCFF",
+          anger = "#EF7215FF",
+          sadness = "#7852A9FF",
+          surprise = "#E27069FF",
+          disgust = "#DBA520FF",
+          neutral = "#CBC4BC")
+
+plot <- sentiment_calendar %>% 
+  ggplot(aes(x = day, y = fct_rev(month),
+             fill = sentiment, label = label)) +
+  geom_tile(color = "white", 
+            width = 1, height = 0.75) +
+  geom_richtext(fill = NA,
+                label.color = NA,
+                color = "white",
+                size = 2.5) +
+  scale_fill_manual(values = pals) +
+  labs(x = "",
+       y = "",
+       fill = "",
+       title = "Daily Sentiment 2021",
+       subtitle = "Sentiment color palette:<br>
+       <span style = 'color:#1175BBFF'>**positive**</span>,
+       <span style = 'color:#B33941FF'>**negative**</span>,
+       <span style = 'color:#2E8B57FF'>**trust**</span>,
+       <span style = 'color:#4AC6AEFF'>**anticipation**</span>,
+       <span style = 'color:#997950FF'>**fear**</span>,
+       <span style = 'color:#E93FBCFF'>**joy**</span>,
+       <span style = 'color:#EF7215FF'>**anger**</span>,
+       <span style = 'color:#7852A9FF'>**sadness**</span>,
+       <span style = 'color:#E27069FF'>**surprise**</span>,
+       <span style = 'color:#DBA520FF'>**disgust**</span>,
+       <span style = 'color:#CBC4BC'>**neutral**</span>",
+       caption = "Source: Personal Daily Word Table | Graphic: Sung Inkyung"
+       ) +
+  theme(legend.position = "none",
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(size = 18, 
+                                  hjust = 0.5,
+                                  face = "bold",
+                                  margin = margin(t = 10, b = 5)),
+        plot.subtitle = element_markdown(size = 12,
+                                         hjust = 0.5,
+                                         lineheight = 0.7,
+                                         margin = margin(b = 10)),
+        plot.caption = element_text(size = 9,
+                                    hjust = 0.5,
+                                    margin = margin(b = 10)),
+        panel.grid.major.y = element_line(color = "#ded6cc"),
+        axis.title = element_blank(),
+        axis.text.y = element_text(size = 11, 
+                                   face = "bold"),
+        axis.text.x = element_blank(),
+        axis.ticks = element_blank())
+
+ggsave(here::here("2021", "W48_Sentiment_Calendar", "Sentiment_Calendar.png"), width = 20, height = 16, units = "cm")
+
+```
+
