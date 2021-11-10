@@ -17,6 +17,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
 --------------------------------------------------------------------------------------------------------------------------------------
+### Sentiment Calendar
+![Sentiment Calendar](https://github.com/inkyscope/WordSpice/blob/master/2021/W48_Sentiment_Calendar/Sentiment_Calendar.png)
+
 ### Word Calendar
 ![Word Calendar](https://github.com/inkyscope/inkyscroll/blob/master/2021/W45_WordCalendar/WordCalendar.png)
 
