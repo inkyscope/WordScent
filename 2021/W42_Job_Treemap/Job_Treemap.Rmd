@@ -1,0 +1,77 @@
+---
+title: "Job Treemap"
+author: "Sung Inkyung"
+date: '2021 11 11'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(treemapify)
+library(paletteer)
+```
+
+
+```{r}
+job_stop_words <- c("thou", "thy", "thine", "hast", "art", "mine",
+                      "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldes", "lo")
+
+
+job <- readr::read_csv(here::here("data/bible_kjv_new.csv")) %>% 
+    filter(book == "Job") %>% 
+    select(-c(book, citation, verse)) %>% 
+    filter(chapter %in% 4:37) %>% 
+    mutate(
+        character = case_when(
+            chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31") ~ "Job",
+            chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+            chapter %in% c("8", "18", "25") ~"Bildad",
+            chapter %in% c("11", "20") ~ "Zophar",
+            chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+            TRUE ~ as.character(chapter)
+        )) %>% 
+  unnest_tokens(word, text) %>%
+  filter(!is.na(word),
+         !word %in% job_stop_words) %>% 
+  anti_join(stop_words) %>% 
+  group_by(character, word) %>% 
+  summarise(count = n()) %>% 
+  group_by(character) %>% 
+  mutate(total = sum(count)) %>% 
+  slice_max(n = 5, order_by = count)
+```
+
+
+```{r}
+map_tree <- job %>% 
+  ggplot(aes(area = total, fill = count,
+             subgroup = word, label = character)) +
+  geom_treemap(size = 0) +
+  geom_treemap_text(place = "middle", 
+                    color = "#796e65",
+                    size = 13, 
+                    min.size = 0) +
+  geom_treemap_subgroup_border(color = "#430252", size = 0.4) +
+  geom_treemap_subgroup_text(color = "#ffffff",
+                             place = "topleft",
+                             size = 18, min.size = 3) +
+  scale_fill_paletteer_c("grDevices::Cold") +
+  labs(title = "Top 5 Words from Job, Eliphaz, Bildad, Zophar and Elihu", 
+       caption = "Source: KJV | Graphic: Sung Inkyung") +
+  theme(legend.position = "bottom",
+        legend.key.width = unit(1.5, "cm"),
+        plot.title = element_text(size = 20,
+                                  margin = margin(b = 10)),
+        plot.caption = element_text(size = 11, 
+                                    margin = margin(t = 20)))
+
+map_tree
+
+ggsave(here::here("2021", "W42_Job_Treemap", "Job_Treemap.png"), width = 31, height = 22, units = "cm")
+```
+
