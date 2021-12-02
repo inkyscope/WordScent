@@ -26,8 +26,11 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Job ❤️‍🔥 David
 ![Job vs David](https://github.com/inkyscope/WordSpice/blob/master/2021/W43_Job_David/Job_David_Ratios.png)
 
-### Job vs His Friends
+### Job vs His Friends II
 ![Job vs His friends](https://github.com/inkyscope/inkyscroll/blob/master/2021/W44_Job_Friends/Job_Friends.png)
+
+### Job vs His Friends I
+![Job vs His friends](https://github.com/inkyscope/WordSpice/blob/master/2021/W42_Job_Treemap/Job_Treemap.png)
 
 ### Distribution of FAITH, LOVE, HOPE
 ![FAITH, LOVE, HOPE](https://github.com/inkyscope/inkyscroll/blob/master/2021/W40_FaithLoveHope/W40_Distribution_of_FaithLovehope.png)
