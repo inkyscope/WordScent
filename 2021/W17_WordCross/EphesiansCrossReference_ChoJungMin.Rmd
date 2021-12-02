@@ -67,7 +67,7 @@ nodes <- tibble(id = unique(c(links$from, links$to))) %>%
 plot_eph <- visNetwork(nodes, links, width = "100%", height = "900px",
                       main = list(text = "<b>A B I D E&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;MAY 2021<b>",
                                   style = "color:#314757;font-size:30px;font-face:bold; text-align:center;"),
-                      submain = list(text = "It was about how to live as a chuch with EPHESIANS delivered by Pastor Cho Jung Min<br>between 2020.11.22 and 2021.3.7 for 16weeks at Basic Church in Seoul Korea.<br>Paster Cho's Sermons have the beauty of crisscrossing Bible.",
+                      submain = list(text = "Illustrated below that it links each verse of Ephesians with other biblical books.<br>It is reflected series of sermons delivered by Pastor Cho Jung Min<br>between 2020.11.22 and 2021.3.7 for 16weeks at Basic Church in Seoul Korea.",
                                      style = "color:#314757;font-size:24px;text-align:center;"),
                       footer = list(text = "Source: www.openbible.info | Graphic: Sung Inkyung | Credit: @carathompson",
                                     style = "color:#314757;font-size:12px;text-align:center;")) %>% 
