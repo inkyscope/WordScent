@@ -32,6 +32,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Job vs His Friends I
 ![Job vs His friends](https://github.com/inkyscope/WordSpice/blob/master/2021/W42_Job_Treemap/Job_Treemap.png)
 
+### HOLY, SANTIFY, CONSECRATE, HALLOW
+![HOLY, SANTIFY, CONSECRATE, HALLOW](https://github.com/inkyscope/WordSpice/blob/master/2021/W41_DuboisChallenge/HolySantify.png)
+
 ### Distribution of FAITH, LOVE, HOPE
 ![FAITH, LOVE, HOPE](https://github.com/inkyscope/inkyscroll/blob/master/2021/W40_FaithLoveHope/W40_Distribution_of_FaithLovehope.png)
 
