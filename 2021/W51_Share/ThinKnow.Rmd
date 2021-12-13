@@ -1,0 +1,103 @@
+---
+title: "W51_ThinKnow"
+author: "Sung Inkyung"
+date: '2021 12 13'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source[ggsankey package] (https://github.com/davidsjoberg/ggsankey)
+```{r}
+#devtools::install_github("davidsjoberg/ggsankey")
+
+library(tidyverse)
+library(ggsankey)
+```
+
+
+```{r}
+pals <- c("Know" = "#0f90ef", "Think" = "#bed55a")
+
+df <- tribble(
+  ~title, ~word,
+  "Think", "true",
+  "Think", "noble",
+  "Think", "right",
+  "Think", "pure",
+  "Think", "lovely",
+  "Think", "admirable",
+  "Think", "excellent",
+  "Think", "praiseworthy",
+  "Know", "my teaching",
+  "Know", "my way of life",
+  "Know", "my purpose",
+  "Know", "faith",
+  "Know", "patience",
+  "Know", "love",
+  "Know", "endurance",
+  "Know", "persecution",
+  "Know", "suffering"
+) 
+
+df_sankey <- df %>% 
+  make_long(title, word) %>% 
+  mutate(pos = ifelse(next_x == "word", 1),
+         color = if_else(!is.na(next_node), pals[node], "grey60"))
+
+df_sankey %>% 
+  filter(node %in% c("Know", "Think")) %>% 
+  count(node, color, sort = T)
+
+```
+
+```{r}
+plot <- ggplot(df_sankey, 
+              aes(x = x, next_x = next_x, node = node, next_node = next_node, fill = color, label = node)) +
+  geom_sankey() +
+  geom_sankey_text(aes(hjust = if_else(x == "word", 0.5, 0),
+                       vjust = if_else(x == "word", 0.4, 0)),
+                   size = 6) +
+  scale_fill_identity() +
+  annotate("text",
+           x = 1.063,
+           y = 17,
+           label = "THIN",
+           size = 20,
+           color = "#bed55a",
+           ) +
+  annotate("text",
+           x = 1.216,
+           y = 17,
+           label = "KNOW",
+           size = 20,
+           color = "#0f90ef",
+           ) +
+  annotate("text",
+           x = 1.038,
+           y = 4.6,
+           label = "Philippians 4:8",
+           size = 4,
+           ) +
+  annotate("text",
+           x = 1.032,
+           y = -6,
+           label = "2 Timothy 3:10",
+           size = 3.5
+           ) +
+  labs(caption = "Graphic: Sung Inkyung") +
+  coord_cartesian(expand = FALSE,
+                  clip = "off") +
+  theme(legend.position = "none",
+       axis.text = element_blank(),
+       axis.title = element_blank(),
+       axis.ticks = element_blank(),
+       panel.grid = element_blank(),
+       plot.caption = element_text(hjust = 0.5,
+                                   size = 13,
+                                   color = "gray60"))
+
+ggsave(here::here("2021", "W51_Share", "ThinKnow.png"), width = 40, height = 26, units = "cm")
+
+```
