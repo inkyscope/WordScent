@@ -1,0 +1,33 @@
+---
+title: "Share2"
+author: "Sung Inkyung"
+date: '2021 12 15'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+remotes::install_github("AllanCameron/geomtextpath")
+library(geomtextpath)
+library(ggplot2)
+```
+
+
+```{r}
+df <- data.frame(x = c(1, 1000),
+                 y = 1,
+                 text = "All will share alike")
+
+p <- ggplot(df, aes(x, y, label = text)) +
+  geom_textpath(size = 11, 
+                color = "firebrick3",
+                include_line = F) +
+  ylim(c(0.9, 1.1)) +
+  coord_polar() +
+  theme_void()
+
+ggsave(here::here("2021", "W51_Share", "Share2.png"))
+```
