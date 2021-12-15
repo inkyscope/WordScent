@@ -1,0 +1,59 @@
+---
+title: "Self-Discipline"
+author: "Sung Inkyung"
+date: '2021 12 15'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggfx)
+library(ggtext)
+library(paletteer)
+
+#2Timothy1:7 "For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline"
+```
+
+
+```{r}
+df <- read_csv(here::here("2021", "W52_SelfControl", "temp.txt")) %>% 
+  slice(-1) %>% 
+  select(-starts_with("X")) %>% 
+  select(Year, matches(month.abb), Annual) %>% 
+  mutate(across(everything(), ~ replace(.x, .x == -9999.9, NA))) %>%   mutate(across(everything(), as.numeric)) %>% 
+  mutate(anom = Annual - mean(Annual, na.rm = T))
+
+df %>% 
+  count(Year, sort = T) #1871-2020
+
+
+plot <- ggplot() +
+  as_reference(geom_text(aes(x = 1871.5, y = 1,
+                             label = "POWER LOVE SELF-DISCIPLINE"),
+                         size = 40.4, 
+                         hjust = 0,
+                         color = "#ff5757"),
+               id = 'text') +
+  with_blend(geom_tile(data = df, 
+                       aes(x = Year, y = 1, fill = Annual)),
+             bg_layer = "text",
+             blend_type = "overlay",
+             id = "blended") +
+  with_shadow("blended", sigma = 0) +
+  scale_fill_paletteer_c("grDevices::Earth",
+                         na.value = "#e9dc43") +  #ggthemes::Classic Red-Black
+  labs(x = "",
+       y = "",
+       caption = "**Graphic**: Sung Inkyung") +
+  theme_void() +
+  theme(plot.caption = element_markdown(size = 20,
+                                        hjust = 0.5),
+        legend.position = "none") 
+
+ggsave(here::here("2021", "W52_SelfControl", "Self-Discipline.png"), width = 70, height = 15, units = "cm")
+```
+
