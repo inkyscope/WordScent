@@ -23,6 +23,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Word Calendar
 ![Word Calendar](https://github.com/inkyscope/inkyscroll/blob/master/2021/W45_WordCalendar/WordCalendar.png)
 
+### THINKNOW
+![THINKNOW](https://github.com/inkyscope/WordSpice/blob/master/2021/W51_Share/ThinKnow.png)
+
 ### SHARE
 ![Share](https://github.com/inkyscope/WordSpice/blob/master/2021/W51_Share/Share.png)
 
@@ -70,9 +73,6 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 
 ### Ebbs and Flows
 ![Word Surfing](https://github.com/inkyscope/inkyscroll/blob/master/2021/W3_WordRidges/W3_WordEbbsFlows.png)
-
-### WORDS 2020
-![Words](https://github.com/inkyscope/inkyscroll/blob/master/2020/1219_Words_2020/1219_Words_2020.png)
 
 ### Seeds of Words
 ![Seeds](https://github.com/inkyscope/inkyscroll/blob/master/2020/1220_SeedsofWords/1220_SeedsofWords.png)
