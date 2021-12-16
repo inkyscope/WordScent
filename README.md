@@ -32,14 +32,14 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Know about
 ![KnowAbout](https://github.com/inkyscope/WordSpice/blob/master/2021/W50_KnowAbout/KnowAbout.png)
 
-### Job ❤️‍🔥 David
-![Job vs David](https://github.com/inkyscope/WordSpice/blob/master/2021/W43_Job_David/Job_David_Ratios.png)
-
 ### Job vs His Friends II
 ![Job vs His friends](https://github.com/inkyscope/inkyscroll/blob/master/2021/W44_Job_Friends/Job_Friends.png)
 
 ### Job vs His Friends I
 ![Job vs His friends](https://github.com/inkyscope/WordSpice/blob/master/2021/W42_Job_Treemap/Job_Treemap.png)
+
+### Job
+![Job vs David](https://github.com/inkyscope/WordSpice/blob/master/2021/W42_Job_Treemap/Job.png)
 
 ### HOLY, SANTIFY, CONSECRATE, HALLOW
 ![HOLY, SANTIFY, CONSECRATE, HALLOW](https://github.com/inkyscope/WordSpice/blob/master/2021/W41_DuboisChallenge/HolySantify.png)
