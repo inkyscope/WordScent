@@ -1,0 +1,68 @@
+---
+title: "Job"
+author: "Sung Inkyung"
+date: '2021 12 16'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(paletteer)
+```
+
+
+```{r}
+job <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book == "Job") %>% 
+    select(-c(book, citation, verse))
+```
+
+
+```{r}
+df <- job %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  group_by(chapter, word) %>% 
+  count(chapter, word)
+```
+#"magma" (or "A"). "inferno" (or "B"). "plasma" (or "C"). "viridis" (or "D").
+
+```{r}
+ggplot(df, aes(chapter, n, fill = word)) +
+  geom_bar(position = "fill",
+           stat = "identity",
+           width = 1) +
+  geom_text(aes(label = word, size = n *pi),
+            position = position_fill(vjust = 0.5),
+            check_overlap = TRUE,
+            color = "gray10") +
+  scale_x_continuous(breaks = seq(1, 42, 3)) +
+  scale_fill_viridis_d(begin = 0.01, end = 0.95, option = "C") +
+  scale_size_continuous(range = c(0.4, 5)) +
+  coord_cartesian(expand = FALSE,
+                  clip = "off") +
+  labs(title = "Words from Job",
+       subtitle = "Proportion of all words by chapter (1 - 42)",
+       caption = "Source: KJV | Graphic: Sung Inkyung") +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "gray10",
+                                       color = NA),
+        plot.title = element_text(size = 16, 
+                                  color = "#deccd2",
+                                  margin = margin(b = 5)),
+        plot.subtitle = element_text(size = 13,
+                                     color = "#deccd2",
+                                     margin = margin(b = 13)),
+        plot.caption = element_text(size = 5, 
+                                    color = "#deccd2"),
+        plot.margin = margin(20, 5, 20, 5)) 
+
+ggsave(here::here("2021", "W42_Job_Treemap", "Job.png"), width = 15, height = 11, units = "cm")
+  
+```
