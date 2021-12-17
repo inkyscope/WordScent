@@ -20,7 +20,7 @@ library(paletteer)
 
 
 ```{r}
-df <- read_csv(here::here("2021", "W52_SelfControl", "temp.txt")) %>% 
+df <- read_csv(here::here("2021", "W52_Self-Discipline", "temp.txt")) %>% 
   slice(-1) %>% 
   select(-starts_with("X")) %>% 
   select(Year, matches(month.abb), Annual) %>% 
@@ -54,6 +54,6 @@ plot <- ggplot() +
                                         hjust = 0.5),
         legend.position = "none") 
 
-ggsave(here::here("2021", "W52_SelfControl", "Self-Discipline.png"), width = 70, height = 15, units = "cm")
+ggsave(here::here("2021", "W52_Self-Discipline", "Self-Discipline.png"), width = 70, height = 15, units = "cm")
 ```
 
