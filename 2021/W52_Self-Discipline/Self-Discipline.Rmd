@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggfx)
 library(ggtext)
+library(lubridate)
 library(paletteer)
 
 #2Timothy1:7 "For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline"
@@ -20,40 +21,50 @@ library(paletteer)
 
 
 ```{r}
-df <- read_csv(here::here("2021", "W52_Self-Discipline", "temp.txt")) %>% 
-  slice(-1) %>% 
-  select(-starts_with("X")) %>% 
-  select(Year, matches(month.abb), Annual) %>% 
-  mutate(across(everything(), ~ replace(.x, .x == -9999.9, NA))) %>%   mutate(across(everything(), as.numeric)) %>% 
-  mutate(anom = Annual - mean(Annual, na.rm = T))
+drought <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-07-20/drought.csv')
 
-df %>% 
-  count(Year, sort = T) #1871-2020
+df <- drought %>%
+  mutate(start_year = year(valid_start)) %>% 
+  filter(stat_fmt == 2) %>%
+  select(-area_total, -pop_pct, -pop_total) %>%
+  pivot_wider(names_from = "drought_lvl",
+              values_from = "area_pct") %>%
+  mutate(drought = D0 + D1 + D2 + D3 + D4,
+         no_drought = None) %>%
+  select(state_abb, valid_start, start_year,
+         drought, no_drought) %>%
+  pivot_longer(drought:no_drought,
+               names_to = "drought",
+               values_to = "area_pct") %>%
+  mutate(drought = factor(drought, levels = c("no_drought", "drought")))
+
+```
 
 
+```{r}
 plot <- ggplot() +
-  as_reference(geom_text(aes(x = 1871.5, y = 1,
-                             label = "POWER LOVE SELF-DISCIPLINE"),
-                         size = 40.4, 
-                         hjust = 0,
-                         color = "#ff5757"),
+  as_reference(geom_text(aes(x = 2002, y = 1,
+                             label = "P O W E R\nL O V E\nSELF-DISCIPLINE"),
+                         size = 30, 
+                         hjust = 0),
                id = 'text') +
   with_blend(geom_tile(data = df, 
-                       aes(x = Year, y = 1, fill = Annual)),
+                       aes(x = start_year, y = 1, fill = area_pct)),
              bg_layer = "text",
-             blend_type = "overlay",
+             blend_type = "in",
              id = "blended") +
-  with_shadow("blended", sigma = 0) +
-  scale_fill_paletteer_c("grDevices::Earth",
-                         na.value = "#e9dc43") +  #ggthemes::Classic Red-Black
+  with_shadow("blended", sigma = 5) +
+  scale_fill_paletteer_c("ggthemes::Red-Black Diverging") +
+  scale_x_continuous(limits = c(2000, 2021),
+                     expand = c(0, 0)) +
   labs(x = "",
        y = "",
-       caption = "**Graphic**: Sung Inkyung") +
+       caption = "**Data**: Drought Montior | **Graphic**: Sung Inkyung") +
   theme_void() +
-  theme(plot.caption = element_markdown(size = 20,
-                                        hjust = 0.5),
-        legend.position = "none") 
+  theme(legend.position = "none",
+        plot.caption = element_markdown(size = 10,
+                                        margin = margin(r = 10))) 
 
-ggsave(here::here("2021", "W52_Self-Discipline", "Self-Discipline.png"), width = 70, height = 15, units = "cm")
+ggsave(here::here("2021", "W52_Self-Discipline", "Self_Discipline.png"), width = 30, height = 20, units = "cm")
 ```
 
