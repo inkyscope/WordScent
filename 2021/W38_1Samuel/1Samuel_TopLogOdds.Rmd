@@ -1,0 +1,239 @@
+---
+title: "1 Samuel_TopWords"
+author: "Sung Inkyung"
+date: '2021 12 23'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(paletteer)
+
+theme_set(theme_minimal())
+```
+
+
+```{r}
+samuel <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book == "1 Samuel") %>% 
+    select(-c(book, citation, verse))
+
+df_word<- samuel %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words)
+
+p1 <- df_word %>% 
+  count(chapter, word, sort = T) %>% 
+  arrange(desc(n)) %>% 
+  slice_max(n = 100, order_by = n) %>%  
+  ggplot(aes(chapter, n)) +
+  geom_point(color = "firebrick3",
+             size = 3) +
+  geom_text(aes(label = word), vjust = 0.5, hjust = -0.2,
+            check_overlap = T) +
+  scale_x_log10() +
+  labs(x = "Chapter",
+       y = "",
+       title = "Top 100 Words in 1 Samuel")
+```
+
+
+```{r}
+d1 <- df_word %>% 
+  count(chapter, word, sort = T)
+
+d2 <- df_word %>% 
+  count(chapter, word, sort = T) %>% 
+  group_by(chapter) %>% 
+  summarise(total = sum(n))
+
+chapter_words <- d1 %>% 
+  left_join(d2)
+
+
+p2 <- chapter_words %>% 
+  distinct(chapter, word, n, total) %>% 
+  group_by(chapter) %>% 
+  mutate(prc = n/total) %>% 
+  top_n(10, prc) %>% 
+  ungroup() %>% 
+  mutate(word = fct_reorder(word, prc)) %>% 
+  ggplot(aes(x = n/total, y = word, fill = chapter)) +
+  geom_col(fill = "lightblue",
+           show.legend = F) +
+  facet_wrap(~chapter, scales = "free_y") +
+  labs(x = "",
+       y = "",
+       total = "top 10 Words per Chapter by Ratio")
+
+```
+
+
+
+```{r}
+library(tidylo)
+
+p3 <- df_word %>% 
+  count(chapter, word) %>% 
+  bind_log_odds(chapter, word, n) %>% 
+  arrange(desc(log_odds_weighted)) %>% 
+  group_by(chapter) %>% 
+  slice_max(n = 10, order_by = log_odds_weighted) %>% 
+  ungroup() %>% 
+  mutate(word = fct_reorder(word, log_odds_weighted)) %>% 
+  ggplot(aes(log_odds_weighted, word)) +
+  geom_col(fill = "lightblue") +
+  facet_wrap(~ chapter, scales = "free_y") +
+  labs(x = "",
+       y = "",
+       title = "10 Words per Chapter by log odds weighted") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+
+```{r}
+chapter_tfidf <- chapter_words %>% 
+  bind_tf_idf(word, chapter, n) %>% 
+  arrange(desc(tf_idf)) 
+  
+p4 <- chapter_tfidf %>%  
+  group_by(chapter) %>% 
+  slice_max(n = 15, order_by = tf_idf) %>% 
+  ungroup() %>% 
+  mutate(word = fct_reorder(word, tf_idf)) %>% 
+  ggplot(aes(tf_idf, word), fill = chapter) +
+  geom_col(show.legend = F, fill = "lightblue") +
+  facet_wrap(~chapter, scales = "free") +
+  labs(x = "TF-IDF",
+       y = "",
+       title = "Top 15 Words per Chpater by TF-IDF")
+
+```
+
+
+```{r}
+top_freq <- df_word %>% 
+  count(word, sort = T) %>% 
+  arrange(desc(n)) %>% 
+  slice_max(n = 10, order_by = n) %>%
+  filter(!word %in% c("thee", "thou", "thy"))
+
+top_prc <- df_word %>% 
+  count(word, sort = T) %>% 
+  mutate(prc = n/8474 *100,
+         prc = round(prc, 2)) %>% 
+  slice_max(n = 10, order_by = prc) %>% 
+  filter(!word %in% c("thee", "thou", "thy"))
+
+## lord, david, saul, israel, samuuel, philistines
+
+
+top_tfidf <- chapter_words %>% 
+  bind_tf_idf(word, chapter, n) %>% 
+  arrange(desc(tf_idf)) %>% 
+  slice_max(n = 10, order_by = tf_idf)
+
+top_logodds <- df_word %>% 
+  count(chapter, word, sort = T, name = "total") %>% 
+  distinct(chapter, word, total) %>% 
+  bind_log_odds(chapter, word, total) %>% 
+  arrange(desc(log_odds_weighted)) %>% 
+  slice_max(n = 10, order_by = log_odds_weighted)
+
+## top9: saul, jonathan, david, ark, philistines
+## top 20: + eli, lord, samuel, dagon, keilah
+```
+### Source[tidytuesday by @geokaramanis] (https://github.com/gkaramanis/tidytuesday/blob/master/2021/2021-week50/spice_girls_wrapped.R)
+### Source[hershey package by @coolbutuseless] (https://coolbutuseless.github.io/2019/09/24/introducing-the-hershey-package-raw-data-for-the-hershey-vector-fonts/)
+```{r}
+#devtools::install_github("coolbutuseless/hershey")
+
+library(hershey)
+```
+
+
+```{r}
+df_new <- top_logodds %>% 
+  filter(!chapter %in% c(21, 29, 6, 20, 3)) %>% # to remove same words(david , ark)
+  mutate(word = fct_reorder(word, log_odds_weighted),
+         f = total / max(total),
+         i = rev(row_number())) %>% 
+  rowwise() %>% 
+  mutate(word_df = list(create_string_df(as.character(toupper(word)))))
+
+  
+grid_words <- df_new %>% 
+  unnest(cols = word_df) %>% 
+  group_by(word) %>% 
+  mutate(
+    # shift x to right, so that every genre starts at 0
+    x = x -(min(x)),
+    # calculate "length" of each genre
+    l = max(x, na.rm = TRUE),
+    # change x and y so that they fit inside the bars and align to them
+    x = x * 40 / l * f + 0.7,
+    y = y/2.5 + 10 * i + 4.5,
+    # for geom_rect
+    xmin = 0,
+    xmax = total * 3 + 1.7,
+    ymin = min(y, na.rm = TRUE),
+    ymax = max(y, na.rm = TRUE)
+  )
+
+c1 = "#22306E"
+col_bars = c("#413149", "#3317D8", "#F6D5D9", "#DAF37E", "#A7ECBB")
+col_text = c("#DEAD8F", "#AAEEBC", "#D83436", "#4A3854", "#243369")
+```
+
+```{r}
+ggplot(grid_words) +
+  # Rank text
+  geom_text(aes(x = -10, y = 10 * i + 5, 
+                label = paste0("#", 6 - i)), size = 14, 
+            stat = "unique", 
+            fontface = "bold", color = c1) +
+  # Bars
+  geom_rect(aes(xmin = xmin, xmax = xmax,
+                ymin = 10 * i + 0.5, ymax = 10 * i + 9.5,
+                fill = col_bars[6 - i]), stat = "unique") +
+  # Genres inside bars
+  geom_path(aes(x, y, group = interaction(word, char_idx, stroke), 
+                color = col_text[6 - i]), 
+            na.rm = TRUE, 
+            size = 2.5) +
+  # Genres outside bars
+  geom_text(aes(x = xmax + 4, y = 10 * i + 5, 
+                label = str_to_sentence(word)), 
+            hjust = 0, stat = "unique", size = 6, 
+            color = c1) +
+  scale_color_identity() +
+  scale_fill_identity() +
+  coord_cartesian(clip = "off", xlim = c(-12, 75)) +
+  labs(
+    title = "1 Samuel Related Top Words",
+    subtitle = "Based on log odds ratio by chapter",
+    caption = "Source: KJV | Graphic: Sung Inkyung\nCredit:Georgios Karamanis"
+  ) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#5e9e99", 
+                                   color = NA),
+    plot.title = element_text(color = c1, 
+                              size = 26,
+                              face = "bold"),
+    plot.subtitle = element_text(color = c1, 
+                                 size = 20),
+    plot.caption = element_text(color = c1, 
+                                size = 12, hjust = 0.5),
+    plot.margin = margin(20, 20, 20, 20)
+  )
+
+ggsave(here::here("2021", "W38_1Samuel", "1Samuel_TopLogOdds.png"), width = 25, height = 25, units = "cm")
+```
+
