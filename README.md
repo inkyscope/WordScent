@@ -23,6 +23,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Word Calendar
 ![Word Calendar](https://github.com/inkyscope/inkyscroll/blob/master/2021/W45_WordCalendar/WordCalendar.png)
 
+### 1Samuel
+![1Samuel](https://github.com/inkyscope/WordSpice/blob/master/2021/W38_1Samuel/1Samuel_TopLogOdds.png)
+
 ### POWER LOVE SELF-DISCIPLINE
 ![SELF-DISCIPLINE](https://github.com/inkyscope/WordSpice/blob/master/2021/W52_Self-Discipline/Self_Discipline.png)
 
