@@ -1,0 +1,106 @@
+---
+title: "1Samuel_Sentiment"
+author: "Sung Inkyung"
+date: '2021 12 24'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tidyr)
+library(Cairo)
+library(extrafont)
+library(showtext)
+
+loadfonts()
+font_add_google("Staatliches", "Staatliches") # **WINDOW** fails me
+
+theme_set(theme_minimal(base_family = "Britannic Bold"))
+```
+
+
+```{r}
+samuel <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book == "1 Samuel") %>% 
+    select(-c(book, citation, verse))
+
+df_sentiment <- samuel %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  count(chapter, id = row_number(), sentiment) %>% 
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) %>% 
+  mutate(sentiment = positive - negative)
+
+
+plot <- df_sentiment %>% 
+  ggplot(aes(id, y = 1, fill = sentiment))  +
+  geom_tile() +
+  scale_fill_gradient(high = "#DAF37E", low = "#413149",
+                       breaks = c(-1, 1),
+                       labels = c("negative", "positive")) +
+  labs(title = "1Samuel Sentiments Flow (Chapter 1 ~ 31)",
+       caption = "Source: KJV | Graphic: Sung Inkyung") +
+  theme_void() +
+  theme(legend.position = "right",
+        legend.key.height = unit(.7, 'cm'),
+        legend.key.width = unit(.3, 'cm'),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 7),
+        plot.background = element_rect(fill = "#5e9e99", 
+                                   color = NA),
+        plot.title = element_text(color = "#22306E",
+                                  size = 26,
+                                  face = "bold"),
+        plot.subtitle = element_text(color = "#22306E",  
+                                     size = 20),
+        plot.caption = element_text(color = "#22306E", 
+                                    size = 12, hjust = 0.5),
+        plot.margin = margin(20, 20, 20, 20)
+  )
+plot
+```
+
+
+```{r}
+plot_chpater <- df_sentiment %>% 
+  ggplot(aes(id, y = 1, fill = sentiment))  +
+  geom_tile() +
+  scale_fill_gradient(high = "#DAF37E", low = "#413149",
+                     breaks = c(-1, 1),
+                     labels = c("negative", "positive")) +
+  facet_wrap(~chapter, scales = "free_x") +
+  labs(title = "1Samuel Sentiment",
+       subtitle = "Chapter8: Israel asks for a king ",
+       caption = "Source: KJV | Graphic: Sung Inkyung") +
+  theme_void() +
+  theme(legend.position = "top",
+        legend.key.height = unit(.3, 'cm'),
+        legend.key.width = unit(1.1, 'cm'),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 10,
+                                   color = "#22306E"),
+        strip.text = element_text(size = 13, 
+                                  color = "#A7ECBB"),
+        plot.background = element_rect(fill = "#5e9e99", 
+                                   color = NA),
+        plot.title = element_text(color = "#22306E",
+                                  size = 26,
+                                  face = "bold",
+                                  hjust = 0.5,
+                                  margin = margin(b = 6)),
+        plot.subtitle = element_text(color = "#22306E",  
+                                     size = 17.7,
+                                     hjust = 0.5,
+                                     margin = margin(b = 17)),
+        plot.caption = element_text(color = "#22306E", 
+                                    size = 9, hjust = 0.5),
+        plot.margin = margin(20, 20, 20, 20))
+
+ggsave(here::here("2021", "W38_1Samuel", "1Samuel_Sentiment.png"), width = 30, height = 18, units = "cm", type = "cairo")
+```
