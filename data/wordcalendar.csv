@@ -119,7 +119,7 @@
 4,4,28,change,Exodus
 4,4,29,die,Exodus
 4,4,30,dispose,Exodus
-5,5,1,,Exodus
+5,5,1,determine,Exodus
 5,5,2,glorify,1 Samuel
 5,5,3,spare,Exodus
 5,5,4,journey,Exodus
@@ -127,7 +127,7 @@
 5,5,6,return,Exodus
 5,5,7,gain,Exodus
 5,5,8,be,Exodus
-5,5,9,,1 Samuel
+5,5,9,return,1 Samuel
 5,5,10,sing,Exodus
 5,5,11,camp,Exodus
 5,5,12,follow,Exodus
@@ -183,7 +183,7 @@
 7,7,1,might,Exodus
 7,7,2,distinguish,Exodus
 7,7,3,do,Exodus
-7,7,4,,1 Samuel
+7,7,4,number,1 Samuel
 7,7,5,appear,Exodus
 7,7,6,assemble,Exodus
 7,7,7,move,Exodus
@@ -203,7 +203,7 @@
 7,7,21,frustrate,Psalms
 7,7,22,lend,Psalms
 7,7,23,counsel,Psalms
-7,7,24,,Psalms
+7,7,24,probe,Psalms
 7,7,25,mourn,1 Samuel
 7,7,26,confront,Psalms
 7,7,27,scale,Psalms
@@ -281,7 +281,7 @@
 10,10,7,venture,Job
 10,10,8,thwart,Job
 10,10,9,desrve,Job
-10,10,10,,1 Samuel
+10,10,10,help,1 Samuel
 10,10,11,outweight,Job
 10,10,12,reconsider,Job
 10,10,13,cloth,Job
@@ -352,15 +352,15 @@
 12,12,17,ascribe,Job
 12,12,18,prescribe,Job
 12,12,19,die,1 Samuel
-12,12,20,,Job
-12,12,21,,Job
-12,12,22,,Job
-12,12,23,,Job
-12,12,24,,Job
-12,12,25,,Job
+12,12,20,join,Job
+12,12,21,guestion,Job
+12,12,22,"bind, loosen",Job
+12,12,23,detect,Job
+12,12,24,receive,John
+12,12,25,enter,John
 12,12,26,,
 12,12,27,,Job
 12,12,28,,Job
 12,12,29,,Job
 12,12,30,,Job
-12,12,31,,Job
+12,12,31,,

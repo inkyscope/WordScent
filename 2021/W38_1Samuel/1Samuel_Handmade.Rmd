@@ -1,0 +1,55 @@
+---
+title: "handmade"
+author: "Sung Inkyung"
+date: '2021 12 25'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source[genuary by @geokaramanis] (https://github.com/gkaramanis/aRtist/blob/main/genuary/2021/2021-31/2021-31.R)
+```{r}
+library(tidyverse)
+library(hershey)
+library(ggforce)
+library(PNWColors)
+```
+
+```{r}
+###1Samuel 2:18 The boy Samuel served the Lord and wore a special linen garment 19 and the clothes his mother made for him. She would bring new clothes every year, when she and her husband came to offer sacrifices at Shiloh.
+
+string_df <- create_string_df(text = "Handmade",
+                              font = 'cursive') %>% 
+  mutate(i =1)
+
+for (i in 2:5) { 
+  string_i <- create_string_df(text = "Handmade", font = 'cursive')
+  string_i$i <- i
+  string_df <- string_df %>% 
+      add_row(string_i)
+
+}
+
+strings <- string_df %>% 
+  mutate(y = y + i * 30)
+
+pal <- pnw_palette("Starfish", 9, type = "continuous")
+
+ggplot(strings, aes(x, y)) +
+  geom_voronoi_tile(aes(fill = factor((x - y) %% 7)), color = "grey20", size = 0.3) +
+  geom_bspline(aes(group = interaction(i, char_idx, stroke), color = char_idx + i), size = 2) +
+  scale_fill_manual(values = pal) +
+  scale_colour_gradient(low = "#fef4f4",
+                        high = "#ccff00",
+                        guide = "none"
+) +
+  theme_void()+
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "gray97",
+                                       color = NA))
+  
+ggsave(here::here("2021", "W38_1Samuel", "1Samuel_Handmade.png"), dpi = 320, width = 12, height = 16,  units = "cm", type = "cairo" )
+
+```
+
