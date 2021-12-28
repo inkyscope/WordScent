@@ -1,0 +1,113 @@
+---
+title: "1Saumuel_Top5Words"
+author: "Sung Inkyung"
+date: '2021 12 28'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tidylo)
+library(ggridges)
+library(colorspace)
+library(ggfx)
+library(ggtext)
+library(ragg)
+```
+
+
+```{r}
+samuel <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+    filter(book == "1 Samuel") %>% 
+    select(-c(book, citation, verse))
+
+
+df <- samuel %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%  
+  count(chapter, word, sort = T, name = "total") %>% 
+  distinct(chapter, word, total) %>% 
+  bind_log_odds(chapter, word, total) %>% 
+  arrange(desc(log_odds_weighted)) %>% 
+  mutate(id = row_number())
+
+top_word <- df %>% 
+  group_by(word) %>% 
+  slice_max(log_odds_weighted) %>% 
+  arrange(-log_odds_weighted) %>% 
+  ungroup() %>% 
+  slice(1:5) %>% 
+  pull(word)
+
+plot_data <- df %>% 
+  filter(word %in% top_word) %>% 
+  mutate(word = str_to_title(word),
+         word = fct_rev(fct_inorder(word)),
+         x = case_when(word == "Saul" ~ 7,
+                       word == "Jonathan" ~ 10,
+                       word == "David" ~ 14,
+                       word == "Ark" ~ 1,
+                       word == "Philistines" ~ 2,
+                       TRUE ~ 0))
+
+levels(plot_data$word)
+
+```
+
+
+```{r}
+plot <- ggplot() +
+  as_reference(geom_text(data = plot_data,
+                         aes(x = x, y = word, label = word),
+                         vjust = -0.2,
+                         hjust = 0,
+                         size = 13,
+                         fontface = "bold",
+                         color = "#37323e"),
+               id = "text") +
+  with_blend(geom_ridgeline(data = plot_data,
+                            aes(y = word, x = chapter,
+                                height = log_odds_weighted/10,
+                                group = word,
+                                color = word,
+                                fill = word),
+                            size = 1.1,
+                            alpha = 1, 
+                            show.legend = F,
+                            scale = 0.7),
+             bg_layer = "text",
+             blend_type = "xor") +
+  labs(x = "<span style = 'color:#500001'>**1 Samuel Chapters**</span>",
+       y = "",
+       caption = "<span style = 'color:#bfbfbf'>**Source**: KJV | **Graphic**: Sung Inkyung</span>") +
+  scale_x_continuous(limits = c(1, 31),
+                     breaks = seq(1, 31, 5)) +
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_fill_manual(values = c("#243369", "#4A3854", "#D83436", "#AAEEBC",  "#DEAD8F")) +
+  scale_color_manual(values = c("#A7ECBB", "#DAF37E", "#F6D5D9", "#3317D8",  "#413149")) +
+  theme(plot.background = element_rect(fill = "#808080",
+                                       color = NA),
+        panel.background = element_rect(fill = "#808080",
+                                        color = NA),
+        plot.title = element_markdown(size = 20,
+                                      margin = margin(b = 7)),
+        plot.caption = element_markdown(size = 9,
+                                        hjust = 0.95,
+                                        margin = margin(t = 15)),
+        axis.title.x = element_markdown(size = 12),
+        axis.text.x = element_text(size= 11,
+                                   color = "#500001"),
+        axis.ticks.x =element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank(),
+        plot.margin = margin(20, 20, 20))
+  
+ggsave(here::here("2021", "W38_1Samuel", "1Samuel_Top5Words.png"), width = 20, height = 20, units = "cm") 
+```
+
