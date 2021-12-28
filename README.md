@@ -27,6 +27,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ![1Samuel](https://github.com/inkyscope/WordSpice/blob/master/2021/W38_1Samuel/1Samuel_Sentiment.png)
 
 ### 1Samuel
+![1Samuel](https://github.com/inkyscope/WordSpice/blob/master/2021/W38_1Samuel/1Samuel_Top5Words.png)
+
+### 1Samuel
 ![1Samuel](https://github.com/inkyscope/WordSpice/blob/master/2021/W38_1Samuel/1Samuel_TopLogOdds.png)
 
 ### POWER LOVE SELF-DISCIPLINE
