@@ -13,6 +13,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggtext)
 library(lubridate)
+
+library(showtext)
+
+font_add_google(name = "Bebas Neue", family = "Bebas")
+font_add_google(name = "Fira Sans Condensed", family = "Fira")
+
+
+showtext_auto()
+
 ```
 
 
@@ -50,7 +59,8 @@ plot <- df %>%
                  label = word)) +
   geom_tile(fill = "#e0cfbe",
             color = "white") +
-  geom_text(size = 4.5,
+  geom_text(size = 11,
+            family = "Fira",
             color = "gray30") +
   labs(title = "2 0 2 1",
       caption = "Source: Personal Daily Word Table | Graphic: Sung Inkyung") +
@@ -65,25 +75,29 @@ plot <- df %>%
                                   color = NA),
   plot.background = element_rect(fill = "#efe7db",  
                                  color = NA),
-  plot.title = element_text(size = 60,
+  plot.title = element_text(size = 150,
                             color = "#9c956b",
                             hjust = 0.5,
+                            family = "Bebas",
                             margin = margin(t = 5, b = 15)),
-  plot.caption = element_text(size = 14,
+  plot.caption = element_text(size = 45,
                               color = "#9c956b",
                               hjust = 0.5,
                               margin = margin(t =20)),
   axis.title = element_blank(),
+  axis.text.x = element_text(size = 30,
+                             margin = margin(b = 15)),
   axis.text.y = element_blank(),
-  strip.text = element_text(size = 18, 
-                            color = "#a7825d",
+  strip.text = element_text(size = 70, 
+                            color = "#9c956b",
+                            family = "Bebas",
                             face = "bold",
                             hjust = 0.5),
   panel.grid.minor = element_blank(),
   panel.grid.major = element_blank(),
   plot.margin = margin(10, 20, 10, 20))
 
-ggsave(here::here("2021", "W45_WordCalendar", "WordCalendar.png"), dpi = 300, width = 35, height = 35, units = "cm")
+ggsave(here::here("2021", "W45_WordCalendar", "WordCalendar.png"), dpi = 300, width = 30, height = 35, units = "cm")
 
 ```
 
