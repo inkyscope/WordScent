@@ -13,8 +13,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(ggforce)
 library(tidyverse)
+library(patchwork)
 library(paletteer)
+library(showtext)
 
+font_add_google("Pacifico", "pacifico")
+font_add_google("Bebas Neue", "bebas")
+showtext_auto()
+showtext_opts(dpi = 72)
+```
+
+
+```{r}
 word_apr <- c("show", "nurse", "make", "let", "keep", "drive", "bring", "dispose")
 
 paletteer_d("palettetown::electrike") ##april_colors
@@ -64,11 +74,13 @@ plot_apr <-
             aes(x = x, y = y, label = label, 
                 angle = angle_text), 
             color = "#ffdab9", 
-            size = 6, 
-            fontface = "bold") +
+            size = 35, 
+            family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nApril"), 
             color = "#c6f070",  
-            size = 4.5, 
+            size = 18,
+            lineheight = 0.3,
+            family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
@@ -76,7 +88,7 @@ plot_apr <-
   theme_void() +
   theme(
     plot.background = element_rect(fill = "#bcb7dc", 
-                                   color = "#bcb7dc")
+                                   color = NA)
   )
 ```
 
@@ -131,11 +143,13 @@ plot_may <-
             aes(x = x, y = y, label = label, 
                 angle = angle_text), 
             color = "#ffdab9", 
-            size = 6, 
-            fontface = "bold") +
+            size = 35,
+            family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nMay"), 
             color = "#30d5c8",  
-            size = 4.5, 
+            size = 18, 
+            lineheight = 0.3,
+            family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
@@ -143,7 +157,7 @@ plot_may <-
   theme_void() +
   theme(
     plot.background = element_rect(fill = "#c36902", 
-                                   color = "#c36902")
+                                   color = NA)
   )
 ```
 
@@ -197,11 +211,13 @@ plot_jun <-
             aes(x = x, y = y, label = label, 
                 angle = angle_text), 
             color = "#ffdab9", 
-            size = 6, 
-            fontface = "bold") +
+            size = 35, 
+            family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nJune"), 
             color = "#00ff85",  
-            size = 4.5, 
+            size = 18,
+            lineheight = 0.3,
+            family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
@@ -209,7 +225,7 @@ plot_jun <-
   theme_void() +
   theme(
     plot.background = element_rect(fill = "#ff7986", 
-                                   color = "#ff7986")
+                                   color = NA)
   )
 ```
 
