@@ -18,6 +18,10 @@ library(colorspace)
 library(ggfx)
 library(ggtext)
 library(ragg)
+library(showtext)
+
+font_add_google("Staatliches", "staatliches")
+showtext_auto()
 ```
 
 
@@ -67,6 +71,7 @@ plot <- ggplot() +
                          vjust = -0.2,
                          hjust = 0,
                          size = 13,
+                         family = "staatliches",
                          fontface = "bold",
                          color = "#37323e"),
                id = "text") +
@@ -94,13 +99,11 @@ plot <- ggplot() +
                                        color = NA),
         panel.background = element_rect(fill = "#808080",
                                         color = NA),
-        plot.title = element_markdown(size = 20,
-                                      margin = margin(b = 7)),
-        plot.caption = element_markdown(size = 9,
+        plot.caption = element_markdown(size = 24,
                                         hjust = 0.95,
                                         margin = margin(t = 15)),
-        axis.title.x = element_markdown(size = 12),
-        axis.text.x = element_text(size= 11,
+        axis.title.x = element_markdown(size = 30),
+        axis.text.x = element_text(size= 26,
                                    color = "#500001"),
         axis.ticks.x =element_blank(),
         axis.text.y = element_blank(),
