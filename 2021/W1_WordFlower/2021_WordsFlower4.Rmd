@@ -1,14 +1,13 @@
 ---
-title: "WordsFlower3"
+title: "Words Flower4"
 author: "Sung Inkyung"
-date: '2021 10 6'
+date: '2021 12 30'
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 
 ```{r}
 library(ggforce)
@@ -25,23 +24,23 @@ showtext_opts(dpi = 72)
 
 
 ```{r}
-word_jul <- c("act", "do", "distinguish", "fashion", "counsel", "place", "brighten", "mourn")
+word_oct <- c("gather", "venture", "entwine", "vindicate", "shape", "pray", "silence", "prompt")
 
-paletteer_d("Redmonder::qMSOGn")
-cols_jul <- c("#A9BA9DFF", "#455F51FF", "#549E39FF", "#8AB833FF", "#C0CF3AFF", "#029676FF", "#4AB5C4FF", "#098975FF")
+paletteer_d("Redmonder::qMSOYlOr")
+cols_oct <- c("#ACCBF9FF", "#242852FF", "#4A66ACFF", "#629DD1FF", "#297FD5FF", "#7F8FA9FF", "#5AA2AEFF", "#9D90A0FF")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
 x <- cos(k * theta) * cos(theta)
 y <- cos(k * theta) * sin(theta)
 
-samuel <- cut(theta, 2*k, labels = word_jul)
+samuel <- cut(theta, 2*k, labels = word_oct)
 
 df_flower <- tibble(x = x, y = y, samuel = samuel)
 
 plot_legend_labels <- 
   tibble(
-    label = word_jul,
+    label = word_oct,
     angle_degrees = (90 - 360 * (1:8) / 8),
     angle_radians = angle_degrees * pi / 180,
     angle_text = ifelse(angle_degrees < -90, 
@@ -51,16 +50,16 @@ plot_legend_labels <-
     y= 0.5 * sin(angle_radians)
   )
 
-fill_jul <- tibble(line = word_jul, 
-                             fill = cols_jul)
+fill_oct <- tibble(line = word_oct, 
+                             fill = cols_oct)
 
 plot_legend_data <-
   df_flower %>% 
-  left_join(fill_jul, by = c("samuel" = "line")) 
+  left_join(fill_oct, by = c("samuel" = "line")) 
 
 
 
-plot_jul <- 
+plot_oct <- 
   ggplot(plot_legend_data) +
   geom_polygon(aes(x = x, y = y, 
                    fill = fill, 
@@ -76,41 +75,38 @@ plot_jul <-
             color = "#ffdab9", 
             size = 35, 
             family = "pacifico") +
-  geom_text(aes(x = 0, y = 0, label = "2021\nJuly"), 
+  geom_text(aes(x = 0, y = 0, label = "2021\nOctober"), 
             color = "#c6f070",  
             size = 18,
-            lineheight = 0.3,
+            lineheight = .3,
             family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
   coord_equal() +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "#bcb7dc", 
-                                   color = NA)
-  )
+  theme_void() 
+
 ```
 
 
 ```{r}
-word_aug <- c("escape", "subdue", "recite", "thin", "smash", "consume", "elapse", "wrong")
+word_nov <- c("surround", "engrave", "value", "treasure", "view", "warm", "read", "tread")
 
-paletteer_d("palettesForR::Cool")
-cols_aug <- c("#112AC6FF", "#539BE2FF", "#161066FF", "#40234CFF", "#073F93FF", "#2C6CCCFF", "#265121FF", "#04422CFF")
+paletteer_d("tvthemes::FireNation")
+cols_nov <- c("#ECB100FF", "#A10000FF", "#7E605EFF", "#FF4500FF", "#994823FF", "#4B4C4EFF", "#572530FF", "#D1475CFF")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
 x <- cos(k * theta) * cos(theta)
 y <- cos(k * theta) * sin(theta)
 
-judges <- cut(theta, 2*k, labels = word_aug)
+job <- cut(theta, 2*k, labels = word_nov)
 
-df_flower <- tibble(x = x, y = y, judges = judges)
+df_flower <- tibble(x = x, y = y, job = job)
 
 plot_legend_labels <- 
   tibble(
-    label = word_aug,
+    label = word_nov,
     angle_degrees = (90 - 360 * (1:8) / 8),
     angle_radians = angle_degrees * pi / 180,
     angle_text = ifelse(angle_degrees < -90, 
@@ -120,16 +116,16 @@ plot_legend_labels <-
     y= 0.5 * sin(angle_radians)
   )
 
-fill_aug <- tibble(line = word_aug, 
-                   fill = cols_aug)
+fill_nov <- tibble(line = word_nov, 
+                   fill = cols_nov)
 
 plot_legend_data <-
   df_flower %>% 
-  left_join(fill_aug, by = c("judges" = "line")) 
+  left_join(fill_nov, by = c("job" = "line")) 
 
 
 
-plot_aug <- 
+plot_nov <- 
   ggplot(plot_legend_data) +
   geom_polygon(aes(x = x, y = y, 
                    fill = fill, 
@@ -142,43 +138,40 @@ plot_aug <-
   geom_text(data = plot_legend_labels, 
             aes(x = x, y = y, label = label, 
                 angle = angle_text), 
+            size = 35,
             color = "#ffdab9", 
-            size = 35, 
             family = "pacifico") +
-  geom_text(aes(x = 0, y = 0, label = "2021\nAugust"), 
+  geom_text(aes(x = 0, y = 0, label = "2021\nNovember"), 
             color = "#30d5c8",  
-            size = 18, 
-            lineheight = 0.3,
+            size = 18,
+            lineheight = .3,
             family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
   coord_equal() +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "#c36902", 
-                                   color = NA)
-  )
+  theme_void() 
 ```
 
-```{r}
-word_sep <- c("reaffirm", "pronounce", "fast", "rebuild", "display", "nourish", "pierce", "guard")
 
-paletteer_d("colRoz::whitei")
-cols_sep <- c("#E5A430FF", "#9C7210FF", "#B77897FF", "#BAB24FFF", "#392821FF", "#9B391BFF", "#457D60FF", "#5A5F9DFF")
+```{r}
+word_dec <- c("thank", "reflect", "equip", "share", "enable", "ascribe", "enter", "reside")
+
+paletteer_d("RSkittleBrewer::smarties")
+cols_dec <- c("#FF96C8FF", "#783C8CFF", "#506EBEFF", "#64AA00FF", "#FFFFFF", "#FF6400FF", "#DC0000FF", "#641414FF")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
 x <- cos(k * theta) * cos(theta)
 y <- cos(k * theta) * sin(theta)
 
-timothy <- cut(theta, 2*k, labels = word_sep)
+john <- cut(theta, 2*k, labels = word_dec)
 
-df_flower <- tibble(x = x, y = y, timothy = timothy)
+df_flower <- tibble(x = x, y = y, john = john)
 
 plot_legend_labels <- 
   tibble(
-    label = word_sep,
+    label = word_dec,
     angle_degrees = (90 - 360 * (1:8) / 8),
     angle_radians = angle_degrees * pi / 180,
     angle_text = ifelse(angle_degrees < -90, 
@@ -188,16 +181,16 @@ plot_legend_labels <-
     y= 0.5 * sin(angle_radians)
   )
 
-fill_sep <- tibble(line = word_sep, 
-                             fill = cols_sep)
+fill_dec <- tibble(line = word_dec, 
+                             fill = cols_dec)
 
 plot_legend_data <-
   df_flower %>% 
-  left_join(fill_sep, by = c("timothy" = "line")) 
+  left_join(fill_dec, by = c("john" = "line")) 
 
 
 
-plot_sep <- 
+plot_dec <- 
   ggplot(plot_legend_data) +
   geom_polygon(aes(x = x, y = y, 
                    fill = fill, 
@@ -213,27 +206,32 @@ plot_sep <-
             color = "#ffdab9", 
             size = 35, 
             family = "pacifico") +
-  geom_text(aes(x = 0, y = 0, label = "2021\nSeptember"), 
+  geom_text(aes(x = 0, y = 0, label = "2021\nDecember"), 
             color = "#00ff85",  
-            size = 18, 
-            lineheight = 0.3,
+            size = 18,
+            lineheight = .3,
             family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
   coord_equal() +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "#ff7986", 
-                                   color = NA)
-  )
+  theme_void() 
 ```
 
 ```{r}
-library(patchwork)
+plot <- plot_oct|plot_nov|plot_dec
 
-final <- plot_jul|plot_aug|plot_sep
+plot_final <- plot +
+  plot_annotation(caption = "Source: Personal Daily Record | Graphic: Sung Inkyung\nCredit: Kaustav Sen") &
+  theme(
+    plot.background = element_rect(fill = "black",  
+                                   color = NA),
+    plot.caption = element_text(size = 50,
+                                lineheight = 0.3,
+                                color = "gray85")
+    )
 
- ggsave(here::here("2021", "W39_WordFlower3", "2021_WordFlower3.png"), dpi = 300, width = 45, height = 15, units = "cm")
+ggsave(here::here("2021", "W1_WordFlower", "2021_WordsFlower4.png"), dpi = 300, width = 45, height = 15, units = "cm")
+
 ```
 
