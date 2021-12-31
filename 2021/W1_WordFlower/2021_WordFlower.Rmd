@@ -24,7 +24,7 @@ showtext_opts(dpi = 72)
 
 
 ```{r}
-word_jan <- c("surpass", "cosider", "repent", "deliver", "close", "sum up", "remain", "force")
+word_jan <- c("surpass", "consider", "repent", "deliver", "benefit", "live", "remain", "imitate")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
