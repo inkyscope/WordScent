@@ -17,7 +17,7 @@ library(lubridate)
 library(showtext)
 
 font_add_google(name = "Bebas Neue", family = "Bebas")
-font_add_google(name = "Fira Sans Condensed", family = "Fira")
+font_add_google(name = "Fira Sans", family = "Fira")
 
 
 showtext_auto()
@@ -59,7 +59,7 @@ plot <- df %>%
                  label = word)) +
   geom_tile(fill = "#e0cfbe",
             color = "white") +
-  geom_text(size = 11,
+  geom_text(size = 14,
             family = "Fira",
             color = "gray30") +
   labs(title = "2 0 2 1",
@@ -75,21 +75,22 @@ plot <- df %>%
                                   color = NA),
   plot.background = element_rect(fill = "#efe7db",  
                                  color = NA),
-  plot.title = element_text(size = 150,
-                            color = "#9c956b",
+  plot.title = element_text(size = 170,
+                            color = "#4a6274",
                             hjust = 0.5,
+                            face = "bold",
                             family = "Bebas",
                             margin = margin(t = 5, b = 15)),
   plot.caption = element_text(size = 45,
-                              color = "#9c956b",
+                              color = "#4a6274",
                               hjust = 0.5,
                               margin = margin(t =20)),
   axis.title = element_blank(),
   axis.text.x = element_text(size = 30,
                              margin = margin(b = 15)),
   axis.text.y = element_blank(),
-  strip.text = element_text(size = 70, 
-                            color = "#9c956b",
+  strip.text = element_text(size = 80, 
+                            color = "#4a6274",
                             family = "Bebas",
                             face = "bold",
                             hjust = 0.5),
