@@ -26,7 +26,7 @@ showtext_auto()
 
 
 ```{r}
-wordcalendar <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/wordcalendar.csv") %>% 
+wordcalendar <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/wordcalendar_2021.csv") %>% 
   select(month, day, word) %>% 
   mutate(month = month.name[month])
 ```
@@ -97,7 +97,7 @@ plot <- df %>%
   panel.grid.major = element_blank(),
   plot.margin = margin(10, 20, 10, 20))
 
-ggsave(here::here("2021", "W45_WordCalendar", "WordCalendar.png"), dpi = 300, width = 30, height = 35, units = "cm")
+ggsave(here::here("2021", "W45_WordCalendar", "WordCalendar_2021.png"), dpi = 300, width = 30, height = 35, units = "cm")
 
 ```
 

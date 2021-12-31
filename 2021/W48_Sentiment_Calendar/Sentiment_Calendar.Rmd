@@ -23,7 +23,7 @@ theme_set(theme_minimal(base_family = "roboto"))
 
 
 ```{r}
-word_calendar <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/wordcalendar.csv") %>% 
+word_calendar <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/wordcalendar_2021.csv") %>% 
   select(month, day, word) %>% 
   mutate(month = month.name[month])
 ```
@@ -114,7 +114,7 @@ plot <- sentiment_calendar %>%
        <span style = 'color:#E27069FF'>**surprise**</span>,
        <span style = 'color:#DBA520FF'>**disgust**</span>,
        <span style = 'color:#CBC4BC'>**neutral**</span>",
-       caption = "Source: Personal Daily Word Table | Graphic: Sung Inkyung"
+       caption = "Source: Personal Daily Word Table | Graphic: Sung Inkyung | Credit: Ijeamaka Anyene"
        ) +
   theme(legend.position = "none",
         plot.background = element_blank(),
