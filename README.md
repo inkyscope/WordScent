@@ -65,6 +65,9 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### Word Pairs of Ephesians
 ![Word Pairs](https://github.com/inkyscope/inkyscroll/blob/master/2021/W17_WordCross/EphesiansKnitting.png)
 
+### 2021 Word Flower4
+![Word flower](https://github.com/inkyscope/WordSpice/blob/master/2021/W52_Self-Discipline/2021_WordFlower4.png)
+
 ### 2021 Word Flower3
 ![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W39_WordFlower3/2021_WordFlower3.png)
 
