@@ -21,7 +21,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ![Sentiment Calendar](https://github.com/inkyscope/WordSpice/blob/master/2021/W48_Sentiment_Calendar/Sentiment_Calendar.png)
 
 ### Word Calendar
-![Word Calendar](https://github.com/inkyscope/inkyscroll/blob/master/2021/W45_WordCalendar/WordCalendar.png)
+![Word Calendar](https://github.com/inkyscope/WordSpice/blob/master/2021/W45_WordCalendar/WordCalendar_2021.png)
 
 ### 1Samuel Sentiment
 ![1Samuel](https://github.com/inkyscope/WordSpice/blob/master/2021/W38_1Samuel/1Samuel_Sentiment.png)
@@ -66,13 +66,13 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ![Word Pairs](https://github.com/inkyscope/inkyscroll/blob/master/2021/W17_WordCross/EphesiansKnitting.png)
 
 ### 2021 Word Flower4
-![Word flower](https://github.com/inkyscope/WordSpice/blob/master/2021/W52_Self-Discipline/2021_WordFlower4.png)
+![Word flower](https://github.com/inkyscope/WordSpice/blob/master/2021/2021/W1_WordFlower/2021_WordFlower4.png)
 
 ### 2021 Word Flower3
-![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W39_WordFlower3/2021_WordFlower3.png)
+![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/2021/W1_WordFlower/2021_WordFlower3.png)
 
 ### 2021 Word Flower2
-![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W27_WordFlower2/2021_WordFlower2.png)
+![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W1_WordFlower/2021_WordFlower2.png)
 
 ### 2021 Word Flower1
 ![Word flower](https://github.com/inkyscope/inkyscroll/blob/master/2021/W1_WordFlower/2021_WordFlower.png)
