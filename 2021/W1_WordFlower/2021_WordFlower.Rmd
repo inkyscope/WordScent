@@ -209,10 +209,16 @@ plot_mar <-
 ```{r}
 plot <- plot_jan|plot_feb|plot_mar
 
-plot_final <- plot &
+plot_final <- plot +
+  plot_annotation(caption = "Source: Personal Daily Record | Graphic: Sung Inkyung") &
   theme(
     plot.background = element_rect(fill = "black",  
-                                   color = NA))
+                                   color = NA),
+    plot.caption = element_text(size = 50,
+                                family = "bebas",
+                                color = "gray75",
+                                margin = margin(b = 10))
+    )
 
  ggsave(here::here("2021", "W1_WordFlower", "2021_WordFlower.png"), dpi = 300, width = 45, height = 15, units = "cm")
 ```
