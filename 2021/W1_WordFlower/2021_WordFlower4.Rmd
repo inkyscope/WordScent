@@ -24,7 +24,7 @@ showtext_opts(dpi = 72)
 
 
 ```{r}
-word_oct <- c("gather", "venture", "entwine", "vindicate", "shape", "distinguish", "silence", "prompt")
+word_oct <- c("gather", "venture", "entwine", "vindicate", "shape", "pray", "silence", "prompt")
 
 paletteer_d("Redmonder::qMSOYlOr")
 cols_oct <- c("#ACCBF9FF", "#242852FF", "#4A66ACFF", "#629DD1FF", "#297FD5FF", "#7F8FA9FF", "#5AA2AEFF", "#9D90A0FF")
@@ -77,23 +77,15 @@ plot_oct <-
             family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nOctober"), 
             color = "#c6f070",  
-            size = 18,
+            size = 20,
             lineheight = .3,
             family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
   coord_equal() +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "#bcb7dc", 
-                                   color = NA)
-  )
+  theme_void() 
 
-```
-
-```{r}
-paletteer_d("tvthemes::FireNation")
 ```
 
 
@@ -101,7 +93,7 @@ paletteer_d("tvthemes::FireNation")
 word_nov <- c("surround", "engrave", "value", "treasure", "view", "warm", "read", "tread")
 
 paletteer_d("tvthemes::FireNation")
-cols_nov <- c("#ECB100FF", "#A10000FF", "#7E605EFF", "#FF4500FF", "#994823FF", "#4B4C4EFF", "#572530FF", "#000000FF")
+cols_nov <- c("#ECB100FF", "#A10000FF", "#7E605EFF", "#FF4500FF", "#994823FF", "#4B4C4EFF", "#572530FF", "#D1475CFF")
 
 k <- 4
 theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
@@ -151,18 +143,14 @@ plot_nov <-
             family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nNovember"), 
             color = "#30d5c8",  
-            size = 18,
+            size = 20,
             lineheight = .3,
             family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
   coord_equal() +
-  theme_void() +
-  theme(
-    plot.background = element_rect(fill = "#c36902", 
-                                   color = NA)
-  )
+  theme_void() 
 ```
 
 
@@ -220,26 +208,26 @@ plot_dec <-
             family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nDecember"), 
             color = "#00ff85",  
-            size = 18,
+            size = 20,
             lineheight = .3,
             family = "bebas",
             fontface = "bold") +
   scale_fill_identity() +
   scale_color_identity() +
   coord_equal() +
-  theme_void() +
+  theme_void() 
+```
+
+```{r}
+plot <- plot_oct|plot_nov|plot_dec
+
+plot_final <- plot &
   theme(
-    plot.background = element_rect(fill = "#ff7986", 
+    plot.background = element_rect(fill = "black",  
                                    color = NA)
-  )
-```
+    )
 
-```{r}
-final <- plot_oct|plot_nov|plot_dec
-
-ggsave(here::here("2021", "W52_Self-Discipline", "2021_WordFlower4.png"), dpi = 300, width = 45, height = 15, units = "cm")
+ggsave(here::here("2021", "W1_WordFlower", "2021_WordFlower4.png"), dpi = 300, width = 45, height = 15, units = "cm")
 
 ```
 
-
-```{r}

@@ -74,7 +74,7 @@ plot_jan <-
             family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nJanuary"), 
             color = "#c6f070",  
-            size = 18,
+            size = 20,
             lineheight = 0.3,
             family = "bebas",
             fontface = "bold") +
@@ -135,7 +135,7 @@ plot_feb <-
             family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nFebruary"), 
             color = "#30d5c8",  
-            size = 18, 
+            size = 20, 
             lineheight = 0.3,
             family = "bebas",
             fontface = "bold") +
@@ -196,7 +196,7 @@ plot_mar <-
             family = "pacifico") +
   geom_text(aes(x = 0, y = 0, label = "2021\nMarch"), 
             color = "#00ff85",  
-            size = 18, 
+            size = 20, 
             lineheight = 0.3,
             family = "bebas",
             fontface = "bold") +
@@ -209,15 +209,10 @@ plot_mar <-
 ```{r}
 plot <- plot_jan|plot_feb|plot_mar
 
-plot_final <- plot +
-  plot_annotation(caption = "Source: Personal Daily Record | Graphic: Sung Inkyung\nCredit: Kaustav Sen") &
+plot_final <- plot &
   theme(
     plot.background = element_rect(fill = "black",  
-                                   color = NA),
-    plot.caption = element_text(size = 50,
-                                lineheight = 0.3,
-                                color = "gray85")
-    )
+                                   color = NA))
 
  ggsave(here::here("2021", "W1_WordFlower", "2021_WordFlower.png"), dpi = 300, width = 45, height = 15, units = "cm")
 ```
