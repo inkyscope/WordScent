@@ -1,5 +1,5 @@
 ---
-title: "sentiment_calendar"
+title: "Sentiment Calendar 2021"
 author: "Sung Inkyung"
 date: '2021 11 10'
 output: html_document
@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+### Source[tidytuesday by Ijeamak Aanyene] (https://github.com/Ijeamakaanyene/tidytuesday/blob/master/scripts/2020_09_animal_crossing.Rmd)
 ```{r}
 library(tidyverse)
 library(tidytext)
@@ -17,8 +17,10 @@ library(lubridate)
 library(showtext)
 
 font_add_google("Roboto Condensed", "roboto")
+font_add_google("Comfortaa", "comfortaa")
 showtext_auto()
-theme_set(theme_minimal(base_family = "roboto"))
+
+theme_set(theme_minimal())
 ```
 
 
@@ -56,10 +58,6 @@ sentiment_calendar <- cbind(cal, word_calendar) %>%
          week = week(date),
          label = paste0(weekday, "<br>", day))
 
-#View(sentiment_calendar)
-
-
-  #duplicated(sentiment_calendar)
 
 duplicates <- sentiment_calendar %>% 
   group_by(date) %>% 
@@ -71,8 +69,6 @@ duplicates <- sentiment_calendar %>%
 library(paletteer)
 paletteer_d("basetheme::royal")
 ```
-
-
 
 ```{r}
 pals <- c(positive = "#1175BBFF",
@@ -89,21 +85,20 @@ pals <- c(positive = "#1175BBFF",
 
 plot <- sentiment_calendar %>% 
   ggplot(aes(x = day, y = fct_rev(month),
-             fill = sentiment, label = label)) +
+             fill = sentiment, label = label, lineheight = 0.7)) +
   geom_tile(color = "white", 
             width = 1, height = 0.75) +
   geom_richtext(fill = NA,
                 label.color = NA,
                 color = "white",
-                size = 5) +
+                size = 6) +
   scale_fill_manual(values = pals) +
   scale_x_continuous(expand = c(0.01, 0)) +
   labs(x = "",
        y = "",
        fill = "",
        title = "Daily Sentiment 2021",
-       subtitle = "Sentiment color palette:<br>
-       <span style = 'color:#1175BBFF'>**positive**</span>,
+       subtitle = "<span style = 'color:#1175BBFF'>**positive**</span>,
        <span style = 'color:#B33941FF'>**negative**</span>,
        <span style = 'color:#2E8B57FF'>**trust**</span>,
        <span style = 'color:#4AC6AEFF'>**anticipation**</span>,
@@ -114,12 +109,12 @@ plot <- sentiment_calendar %>%
        <span style = 'color:#E27069FF'>**surprise**</span>,
        <span style = 'color:#DBA520FF'>**disgust**</span>,
        <span style = 'color:#CBC4BC'>**neutral**</span>",
-       caption = "Source: Personal Daily Word Table | Graphic: Sung Inkyung | Credit: Ijeamaka Anyene"
+       caption = "Source: Personal Daily Word Table | Graphic: Sung Inkyung"
        ) +
   theme(legend.position = "none",
         plot.background = element_blank(),
         panel.background = element_blank(),
-        plot.title = element_text(size = 44, 
+        plot.title = element_text(size = 50, 
                                   hjust = 0.5,
                                   family = "roboto",
                                   face = "bold",
@@ -128,20 +123,21 @@ plot <- sentiment_calendar %>%
                                          hjust = 0.5,
                                          lineheight = 0.4,
                                          family = "roboto",
-                                         margin = margin(b = 10)),
+                                         margin = margin(b = 15)),
         plot.caption = element_text(size = 24,
                                     hjust = 0.5,
                                     family = "roboto",
-                                    margin = margin(b = 10)),
+                                    margin = margin(t = 20)),
         panel.grid = element_blank(),
         axis.title = element_blank(),
         axis.text.y = element_text(size = 32, 
-                                   family = "roboto",
+                                   family = "comfortaa",
                                    face = "bold"),
         axis.text.x = element_blank(),
-        axis.ticks = element_blank())
+        axis.ticks = element_blank(),
+        plot.margin = margin(10, 10, 10, 10))
 
-ggsave(here::here("2021", "W48_Sentiment_Calendar", "Sentiment_Calendar.png"), width = 20, height = 16, units = "cm")
+ggsave(here::here("2021", "W48_Sentiment_Calendar", "Sentiment_Calendar.png"), width = 20, height = 18, units = "cm")
 
 ```
 
