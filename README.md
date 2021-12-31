@@ -24,7 +24,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ![Prefix](https://github.com/inkyscope/WordSpice/blob/master/2021/W52_Self-Discipline/Prefix.png)
 
 ### 2021 Word Flower4
-![Word flower](https://github.com/inkyscope/WordSpice/blob/master/2021/W1_WordFlower/2021_WordsFlower4.png)
+![Word flower](https://github.com/inkyscope/WordSpice/blob/master/2021/W1_WordFlower/2021_WordFlower4.png)
 
 ### 2021 Word Flower3
 ![Word flower](https://github.com/inkyscope/WordSpice/blob/master/2021/W1_WordFlower/2021_WordFlower3.png)
