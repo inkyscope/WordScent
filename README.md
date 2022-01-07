@@ -6,7 +6,7 @@ Word because our thoughts are already directed to the Word, ... We are silent **
 from _**Life Togehter**_  by Dietrich Bonhoeffer
 
 -------------------------------------------------------------------------------------------------------------------------------------
-## References(Book, Website, Youtube, Github)
+## References
 |  Link  | Title | Author |
 |--------|-------|--------|
 |[:link:](https://korycapps.files.wordpress.com/2012/11/cs-lewis-on-the-psalms.pdf) | Reflections on the Psalms | C.S Lewis |
