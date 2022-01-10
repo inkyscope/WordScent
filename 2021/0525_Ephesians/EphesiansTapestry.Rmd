@@ -1,0 +1,146 @@
+---
+title: "Ephesians Tapestry"
+author: "Sung Inkyung"
+date: '2021 5 23'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(ggrepel)
+library(showtext)
+
+font_add_google("Bebas Neue")
+font_add_google("Quicksand")
+font_add_google("Saira")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
+```
+
+
+```{r}
+bible <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv")
+
+ephesians <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/Ephesians_Books.csv")
+
+df_ephesians <- bible %>% 
+  inner_join(ephesians, by = c("book", "chapter", "verse")) %>% 
+  select(book, text)
+
+df_ephesians %>% 
+  count(book, sort = T) # 21books referred
+```
+```{r}
+ephesians_bigrams <- df_ephesians %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) %>% 
+  #anti_join(stop_words) %>% 
+  mutate(bigram = str_remove_all(bigram, ",|'s|'s|\\."),
+           bigram = tolower(bigram)) %>% 
+  filter(bigram != "ye")
+
+ephesians_bigrams %>% 
+  count(book, sort = T)
+```
+
+
+```{r}
+bi_link <-ephesians_bigrams %>% 
+  group_by(book) %>% 
+  count(bigram, sort = TRUE) %>% 
+  left_join(ephesians_bigrams %>% 
+              group_by(book) %>% 
+              summarise(total = n())) %>% 
+  ungroup()
+
+
+knitting <- bi_link%>%
+  group_by(bigram) %>% 
+  mutate(first_letter = substr(bigram, 1, 1),
+         rate = n / total) %>% 
+  group_by(first_letter) %>% 
+  mutate(rank = row_number(desc(rate))) %>% 
+  arrange(first_letter, rank) %>% 
+  ungroup() %>% 
+  filter(rate >= 0.005) %>% 
+  mutate(
+    txt_color = round(runif(n = 1204, min = 1, max = 2)),
+    txt_size = rchisq(n = 1204, df = 10)) %>% 
+  arrange(txt_color)
+```
+
+
+```{r}
+plot_knitting <- knitting %>% 
+  ggplot() + 
+  geom_text_repel(aes(x = first_letter, y = rank, 
+                      label = bigram,
+                color = factor(txt_color), 
+                family = "Quicksand",
+                size = txt_size),
+             position = position_jitter(width = 1, height = 2),
+             segment.color = NA,
+             force = 15,
+             max.overlaps = Inf) +
+  labs(title = "Ephesians Tapestry",
+       caption = "**Graphic**: Sung Inkyung") + 
+  scale_size_continuous(range(2, 6)) + 
+  scale_color_manual(values = c("#fedb67", "#C9D9DA")) +
+  #scale_y_reverse(name = "RATIO OF WORDS") +
+  #scale_x_discrete(name = "← A TO Z →") +
+  guides(size = FALSE, color = FALSE) + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "#314757",
+                                       color = NA),
+        panel.background = element_rect(fill = "#314757",
+                                        color = NA),
+        plot.title = element_text(size = 60, 
+                                  family = "Bebas Neue",
+                                  color = "#ffffff",
+                                  margin = margin(b = 7)),
+        plot.caption = element_markdown(size = 14,
+                                        family = "Saira",
+                                        color = "#6f8892",
+                                        margin = margin(t = 25)),
+       #axis.title.x = element_text(size = 18,
+                                    #color = "#d3bb80"),
+       #axis.title.y = element_text(size = 18,
+                                  #color = "#d3bb80",
+                                 #angle = 90),
+        plot.margin = margin(20, 10, 20, 10)) 
+
+ggsave("EphesiansTapestry.png", dpi = 400, width = 40, height = 22, units = "cm")
+
+```
+
+
+```{r}
+bible_stop_words <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt", 
+                         "ye", "yea", "saith", "thereof", "wherefore", "lo", "unto", "said", "us", "one"))
+
+df_ephesians %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(get_stopwords()) %>% 
+  filter(!word %in% bible_stop_words) %>% 
+  count(book, word, sort = T) %>% 
+  mutate(book = fct_lump(book, 6)) %>% 
+  group_by(book) %>% 
+  slice_max(n, n = 7) %>% 
+  ungroup() %>% 
+  mutate(word = reorder_within(word, n, book)) %>% 
+  ggplot(aes(n, word, fill = book)) +
+  geom_col(show.legend = F, alpha = .8) +
+  scale_y_reordered() +
+  facet_wrap(~book, scales = "free") +
+  labs(x = "",
+       y = "",
+       title = "Top Words in Books Relating to Ephesians by Frequency") +
+  theme_light()
+
+```
