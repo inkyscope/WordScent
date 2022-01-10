@@ -1,0 +1,92 @@
+---
+title: "Know about"
+author: "Sung Inkyung"
+date: '2021 12 9'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggforce)
+```
+### Source[tidytuesday by @MaiaPalletier] (https://github.com/MaiaPelletier/tidytuesday/blob/master/R/2021_Week04_KenyaCensus.R)
+
+```{r}
+df <- tibble(
+  word = c("my teaching", "my way of life", "my purpose", "faith", "patience", "love", "endurance", "persecution", "suffering"))
+
+```
+
+
+```{r}
+df_word <- df %>% 
+  mutate(x = 0,
+         xend = rep(cos(seq(0.3141, pi-0.3141, 0.31)), n()/9),
+         y = 0,
+         yend = rep(sin(seq(0.3141, pi-0.3141, 0.31)), n()/9))
+```
+
+```{r}
+plot <- df_word %>% 
+  ggplot() +
+  geom_segment(
+    aes(x = 0, xend = 0, y = -0.5, 
+        yend = 0,
+        size = 10000),
+    color = "#5B4F48",
+    show.legend = FALSE
+  ) +
+  geom_diagonal(
+    aes(x = 0, y = 0, 
+        xend = xend, yend = yend), 
+    color = "#133337",
+    strength = 0.75, 
+    lineend = "round", 
+    size = 0.75,
+    show.legend = FALSE,
+  ) +
+  geom_point(aes(xend, yend),
+             size = 5.5,
+             color = "#d4af37") +
+  geom_text(
+    aes(x = xend, y = yend, 
+        label = word),
+    size = 8, 
+    vjust = -0.9, 
+    color = "#666260"
+  ) +
+  annotate("text", 
+           label = "KNOW ABOUT", 
+           x = -0.65, 
+           y = -0.25, 
+           color = "#807b79", 
+           size = 13) +
+  annotate("text", 
+           label = "(2Timothy3:10-11)", 
+           x = -0.65, 
+           y = -0.33, 
+           color = "#807b79", 
+           size = 9) +
+  annotate("text",
+           label = "Graphic: Sung Inkyung",
+           x = .95,
+           y = -0.55,
+           color = "#908a88",
+           size = 5) +
+  xlim(c(-1.1, 1.1)) +
+  ylim(c(-0.55, 1.15)) +
+  scale_size(range = c(0.75, 5)) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "#dddec3", 
+                                   color = NA)
+  )
+
+ggsave("KnowAbout.png", width = 30, height = 25, units = "cm")
+
+```
+

@@ -1,0 +1,120 @@
+---
+title: "Job_Elihu_UMAP"
+author: "Sung Inkyung"
+date: '2021 12 10'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tidymodels)
+
+theme_set(theme_minimal())
+```
+
+
+```{r}
+job <- readr::read_csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv") %>% 
+    filter(book == "Job") %>% 
+    select(-c(book, citation, verse))
+
+job_friends <- job %>% 
+   filter(chapter %in% 4:37) %>% 
+   mutate(
+    character = case_when(
+      chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31") ~ "Job",
+      chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+      chapter %in% c("8", "18", "25") ~"Bildad",
+      chapter %in% c("11", "20") ~ "Zophar",
+      chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+      TRUE ~ as.character(chapter)
+      )) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art", "mine",
+                      "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldes", "lo")) %>% 
+  add_count(word) %>% 
+  filter(n >= 12)
+
+df <- job_friends %>% 
+  select(chapter, character, word, freq = n) %>% 
+  mutate(line = word,
+         chapter = as.factor(chapter)) %>% 
+  group_by(word) %>% 
+  mutate(n = row_number()) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = word, values_from = freq,
+              values_fill = list(values = 0)) %>% 
+  mutate_all(~replace(., is.na(.), 0)) %>% 
+  select(-n)
+
+```
+
+```{r}
+library(embed)
+
+umap_rec <- recipe(~., data = df) %>% 
+  update_role(character, chapter, line, new_role = "id") %>% 
+  step_normalize(all_predictors()) %>% 
+  step_umap(all_predictors())
+
+umap_prep <- prep(umap_rec)
+
+umap_prep 
+```
+### Source[paletteer by Emil Hvitfeldt] (https://github.com/EmilHvitfeldt/paletteer)
+```{r}
+library(nord)
+library(paletteer)
+
+nord_show_palette("victory_bonds")
+
+nord_show_palette("lumina")
+paletteer_d('nord::lumina')
+```
+                
+```{r}
+pals <- c("Job" = "#AF1900FF", "Eliphaz" = "#EDDAEBFF", "Bildad" = "#AD8CAEFF", "Zophar" = "#4F93B8FF", "Elihu" = "#001964FF")
+
+set.seed(123)
+
+juice(umap_prep) %>% 
+  ggplot(aes(UMAP1, UMAP2,
+             label = line)) +
+  geom_point(aes(size = character,
+             color = character)) +
+  geom_text(size = 4,
+            hjust = -0.25,
+            color = "white",
+            check_overlap = T) +
+  scale_x_continuous(expand = c(0.01, 0.01),
+                     limits = c(-30, 35)) +
+  scale_color_manual(values = pals,
+                    limits = c("Job", "Eliphaz", "Bildad", "Zophar", "Elihu"),
+                    guide = "legend") +
+  scale_size_manual(values = c(6, 3, 3, 3, 3),
+                    limits = c("Job", "Eliphaz", "Bildad", "Zophar", "Elihu"),
+                    guide = "legend") +
+  labs(caption = "Source: UMAP | Graphic: Sung Inkyung") +
+  theme(legend.title = element_blank(),
+        legend.text = element_text(color = "white"),
+        plot.background = element_rect(fill = "black"),
+        plot.caption = element_text(size = 6,
+                                    color = "gray85",
+                                    hjust = 1.25),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        plot.margin = margin(10, 10, 10, 10))
+
+ggsave("Job_Elihu_UMAP.png", width = 15, height = 12, units = "cm")
+
+```
+

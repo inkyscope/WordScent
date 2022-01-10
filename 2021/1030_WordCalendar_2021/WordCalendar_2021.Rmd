@@ -1,0 +1,105 @@
+---
+title: "Word Calendar"
+author: "Sung Inkyung"
+date: '2021 10 30'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggtext)
+library(lubridate)
+
+library(showtext)
+
+font_add_google(name = "Bebas Neue", family = "Bebas")
+font_add_google(name = "Fira Sans", family = "Fira")
+
+
+showtext_auto()
+
+```
+
+
+```{r}
+wordcalendar <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/wordcalendar_2021.csv") %>% 
+  select(month, day, word) %>% 
+  mutate(month = month.name[month])
+```
+
+
+```{r}
+# Calendar
+cal <- tibble(
+  date = seq(ymd(20210101), ymd(20211231), by = 1)
+) %>% 
+  mutate(week = as.numeric(format(date, "%U"))) 
+  
+df <- cbind(cal, wordcalendar) %>% 
+  mutate(weekday = weekdays(date),
+         weekday = case_when(weekday == "일요일" ~ "Sun",
+                             weekday == "월요일" ~ "Mon",
+                             weekday == "화요일" ~ "Tue",
+                             weekday == "수요일" ~ "Wed",
+                             weekday == "목요일" ~ "Thur",
+                             weekday == "금요일" ~ "Fri",
+                             weekday == "토요일" ~ "Sat"),
+         weekday = factor(weekday, c("Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat")),
+         month = factor(month, c("January", "February", "March", "April",
+                                 "May", "June", "July", "August",
+                                 "September", "October", "November", "December"))) 
+
+
+plot <- df %>% 
+  ggplot(aes(x = weekday, y = week, 
+                 label = word)) +
+  geom_tile(fill = "#e0cfbe",
+            color = "white") +
+  geom_text(size = 14,
+            family = "Fira",
+            color = "gray30") +
+  labs(title = "2 0 2 1",
+      caption = "Source: Personal Daily Word Table | Graphic: Sung Inkyung") +
+  facet_wrap(~ month, 
+             nrow = 6,
+             scales = "free_y") +
+  scale_y_reverse() +
+  guides(fill = "none") +
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.background = element_rect(fill = "#efe7db", 
+                                  color = NA),
+  plot.background = element_rect(fill = "#efe7db",  
+                                 color = NA),
+  plot.title = element_text(size = 170,
+                            color = "#4a6274",
+                            hjust = 0.5,
+                            face = "bold",
+                            family = "Bebas",
+                            margin = margin(t = 5, b = 15)),
+  plot.caption = element_text(size = 45,
+                              color = "#4a6274",
+                              hjust = 0.5,
+                              margin = margin(t =20)),
+  axis.title = element_blank(),
+  axis.text.x = element_text(size = 30,
+                             margin = margin(b = 15)),
+  axis.text.y = element_blank(),
+  strip.text = element_text(size = 80, 
+                            color = "#4a6274",
+                            family = "Bebas",
+                            face = "bold",
+                            hjust = 0.5),
+  panel.grid.minor = element_blank(),
+  panel.grid.major = element_blank(),
+  plot.margin = margin(10, 20, 10, 20))
+
+ggsave("WordCalendar_2021.png", dpi = 300, width = 30, height = 35, units = "cm")
+
+```
+
+

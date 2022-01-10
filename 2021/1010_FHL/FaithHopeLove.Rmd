@@ -1,0 +1,88 @@
+---
+title: "Faith Hope Love"
+author: "Sung Inkyung"
+date: '2021 10 5'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(scales)
+library(ggfx)
+library(ggtext)
+library(MetBrewer)
+library(showtext)
+
+font_add_google("Staatliches")
+font_add_google("Advent Pro")
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
+```
+
+
+```{r}
+data <- tibble(left = rbeta(10000, 5, 2),
+               right = rbeta(10000, 2, 5),
+               center = rbeta(10000, 5, 5)) %>% 
+  pivot_longer(everything()) %>% 
+  mutate(name = factor(name, 
+                       levels = c("left", "center", "right"))) %>% 
+  arrange(name)
+
+labels <- tibble(label = c("faith", "hope", "love"),
+                 name = c("left", "center", "right"),
+                 x = c(0.5, 0.5, 0.5),
+                 y = 0.01) %>% 
+  mutate(name = factor(name, 
+                       levels = c("left", "center", "right")))
+
+
+plot <- ggplot(data) +
+  as_reference(
+    geom_text(data = labels, 
+              aes(label = toupper(label),
+                  x = x, y = y),
+              family = "Staatliches",
+              size = 60,
+              color = "#fbfef9", hjust = 0.5, 
+              vjust = 0),
+    id = "text"
+  ) +
+  with_blend(
+    geom_density(aes(x = value, 
+                     fill = name,
+                     color = name),
+                 show.legend = F),
+    bg_layer = "text",
+    blend_type = "xor"
+  ) +
+  labs(x = " ",
+       y = " ",
+       caption = "**Graphic**: Sung Inkyung") +
+  facet_wrap(~name, ncol = 1) +
+  scale_x_continuous(limits = c(-0.1, 1.1)) +
+  scale_fill_manual(values = met.brewer("Thomas", 3)) +
+  scale_color_manual(values = met.brewer("Thomas", 3)) +
+  theme(plot.background = element_rect(fill = "black",
+                                       color = NA),
+        panel.background = element_rect(fill = "black",
+                                        color = NA),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        strip.text = element_blank(),
+        plot.caption = element_markdown(size = 9,
+                                        family = "Advent Pro",
+                                        color = "gray97"),
+        axis.line = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        )
+  
+ggsave("FaithHopeLove.png", height = 22, width = 35, units = "cm")
+  
+```
+

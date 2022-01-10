@@ -1,0 +1,131 @@
+---
+title: "Random Words"
+author: "Sung Inkyung"
+date: '2021 1 30'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source [tidytuesday by Yabonny Samano] (https://github.com/ysamano/TidyTuesday/blob/master/2021/week_03/TT_2021_03.R)
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(ggfittext)
+library(treemap)
+library(scales)
+library(glue)
+library(showtext)
+
+font_add_google("Raleway")
+font_add_google("Lexend")
+font_add_google("Jost")
+
+showtext.opts(dpi = 320)
+showtext.auto(enable = TRUE)
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  mutate(testament = ifelse(book %in% c("Matthew", "Mark", "Luke",
+                                        "John", "Acts", "Romans", 
+                                        "1 Corinthians", 
+                                        "2 Corinthians",  "Galatians",
+                                        "Ephesians", "Philippians",
+                                        "Colossians", 
+                                        "1 Thessalonians",
+                                        "2 Thessalonians", 
+                                        "1 Timothy", "2 Timothy",
+                                        "Titus","Philemon",
+                                        "Hebrews", "James", "1 Peter",
+                                        "2 Peter", "1 John", "2 John",
+                                        "3 John","Jude", "Revelation"), "New Testament", "Old Testament"))
+```
+
+
+```{r}
+bible_stop_words <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
+                         "ye", "yea", "saith", "thereof", "wherefore", "lo", "aaron", "aaron's", "aaronites", "abarim")) 
+
+df <- bible %>% 
+  select(book, testament, text) %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!word %in% bible_stop_words) %>% 
+  anti_join(stop_words, by = "word") %>% 
+  group_by(word, testament) %>% 
+  summarise(total = n()) %>% 
+  ungroup() %>% 
+  slice_sample(n = 500, weight_by = total) %>% 
+  mutate(id_tree = row_number())
+
+
+data_tree <- treemap(df,
+                     index = c("word"),
+                     vSize = "total",
+                     type = "categorical",
+                     vColor = "testament",
+                     algorithm = "pivotSize",
+                     sortID = "id_tree",
+                     mirror.y = TRUE,
+                     mirror.x = TRUE,
+                     border.lwds = .7,
+                     aspRatio = 5/3)
+
+data_ggplot <- data_tree[["tm"]] %>% 
+  as_tibble() %>% 
+  arrange(desc(vSize)) %>% 
+  mutate(rank = row_number(),
+         xmax = x0 + w,
+         ymax = y0 + h,
+         label_word = str_glue("{word}\n({comma(vSize, accuracy = 1)})"))
+
+plate_tree <- tibble(label = c("<span style = 'color:#23343e'>**Old Testament**</span> and <span style = 'color:#912b52'>**New Testament**</span>",
+                                "The size corresponds to the number of words"),
+                      x = c(.5, .5),
+                      y = c(-0.06, -0.1))
+
+plot <- ggplot(data_ggplot) +
+  geom_rect(aes(xmin = x0,
+                ymin = y0,
+                xmax = xmax,
+                ymax= ymax,
+                fill = vColor),
+            size = 0.15,
+            colour = "#9fb5b7",
+            alpha = 0.9) +
+  geom_fit_text(data = data_ggplot %>% filter(rank <= 200),
+                aes(xmin = x0, 
+                    xmax = xmax, 
+                    ymin = y0,
+                    ymax = ymax,
+                    label = label_word),
+                family = "Lexend",
+                colour = "#bfbeb2",
+                min.size = 3.5,
+                reflow = TRUE) +
+  geom_richtext(data = plate_tree,
+                aes(x, y, label = label), 
+                family = "Raleway",
+                size = 5.5,
+                color = "#23343e",
+                fill = NA,
+                label.color = NA,
+                hjust = 0.5) +
+  labs(caption = "Source: KJV | Graphic: Sung Inkyung") +
+  scale_fill_manual(values = c("#912b52", "#23343e")) +
+  theme_void() +
+  theme(text = element_text(colour ="#bfbeb2"),
+        legend.position = "none",
+        plot.background = element_rect(fill = "#9fb5b7",
+                                       colour = NA),
+        plot.caption = element_text(size = 10,
+                                    family = "Jost",
+                                    hjust = 0.5,
+                                    color = "gray35"),
+        plot.margin = margin(30, 10, 20, 10))
+
+ggsave("WordTreemap.png", width = 35.5, height = 20.5, units = "cm")
+```

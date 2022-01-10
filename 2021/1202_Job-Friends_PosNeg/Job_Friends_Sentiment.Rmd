@@ -1,0 +1,106 @@
+---
+title: "Job-Friends_PosNeg
+author: "Sung Inkyung"
+date: '2021 12 2'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(showtext)
+
+font_add_google("Raleway")
+font_add_google("Oswald")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
+
+```
+
+
+```{r}
+
+job <- readr::read_csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv") %>% 
+    filter(book == "Job") %>% 
+    select(-c(book, citation, verse))
+
+job_friends <- job %>% 
+   filter(chapter %in% 4:37) %>% 
+   mutate(
+    character = case_when(
+      chapter %in% c("6", "7", "9", "10", "12", "13", "14", "16", "17", "19", "21", "23", "24", "26", "27", "28", "29", "30", "31") ~ "Job",
+      chapter %in% c("4", "5", "15", "22") ~ "Eliphaz",
+      chapter %in% c("8", "18", "25") ~"Bildad",
+      chapter %in% c("11", "20") ~ "Zophar",
+      chapter %in% c("32", "33", "34", "35", "36", "37") ~"Elihu",
+      TRUE ~ as.character(chapter)
+      )) %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  filter(!word %in% c("thou", "thy", "thine", "hast", "art", "mine",
+                      "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldes", "lo")) %>% 
+  group_by(character, word) %>%
+  count() %>% 
+  inner_join(get_sentiments()) %>% 
+  group_by(word) %>% 
+  filter(n >= 2) %>%
+  group_by(character) %>%
+  mutate(n = scales::rescale(n),
+         n = round(n, 3)) %>%
+  arrange(-n)
+```
+
+```{r}
+plot <- job_friends %>% 
+  filter(character != "Elihu") %>% 
+  mutate(character = case_when(character %in% c("Eliphaz", "Bildad", "Zophar") ~ "Friends",
+                               TRUE ~ "Job")) %>% 
+  ggplot(aes(label = word,
+             size = n, 
+             color = sentiment,
+             alpha = n)) +
+  ggwordcloud::geom_text_wordcloud_area(area_corr_power = 1) +  #eccentricity=2
+  scale_color_manual(values = c("#ff6161", "#229900")) + 
+  scale_size_area(max_size = 12) +
+  scale_alpha(range = c(.5, 1)) +
+  facet_wrap(~ character) +
+  labs(title = "<span style = 'color:#229900'>POSITIVE</span> and <span style = 'color:#ff6161'>NEGATIVE</span>",
+       subtitle = "Among the words spoken more than once between <br>Job and his friends(Eliphaz, Bildad and Zophar),<br>the words were divided into the following sentiments",
+       caption = "**Source**: KJV | **Graphic**: Sung Inkyung") +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "gray85",
+                                       color = NA),
+        strip.text = element_text(size = 20, 
+                                  family = "Raleway",
+                                  color = "#231838",
+                                  margin = margin(b = 5)),
+        plot.title = element_markdown(size = 18,
+                                      family = "Oswald",
+                                      color = "#231838",
+                                      hjust = 0.5, 
+                                      vjust = 0.5,
+                                      margin = margin(b = 7)),
+        plot.subtitle = element_markdown(size = 13, 
+                                         family = "Oswald",
+                                         lineheight = 1.1,
+                                         color = "#231838",
+                                         hjust = 0.5, 
+                                         vjust = 0.5,
+                                         margin = margin(b = 10)),
+        plot.caption = element_markdown(size = 9,
+                                        color = "#495054",
+                                        hjust = 0.5, 
+                                        vjust = 0.5,
+                                        margin = margin(t = 15)),
+        plot.margin = margin(20, 5, 10, 5))
+        
+ggsave("Job_Friends_Sentiment.png")
+
+```
+

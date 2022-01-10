@@ -1,0 +1,95 @@
+---
+title: "Words Ridges"
+author: "Sung Inkyung"
+date: '2021 1 17'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(ggridges)
+library(showtext)
+
+font_add_google("Kaushan Script")
+font_add_google("Caveat")
+font_add_google("Quicksand")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
+
+```
+### source[Vintage Christmas Typography Se](thttps://envato.com/blog/holiday-color-palettes-and-templates/)
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") 
+
+bible_stop_words <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
+                         "ye", "yea", "saith", "thereof", "wherefore", "lo", "aaron", "aaron's", "aaronites", "abarim"))
+
+df_bible <- bible %>% 
+  select(book, text) %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  filter(! word %in% bible_stop_words) %>% 
+  count(book, word, sort = T) %>% 
+  slice_max(n = 2000, order_by = n) %>% 
+  mutate(upper_limit = ifelse(n > 600, 600, n))
+
+df_bible %>% 
+  count(word, sort = T)
+  
+```
+
+```{r}
+theme_word <- function() {
+  theme_minimal() %+replace%
+    theme(plot.background = element_rect(fill = "#fbf6e8", 
+                                         colour = "#fbf6e8"),
+          panel.grid = element_line(color = "#fbf6e8"),
+          panel.background = element_rect(fill = "#fbf6e8", 
+                                          colour = "#fbf6e8"),
+          plot.title = element_markdown(size = 32,
+                                        family = "Kaushan Script",
+                                        color = "#864a40", 
+                                        hjust = 0.5,
+                                        margin = margin(t = 10, b = 7)),
+          plot.subtitle = element_markdown(size = 28,
+                                           family = "Quicksand",
+                                           color = "#864a40", 
+                                           hjust = 0.5,
+                                           margin = margin(b = 15)),
+          plot.caption = element_text(color = "#cbb080", 
+                                      size = 24,
+                                      family = "Caveat",
+                                      margin = margin(t = 20, b = 10)),
+          axis.title = element_blank(),
+          axis.ticks = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_blank(),
+          plot.margin = margin(10, 10, 10, 10))
+}
+```
+
+```{r}
+plot_word_ridgegs <- df_bible %>% 
+  ggplot(aes(x = n, y = word)) +
+  geom_density_ridges(aes(alpha = upper_limit),
+                      color = "#a5791f",
+                      fill =  "#a77d42",
+                      show.legend = F) +
+  labs(x = "",
+       y = "",
+       title = "**Words are surfing on the ridges of waves through Bible Books**",
+       subtitle = "like **righteousness** appears in Matthew 3:15 and<br>reappears in Ephesians 4:24",
+       caption = "Graphic: Sung Inkyung") +
+  theme_word()
+
+ggsave("WordRidges.png", width = 35, height = 47, units = "cm")
+ 
+```
