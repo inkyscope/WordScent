@@ -1,0 +1,238 @@
+---
+title: "WordsFlower"
+author: "Sung Inkyung"
+date: '2021 1 29'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggforce)
+library(tidyverse)
+library(patchwork)
+library(paletteer)
+library(showtext)
+
+font_add_google("Rajdhani")
+font_add_google("Rambla")
+showtext_auto()
+showtext_opts(dpi = 320)
+```
+
+
+```{r}
+word_jan <- c("surpass", "consider", "repent", "deliver", "benefit", "live", "remain", "imitate")
+
+k <- 4
+theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
+x <- cos(k * theta) * cos(theta)
+y <- cos(k * theta) * sin(theta)
+
+matthew <- cut(theta, 2*k, labels = word_jan)
+
+df_flower <- tibble(x = x, y = y, matthew = matthew)
+
+plot_legend_labels <- 
+  tibble(
+    label = word_jan,
+    angle_degrees = (90 - 360 * (1:8) / 8),
+    angle_radians = angle_degrees * pi / 180,
+    angle_text = ifelse(angle_degrees < -90, 
+                        angle_degrees+180, 
+                        angle_degrees),
+    x = 0.5 * cos(angle_radians),
+    y= 0.5 * sin(angle_radians)
+  )
+
+fill_jan <- tibble(line = word_jan, 
+                             fill = pals::parula(8))
+
+plot_legend_data <-
+  df_flower %>% 
+  left_join(fill_jan, by = c("matthew" = "line")) 
+
+
+
+plot_jan <- 
+  ggplot(plot_legend_data) +
+  geom_polygon(aes(x = x, y = y, 
+                   fill = fill, 
+                   color = fill), 
+               size = 1.1) +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 0.2), 
+              fill = "#672146", 
+              color = "#672146", 
+              size = 3.5) +
+  geom_text(data = plot_legend_labels, 
+            aes(x = x, y = y, label = label, 
+                angle = angle_text), 
+            color = "#ffdab9", 
+            size = 9, 
+            family = "Rajdhani") +
+  geom_text(aes(x = 0, y = 0, label = "2021\nJanuary"), 
+            color = "#c6f070",  
+            size = 6,
+            lineheight = 0.7,
+            family = "Rambla",
+            fontface = "bold") +
+  scale_fill_identity() +
+  scale_color_identity() +
+  coord_equal() +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#bcb7dc",
+                                       color = NA),
+        panel.background = element_rect(fill = "#bcb7dc",
+                                        color = NA))
+```
+
+```{r}
+word_feb <- c("entertain", "reveal", "collect", "submit", "form", "welcome", "become", "transfigure")
+
+k <- 4
+theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
+x <- cos(k * theta) * cos(theta)
+y <- cos(k * theta) * sin(theta)
+
+matthew <- cut(theta, 2*k, labels = word_feb)
+
+df_flower <- tibble(x = x, y = y, matthew = matthew)
+
+plot_legend_labels <- 
+  tibble(
+    label = word_feb,
+    angle_degrees = (90 - 360 * (1:8) / 8),
+    angle_radians = angle_degrees * pi / 180,
+    angle_text = ifelse(angle_degrees < -90, 
+                        angle_degrees+180, 
+                        angle_degrees),
+    x = 0.5 * cos(angle_radians),
+    y= 0.5 * sin(angle_radians)
+  )
+
+fill_feb <- tibble(line = word_feb, 
+                             fill = pals::kovesi.rainbow(8))
+
+plot_legend_data <-
+  df_flower %>% 
+  left_join(fill_feb, by = c("matthew" = "line")) 
+
+
+
+plot_feb <- 
+  ggplot(plot_legend_data) +
+  geom_polygon(aes(x = x, y = y, 
+                   fill = fill, 
+                   color = fill), 
+               size = 1.1) +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 0.2), 
+              fill = "#bd007c", 
+              color = "#bd007c", 
+              size = 3.5) +
+  geom_text(data = plot_legend_labels, 
+            aes(x = x, y = y, label = label, 
+                angle = angle_text), 
+            color = "#ffdab9", 
+            size = 8,
+            family = "Rajdhani") +
+  geom_text(aes(x = 0, y = 0, label = "2021\nFebruary"), 
+            color = "#30d5c8",  
+            size = 6, 
+            lineheight = 0.7,
+            family = "Rambla",
+            fontface = "bold") +
+  scale_fill_identity() +
+  scale_color_identity() +
+  coord_equal() +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#c36902",
+                                       color = NA),
+        panel.background = element_rect(fill = "#c36902",
+                                    color = NA))
+```
+
+```{r}
+word_mar <- c("join", "pray", "exercise", "overturn", "learn", "waste", "betray", "crucify")
+
+k <- 4
+theta <- seq(from = -pi/(2*k), to = 2*pi-pi/(2*k), length.out = k * 50)
+x <- cos(k * theta) * cos(theta)
+y <- cos(k * theta) * sin(theta)
+
+matthew <- cut(theta, 2*k, labels = word_mar)
+
+df_flower <- tibble(x = x, y = y, matthew = matthew)
+
+plot_legend_labels <- 
+  tibble(
+    label = word_mar,
+    angle_degrees = (90 - 360 * (1:8) / 8),
+    angle_radians = angle_degrees * pi / 180,
+    angle_text = ifelse(angle_degrees < -90, 
+                        angle_degrees+180, 
+                        angle_degrees),
+    x = 0.5 * cos(angle_radians),
+    y= 0.5 * sin(angle_radians)
+  )
+
+fill_mar <- tibble(line = word_mar, 
+                             fill = pals::ocean.phase(8))
+
+plot_legend_data <-
+  df_flower %>% 
+  left_join(fill_mar, by = c("matthew" = "line")) 
+
+
+
+plot_mar <- 
+  ggplot(plot_legend_data) +
+  geom_polygon(aes(x = x, y = y, 
+                   fill = fill, 
+                   color = fill), 
+               size = 1.1) +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 0.2), 
+              fill = "#9a0026", 
+              color = "#9a0026", 
+              size = 3.5) +
+  geom_text(data = plot_legend_labels, 
+            aes(x = x, y = y, label = label, 
+                angle = angle_text), 
+            color = "#ffdab9", 
+            size = 9, 
+            family = "Rajdhani") +
+  geom_text(aes(x = 0, y = 0, label = "2021\nMarch"), 
+            color = "#00ff85",  
+            size = 6, 
+            lineheight = 0.7,
+            family = "Rambla",
+            fontface = "bold") +
+  scale_fill_identity() +
+  scale_color_identity() +
+  coord_equal() +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#ff7986",
+                                       color = NA),
+        panel.background = element_rect(fill = "#ff7986",
+                                         color = NA))
+```
+
+
+```{r}
+plot <- plot_jan|plot_feb|plot_mar
+
+plot_final <- plot +
+  plot_annotation(caption = "Source: Personal Daily Record | Graphic: Sung Inkyung") &
+  theme(
+    plot.background = element_rect(fill = NA,
+                                   color = NA),
+    plot.caption = element_text(size = 9,
+                                family = "Rambla",
+                                color = "gray45",
+                                margin = margin(t = 10))
+    )
+
+ggsave("2021_WordFlower.png", width = 45, height = 15, units = "cm")
+```
+
