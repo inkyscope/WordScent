@@ -1,5 +1,5 @@
 ---
-title: "PrepositionsPairs"
+title: "Prepositions Pairs"
 author: "Sung Inkyung"
 date: '2020 12 05'
 output: html_document
@@ -15,6 +15,14 @@ library(tidytext)
 library(ggtext)
 library(igraph)
 library(ggraph)
+library(showtext)
+
+font_add_google("Oswald")
+font_add_google("Source Sans Pro")
+font_add_google("Lato")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -54,9 +62,6 @@ communities <- walktrap.community(df_preposition)
 V(df_preposition)$color <- as.character(membership(communities))
 
 V(df_preposition)$dgr <- degree(df_preposition, mode = "all")
-
- 
-
 ```
 
 ```{r}
@@ -75,31 +80,36 @@ net_plot <- df_preposition %>%
   geom_node_text(
     aes(label = name,
         size = 9),
+    family = "Source Sans Pro",
     color = "white",
     repel = T) +
   scale_color_manual(values = c("#ffce07", "#0cbb06", "#9e1252", "#c685d6", 
                                 "#59a19f",  "#8b645f")) +
   labs(title = "Preposition Pairs Network",
-       subtitle = "**god**, **faith** and **righteousness** are core words linked to selected prepositions most repeatedly",
+       subtitle = "**god**, **faith**, **righteousness** are core words<br>most repeatedly connected with the chosen prepositions",
        caption = "**Graphic**: Sung Inkyung") +
   theme(panel.background = element_rect(fill = "#3a425d"),
         plot.background = element_rect(fill = "#3a425d",
                                        color = "#3a425d"),
         legend.position = "none",
         plot.title = element_text(size = 24,
+                                  family = "Oswald",
                                   hjust = .5,
                                   color = "gray75",
                                   face = "bold",
                                   margin = margin(t = 10, b = 7)),
-        plot.subtitle = element_markdown(color = "gray75",
-                                         size = 16,
+        plot.subtitle = element_markdown(size = 16,
+                                         family = "Lato", 
                                          hjust = .5,
+                                         color = "gray75",
                                          margin = margin(b = 15)),
-        plot.caption = element_markdown(color = "gray75",
-                                    hjust = 1,
+        plot.caption = element_markdown(size = 9,
+                                        family = "Lato",
+                                        color = "gray75",
+                                        hjust = 1,
                                     margin = margin(t = 30, b = 20)),
         plot.margin = margin(20, 60, 10, 20))
 
-ggsave(here::here("2020", "1205_PrepositionsPairs", "1205_PrepositionsPairsNetwork.png"), width = 28, height = 18, units = "cm")
+ggsave("1205_PrepositionsPairsNetwork.png", width = 28, height = 18, units = "cm")
 ```
 

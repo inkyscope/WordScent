@@ -1,7 +1,7 @@
 ---
 title: "Untitled"
 author: "Sung Inkyung"
-date: '2020 12 19 '
+date: '2020 12 19'
 output: html_document
 ---
 
@@ -17,6 +17,14 @@ library(ggraph)
 library(tidygraph)
 library(ggimage)
 library(glue)
+library(showtext)
+
+font_add_google("Oswald")
+font_add_google("Roboto")
+font_add_google("Jost")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 ###Source[tidytuesday by kaustaveSen] (https://github.com/kaustavSen/tidytuesday/blob/master/2020/week_50_women_2020.R)
 
@@ -102,7 +110,7 @@ edges <- bind_rows(edges1, edges2) %>%
 ```{r}
 graph_data <- tbl_graph(nodes, edges)
 
-img <- here::here("2020", "1219_Words_2020", "word.png")
+img <- ("word.png")
 ```
 
 
@@ -118,6 +126,7 @@ words_2020_plot <- graph_data %>%
                  lineheight = 1.7) +
   geom_node_text(aes(label = node, 
                      filter = levels == 2, color = node), 
+                 family = "Roboto",
                  size = 13, 
                  vjust = 0.5, fontface = "bold") +
   geom_node_point(aes(filter = levels == 2, 
@@ -136,6 +145,7 @@ words_2020_plot <- graph_data %>%
                   size = 12) +
   geom_node_text(aes(x = x, y = y + 1.5 * number/max(nodes$number, na.rm = TRUE), 
                      label = number, 
+                     family = "Jost",
                      filter = levels == 3, 
                      color = word), 
                  nudge_y = 0.025, 
@@ -157,17 +167,20 @@ words_2020_plot <- graph_data %>%
         panel.background = element_rect(fill = "white", 
                                         color = "white"),
         plot.title = element_markdown(size = 80, 
+                                      family = "Oswald",
                                       color = "#2c4358", 
                                       hjust = 0.5),
         plot.subtitle = element_text(size = 48, 
+                                     family = "Roboto",
                                      color = "#2c4358", 
                                      hjust = 0.5,
                                      margin = margin(t = 20)),
         plot.caption = element_markdown(size = 35, 
+                                        family = "Jost",
                                        color = "#c4b5a4"),
         plot.margin = margin(20, 20, 20, 20)) 
 
-  ggsave(here::here("2020", "1219_Words_2020", "1219_Words_2020.png"), width = 90, height = 100,  units = "cm")
+  ggsave("1219_Words_2020.png", width = 90, height = 100,  units = "cm")
   
 ```
 

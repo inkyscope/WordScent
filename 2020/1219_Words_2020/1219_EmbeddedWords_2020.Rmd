@@ -12,6 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(ggtext)
+library(showtext)
+
+font_add_google("Oswald")
+font_add_google("Roboto")
+font_add_google("Jost")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 pal <- color("muted")(7)
 plot_scheme(colour("muted")(7))
@@ -50,12 +58,12 @@ p1 <- df_words %>%
     ggplot() +
     geom_point(data = df_words, 
                aes(axis_x, axis_y, size = n), 
-               colour =  "#ff4500",
+               colour =  "#025024",
                alpha = 0.7) +
     geom_point(data = df_words, 
                aes(axis_x, axis_y), 
-               colour = "#170b07", #"#b2d4b2"
-               size = 1.7 ) +
+               colour = "#19242e", 
+               size = 1.7) +
     geom_text(data = df_words %>% filter(n > 20),
               aes(axis_x, axis_y, 
                   label = label),
@@ -69,26 +77,30 @@ p1 <- df_words %>%
       caption = "**Graphic**: Sung Inkyung") +
   theme_minimal() +
   theme(legend.position = "none",
-        plot.background = element_rect(fill = "#242120",
+        plot.background = element_rect(fill = "#192021",
                                        color = NA),
-        panel.background = element_rect(fill = "#242120",
+        panel.background = element_rect(fill = "#192021",
                                         color = NA),
         plot.title = element_markdown(size = 36,
+                                      family = "Oswald",
                                       color = "gray80",
                                       face = "bold",
                                       hjust = 0.5),
         plot.subtitle = element_text(size = 17, 
+                                     family = "Roboto",
                                      color = "gray80",
                                     hjust = 0.5),
         plot.caption = element_markdown (size = 14,
+                                         family = "Jost",
                                          color = "gray80",
                                         hjust = .5),
         panel.grid.major  = element_blank(),
         panel.grid.minor = element_blank(),
         axis.text = element_blank(),
         axis.title = element_blank(),
-        plot.margin = margin(20, 20, 20, 20)) +
-  ggsave(here::here("2020", "1219_Words_2020", "1219_EmbeddedWords_2020.png"), width = 34, height = 38, units = "cm")
+        plot.margin = margin(20, 20, 20, 20)) 
+
+ggsave("1219_EmbeddedWords_2020.png", width = 34, height = 38, units = "cm")
     
 ```
 

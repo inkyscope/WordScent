@@ -13,6 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(tidytext)
 library(ggtext)
+library(showtext)
+
+font_add_google("Saira")
+font_add_google("Lato")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -69,34 +76,40 @@ plot_heatmap <- bible_words %>%
                                 title.position = "top")) +
   facet_wrap(~ book, ncol = 2, scales = "free") +
   labs(title = "Word Frequency by Book",
-       subtitle = "Words repeated more than 20 times",
+       subtitle = "Words that appear more than 20 times in each book are displayed.",
        caption = "**Graphic**: Sung Inkyung") +
   theme_minimal() +
   theme(legend.position = c(0.84, 1.065), 
         legend.direction = "horizontal",
         legend.key.width = unit(2.6, "line"),
-        legend.key.height = unit(1, "line"),
-        plot.title = element_text(face = "bold", 
-                                  size = 44, 
+        legend.key.height = unit(0.7, "line"),
+        legend.text.align = 0.5,
+        plot.title = element_text(size = 20, 
+                                  family = "Saira",
+                                  face = "bold", 
                                   margin = margin(b = 7)),
-        plot.subtitle = element_text(size = 36,
+        plot.subtitle = element_text(size = 14,
+                                     family = "Lato",
                                      margin = margin(b = 13)),
-        plot.caption = element_markdown(size = 16,
-                                    margin = margin(t = 20, r = 20, b= 20)),
-        strip.text.x = element_text(size = 32, 
+        plot.caption = element_markdown(size = 9,
+                                        family = "Lato",
+                                        margin = margin(t = 20, r = 20, b= 20)),
+        strip.text.x = element_text(size = 11, 
+                                    family = "Saira",
                                     hjust = 0, 
                                     face = "bold"),
         panel.grid = element_blank(),
-        axis.text.x = element_text(angle = 90, 
-                                   vjust = .5, 
-                                   size = 5),
+        axis.text.x = element_text(size = 6,
+                                   family = "Lato",
+                                   angle = 90, 
+                                   vjust = .5),
         axis.text.y = element_blank(),
         axis.title = element_blank(),
         axis.ticks = element_line(colour = "grey60"),
         axis.ticks.y = element_blank(),
         plot.margin = margin(22, 10, 10, 10))
 
-ggsave(here::here("2020", "1122_WordsHeatmap", "1122_WordsHeatmap.png"), width = 32, height = 20, units = "cm")
+ggsave("1122_WordsHeatmap.png", width = 36, height = 25, units = "cm")
         
 ```
 
