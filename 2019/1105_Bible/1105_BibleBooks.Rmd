@@ -1,5 +1,5 @@
 ---
-title: "Frequency Bar Chart"
+title: "Bible Books"
 author: "Sung Inkyung"
 date: '2019 11 5'
 output: html_document
@@ -15,7 +15,14 @@ library(tidytext)
 library(scales)
 library(paletteer)
 library(patchwork)
-library(here)
+library(showtext)
+
+font_add_google("Anton")
+font_add_google("Fira Sans Condensed")
+font_add_google("Jost")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -107,8 +114,14 @@ p1 <- book_by_words %>%
   coord_flip() +
   labs(x = "",
        y = "# of words per testament") +
-  theme_minimal()
-p1
+  theme_minimal() +
+  theme(panel.grid.major.x = element_line(size = 0.004,
+                                          color = "gray25"),
+        panel.grid.major.y = element_blank(),
+        axis.text = element_text(size = 9,
+                                 family = "Fira Sans Condensed",
+                                 color = "gray85"))
+
 
 p2 <- book_by_words %>% 
   ggplot(aes(book, words, fill = Testament)) +
@@ -121,9 +134,14 @@ p2 <- book_by_words %>%
   facet_wrap(~Testament, scales = "free_y") +
   labs(x = "",
        y = "# of words per testament") +
-  theme_minimal() 
+  theme_minimal() +
+  theme(panel.grid.major.x = element_line(size = 0.004,
+                                          color = "gray25"),
+        panel.grid.major.y = element_blank(),
+        axis.text = element_text(size = 9,
+                                 family = "Fira Sans Condensed",
+                                 color = "gray85"))
 
-p2
 
 title <- ggplot(data.frame(x = 1:2, y = 1:10)) +
   labs(x = "",
@@ -131,15 +149,19 @@ title <- ggplot(data.frame(x = 1:2, y = 1:10)) +
        title = "Books of the King James Bible by Word Frequency",
        caption = "Graphic: Sung Inkyung") +
   theme(legend.position="none",
-        plot.title = element_text(size = 18,
-                                  hjust = -.5,
+        plot.title = element_text(size = 24,
+                                  family = "Anton",
+                                  color = "gray97",
+                                  hjust = -.34,
                                   margin = margin(b = 20)),
-        plot.caption = element_text(size = 9,
-                                    hjust = -7.2,
+        plot.caption = element_text(size = 11,
+                                    family = "Jost",
+                                    color = "gray97",
+                                    hjust = -4.95,
                                     margin = margin(t = 25)),
         panel.grid = element_blank())
 
-title + p1 + p2 +  plot_layout(widths = c(0, 1, 1.5))
+title + p1 + p2 +  plot_layout(widths = c(0, 1, 2))
 
-ggsave(here("2019", "1105_BibleFrequencyBar", "1105_BibleBooksbyWordFrequency.png"), width = 11, height = 7, units = "in")
+ggsave("1105_BibleBooks.png", width = 30, height = 26, units = "cm")
 ```
