@@ -8,13 +8,22 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+### Source[tidytuesday by jake kaupp] (https://github.com/jkaupp/tidytuesdays/blob/master/2020/week24/R/analysis.R)
 
 ```{r}
 library(tidyverse)
 library(ggtext)
 library(gggibbous)
+library(showtext)
+
+font_add_google("Staatliches")
+font_add_google("Fira Sans Condensed")
+font_add_google("Comfortaa")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
-### Source[tidytuesday by jake kaupp] (https://github.com/jkaupp/tidytuesdays/blob/master/2020/week24/R/analysis.R)
+
 ```{r}
 time_between <- tribble(
   ~from, ~to, 
@@ -55,6 +64,7 @@ plot <- df %>%
             size = 5, fill = "#203650") +
   geom_text(aes(x = 10, y = from, label = to), 
             size = 5.5,
+            family = "Comfortaa",
             color = "#b22222",
             nudge_x = .3, 
             hjust = 0,
@@ -62,7 +72,7 @@ plot <- df %>%
   labs(x = NULL,
        y = NULL,
        title = "A Time to    ",
-       subtitle = "Excerpted from Ecclesiastes Chapter3:2~8",
+       subtitle = "Ecclesiastes Chapter3:2~8",
        caption = "**Data**: KJV | **Graphic**: Sung Inkyung") +
   scale_x_continuous(limits = c(0, 18),
                      breaks = seq(0, 18, 6),
@@ -71,20 +81,24 @@ plot <- df %>%
   theme(plot.background = element_rect(fill = "#cdaa7d"), 
         panel.grid = element_blank(),
         plot.title = element_text(size = 26,
-                                  face = "bold",
+                                  family = "Staatliches",
                                   margin = margin(t = 10,
                                                   b = 7)),
         plot.subtitle = element_text(size = 12,
+                                     family = "Fira Sans Condensed",
                                      margin = margin(b = 15)),
         plot.caption = element_markdown(size = 9,
+                                        family = "Comfortaa",
                                         margin = margin(t = 7,
                                                         b = 10)),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(color = "#163b57",
-                                   size = 13))
+                                   family = "Fira Sans Condensed",
+                                   size = 13),
+        plot.margin = margin(10, 20, 10, 15))
 
-ggsave(here::here("2020", "1109_Ecclesiastes", "1109_Ecclesiastes.png"), width = 24, height = 16, units = "cm")
+ggsave("1109_Ecclesiastes.png", width = 24, height = 16, units = "cm")
 
 ```
 

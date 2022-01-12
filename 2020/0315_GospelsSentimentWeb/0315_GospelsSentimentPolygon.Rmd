@@ -15,6 +15,15 @@ library(tidytext)
 library(ggtext)
 library(patchwork)
 library(here)
+library(showtext)
+
+font_add_google("Staatliches")
+font_add_google("Comfortaa")
+font_add_google("Fira Sans Condensed")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
+
 ```
 ### Source[tidytuesday by jake lawlor] (https://github.com/jakelawlor/TidyTuesday_JL/blob/master/CodeFiles/Jan21.20.Spotify.Rmd)
 
@@ -71,36 +80,35 @@ main <- gospels_nrc %>%
   geom_polygon(aes(group = word),
                alpha = .01, size = .2, fill = NA,
                show.legend = F) +
-  scale_x_discrete(limits = order,
-                   labels = c("Positive", "Joy", "Anticipation",
-                              "Trust", "Surprise", "Negative",
-                             "Sadness", "Anger", "Fear", "Disgust")) +
-  coord_polar(clip = "off") +
-  scale_color_manual(values = c("#eea990", "#854442", "#d73232", "#00b3ff" ),
-                     labels = c("Matthew", "Mark", "Luke", "John")) + ## paletteer::scale_colour_paletteer_d("yarrr::cars")
-  scale_fill_manual(values = c("#eea990", "#854442", "#d73232", "#00b3ff" )) +
-  labs(title = "The Sentiment Web of 4 Gospels in New Testament",
-       subtitle = "<span style = 'color:#eea990'>**Matthew**</span> <span style = 'color:#854442'>**Mark**</span> <span style = 'color:#d73232'>**Luke**</span>
-       <span style = 'color:#00b3ff'>**John**</span>") +
-  theme_minimal() +
-  theme(axis.title = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text.y = element_blank(),
-        plot.title = element_markdown(size = 24,
-                                      hjust = .5,
-                                      margin = margin(t= 20, b = 7)),
-        plot.subtitle = element_markdown(size = 18,
-                                         hjust = .5,
-                                         margin = margin(b = 20))) +
-  ylim(0, 40) +
   geom_polygon(aes(x = sentiment, y = value, 
                    group = book, 
                    color = book, 
                    fill = book),
                alpha =.4,
                size = .7, 
-               show.legend = F)
- 
+               show.legend = F) +
+  scale_x_discrete(limits = order,
+                   labels = c("Positive", "Joy", "Anticipation",
+                              "Trust", "Surprise", "Negative",
+                             "Sadness", "Anger", "Fear", "Disgust")) +
+  scale_color_manual(values = c("#eea990", "#854442", "#d73232", "#00b3ff" ),
+                     labels = c("Matthew", "Mark", "Luke", "John")) + 
+  scale_fill_manual(values = c("#eea990", "#854442", "#d73232", "#00b3ff" )) +
+  coord_polar(clip = "off") +
+  labs(title = "<span style = 'color:#eea990'>**Matthew**</span> <span style = 'color:#854442'>**Mark**</span> <span style = 'color:#d73232'>**Luke**</span>
+       <span style = 'color:#00b3ff'>**John**</span>") +
+  ylim(0, 40) +
+  theme_minimal() +
+  theme(axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 14,
+                                   family = "Comfortaa"),
+        axis.text.y = element_blank(),
+        plot.title = element_markdown(size = 36,
+                                      family = "Staatliches",
+                                      hjust = .5,
+                                      margin = margin(b = 20)))
+
 ```
 
 ```{r}
@@ -115,25 +123,29 @@ facet <- gospels_nrc %>%
                              "Sadness", "Anger", "Fear", "Disgust")) +
   coord_polar(clip = "off") +
   scale_color_manual(values = c("#eea990", "#854442", "#d73232", "#00b3ff"),
-                     labels = c("Matthew", "Mark", "Luke", "John")) + ## paletteer::scale_colour_paletteer_d("yarrr::cars")
+                     labels = c("Matthew", "Mark", "Luke", "John")) + 
   scale_fill_manual(values = c("#eea990", "#854442", "#d73232", "#00b3ff")) +
   labs(caption = "Graphic: Sung Inkyung") +
+  ylim(0,40) +
   facet_grid(~ book) +
   theme_minimal() +
   theme(strip.text = element_blank(),
-        axis.title = element_blank(),
+        panel.spacing = unit(2.5, "lines"),
         plot.title = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text = element_blank(),
-        plot.caption = element_markdown(size = 11,
+        plot.caption = element_markdown(size = 13,
+                                        family = "Fira Sans Condensed",
                                         hjust = .5,
-                                        margin = margin(t = 20))) +
-  ylim(0,40) 
+                                        margin = margin(t = 20)),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 7,
+                                   family = "Comfortaa"),
+        axis.text.y = element_blank()) 
   
 ```
 
 ```{r}
-panel <- (main + facet) + plot_layout(ncol = 1, heights = c(1, 0.28))
+panel <- (main + facet) + plot_layout(ncol = 1, heights = c(1, 0.3))
 
-ggsave(here("2020", "0315_GospelsSentimentWeb", "0315_GospelsSentimentPolygon.png"), width = 30, height = 27, units = "cm")
+ggsave("0315_GospelsSentimentPolygon.png", width = 40, height = 27, units = "cm")
 ```

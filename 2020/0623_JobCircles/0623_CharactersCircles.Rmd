@@ -1,5 +1,5 @@
 ---
-title: "CharactersCircles"
+title: "Job"
 author: "Sung Inkyung"
 date: '2020 06 23'
 output: html_document
@@ -16,6 +16,14 @@ library(ggtext)
 library(igraph)
 library(ggraph)
 library(here)
+library(showtext)
+
+font_add_google("Saira")
+font_add_google("Fira Sans Condensed")
+
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -182,11 +190,12 @@ ggraph(layout) +
                  size = 5, 
                  hjust = 0.5) +
   geom_node_text(aes(x = x,
-                     y = y - 0.045,
+                     y = y - 0.05,
                      label = ifelse(total_word > 1000,
                                     format(total_word, big.mark = ','),
                                     total_word),
                      filter = name %in% top_characters),
+                 family = "Fira Sans Condensed",
                  size = 3.5, 
                  hjust = 0.5) +
   scale_edge_color_manual(values = top_characters_colors) +
@@ -195,25 +204,20 @@ ggraph(layout) +
   scale_edge_alpha_manual(values = c(0.15, 1)) +
   coord_fixed() +
   labs(
-    title = "Characters Connected to Top 300 Words in the Book of Job",
     caption = "**Graphic**: Sung Inkyung"
   ) +
   theme_void() +
   theme(
     legend.position = c(0.645, 0.51),
-    plot.title = element_text(size = 20,
-                              face = 'bold', 
-                              hjust = 0.5, 
-                              margin = margin(t = 20, b = 15)),
     plot.caption = element_markdown(size = 9,
-                                    face = 'plain', 
+                                    family = "Saira", 
                                     color = '#a9a9a9',
                                     hjust = 1,
-                                    margin = margin(b = 20)))
+                                    margin = margin(t = 20)),
+    plot.margin = margin(5, 5, 5, 5))
 
-ggsave(here("2020", "0623_JobCircles", "0623_CharactersCircles.png"), width = 23, height = 23.5, units = "cm")
+ggsave("0623_CharactersCircles.png", width = 23, height = 23.5, units = "cm")
 
-### Readjusted(Dec 08, 2020): colors, positions of characters in the circle
 ```
 
 ``

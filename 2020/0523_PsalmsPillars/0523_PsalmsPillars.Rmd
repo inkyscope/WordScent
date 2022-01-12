@@ -15,6 +15,16 @@ library(tidytext)
 library(ggtext)
 library(glue)
 library(here)
+library(showtext)
+
+font_add_google("Quicksand")
+font_add_google("Fira Sans Condensed")
+font_add_google("Lora")
+font_add_google("Saira Condensed")
+
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -85,14 +95,14 @@ Psalms_books <- tidy_psalms %>%
 ```
 
 ```{r}
-pal = c(positive = "#006b38ff", negative = "#755139ff", praise = "#f2edd7ff")
+pal = c(positive = "#66cdaa", negative = "#cdba96", praise = "#caadd7")
 
 plot_wordpillar <- Psalms_books %>% 
   ggplot(aes(chapter, rank,
              label = word,
              color = group,
              size = abs(contr_rel))) +
-  geom_richtext(fontface = "bold",
+  geom_richtext(family = "Saira Condensed",
                 fill = "#212038",
                 label.color = NA,
                 label.padding = unit(c(.1, .15, -.1, .05), "lines"),
@@ -108,33 +118,36 @@ plot_wordpillar <- Psalms_books %>%
   labs(
     x = "",
     y = "",
-    title = "Parallel of <span style = 'color: #f2edd7ff'>**PRAISE**</span> Between Positive and Negative Sentiments in Psalms",
-    subtitle = "Based on a sentiment analysis of Psalms, top 50 words are filtered from Book 1 to Book 5<br>by contribution value to each book, either in a <span style='color:#006b38ff'>positive</span> or in a <span style='color:#755139ff'>negative</span> way.<br>The size of each word indicates its contribution per book.</span>",
+    title = "<span style = 'color: #caadd7'>**PRAISE**</span> between Sentiments in Psalms",
+    subtitle = "Based on a sentiment analysis of Psalms, top 50 words are filtered from Book 1 to Book 5<br>by contribution value to each book, either in a <span style='color:#66cdaa'>positive</span> or in a <span style='color:#cdba96'>negative</span> way.<br>The size of each word indicates its contribution per book.</span>",
       caption = 'Graphic: Sung Inkyung'
     ) +
   theme_minimal() +
   theme(plot.background = element_rect(fill = "#212038",
-                                       color = "#212038"),
+                                       color = NA),
         panel.background = element_rect(fill = "#212038",
-                                       color = "#212038"),
-        plot.title = element_markdown(color = "#c7d3d4ff", 
-                                      size = 36,
+                                       color = NA),
+        plot.title = element_markdown(color = "#c7d3d4", 
+                                      family = "Quicksand",
+                                      size = 38,
                                       margin = margin(b = 9)),
-        plot.subtitle = element_markdown(color = "#c7d3d4ff", 
-                                         size = 28,
+        plot.subtitle = element_markdown(color = "#c7d3d4", 
+                                         family = "Fira Sans Condensed",
+                                         size = 30,
                                          lineheight = .9,
-                                        margin = margin(b = 20)),
+                                        margin = margin(b = 15)),
         plot.caption = element_text(color = "#c7d3d4ff",
-                                    size = 17, 
-                                    margin = margin(t = 20, b = 10)),
+                                    family = "Saira Condensed",
+                                    size = 24, 
+                                    margin = margin(t = 20)),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.text.x.top = element_text(color = "#a2a2a1ff", 
-                                         size = 21, 
-                                         face = "bold",
-                                         margin = margin(b = 10)),
+        axis.text.x.top = element_text(color = "#b9d3ee", 
+                                       family = "Lora",
+                                       size = 28, 
+                                       margin = margin(b = 10)),
         axis.text.y = element_blank(),
-        plot.margin = margin(20, 20, 20, 20))
+        plot.margin = margin(10, 10, 10, 10))
 
-ggsave(here("2020", "0523_PsalmsPillars", "0523_PsalmsPillars.png"), width = 46, height = 50, units = "cm")
+ggsave("0523_PsalmsPillars.png", width = 43, height = 50, units = "cm")
 ```

@@ -12,6 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(ggtext)
+library(showtext)
+
+font_add_google("Saira")
+font_add_google("Fira Sans Condensed")
+font_add_google("Jost")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -57,6 +65,7 @@ plot_lord <- ezekiel_lord %>%
             aes(x = 64, y = -chapter, label = total),
             color = "gray20",
             size = 3.5, 
+            family = "Saira",
             show.legend = F) +
   scale_x_continuous(limits = c(1, 64),
                      expand = c(.01, 0)) +
@@ -68,25 +77,30 @@ plot_lord <- ezekiel_lord %>%
   scale_fill_gradient(low = "#FFF3EB", high = "#FFB885") +
   labs(x = " ",
        y = " ", 
-       title = "The Number of Times of <span style ='color:#4a2b47'>**LORD**</span> occurred through 48 Chapters in the Book of Ezekiel",
-       subtitle = "God tells us over and over that he is the LORD.\nThis revelation of his self-identification is a constant echo by a prophet Ezekiel.",
+       title = "Frequency of Calling <span style ='color:#4a2b47'>**LORD**</span> chapter by chapter throughout Ezekiel(48 Chapters)",
+       subtitle = "God keeps telling us that he is the LORD.\nThis revelation of his identity is told like a constant echo through the prophet Ezekiel.",
        caption = "**Graphic**: Sung Inkyung") +
   theme(plot.background = element_rect(fill = "#f5f6f4"),
         panel.background = element_rect(fill = "#f5f6f4"),
         panel.grid = element_blank(),
         plot.title = element_markdown(size = 24,
+                                      family = "Saira",
                                       margin = margin(t = 20, b = 10)),
         plot.subtitle = element_text(size = 20,
+                                     family = "Fira Sans Condensed",
                                      margin = margin(b = 20)),
         plot.caption = element_markdown(size = 14,
+                                        family = "Jost",
                                         margin = margin(t = 30, b= 20, r = 20)),
         axis.ticks.x = element_blank(),
         axis.ticks.y = element_blank(),
         axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 14))
+        axis.text.y = element_text(size = 14,
+                                   family = "Jost"),
+        plot.margin = margin(10, 20, 10, 10))
 
 
-ggsave(here::here("2020", "1115_Ezekiel", "1115_Ezekiel_Lord.png"), width = 46, height = 40, units = "cm")
+ggsave("1115_Ezekiel_Lord.png", width = 46, height = 40, units = "cm")
 ```
 
 

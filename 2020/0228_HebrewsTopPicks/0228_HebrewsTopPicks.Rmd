@@ -12,7 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(tidytext)
+library(ggtext)
 library(here)
+library(showtext)
+
+font_add_google("Staatliches")
+font_add_google("Lato")
+font_add_google("Saira")
 ```
 
 
@@ -114,39 +120,46 @@ word_plot <- word %>%
   geom_text(position = "stack", 
             stat = "identity",
             size = 5,
+            family = "Lato",
             show.legend = FALSE,
             color = "#cccc00" ) +
-  annotate("text", x = 1, y = 106, label = "angels", color = "#cd1076", size = 5)+
-  annotate("text", x = 2, y = 130, label = "angels", color = "#cd1076", size = 5)+
-  annotate("text", x = 3, y = 114, label = "house", color = "#cd1076", size = 5)+
-  annotate("text", x = 4, y = 110, label = "rest", color = "#cd1076", size = 5)+
-  annotate("text", x = 5, y = 85, label = "priest", color = "#cd1076", size = 5)+
-  annotate("text", x = 6, y = 132, label = "promise", color = "#cd1076", size = 5)+
-  annotate("text", x = 7, y = 186, label = "priest", color = "#cd1076", size = 5)+
-  annotate("text", x = 8, y = 89, label = "covenant", color = "#cd1076", size = 5)+
-  annotate("text", x = 9, y = 202, label = "blood", color = "#cd1076", size = 5)+
-  annotate("text", x = 10, y = 222, label = "offering", color = "#cd1076", size = 5)+
-  annotate("text", x = 11, y = 317, label = "faith", color = "#cd1076", size = 5)+
-  annotate("text", x = 12, y = 219, label = "set", color = "#cd1076", size = 5)+
-  annotate("text", x = 13, y = 145, label = "remember", color = "#cd1076", size = 5)+
-  
-  labs(x = "Chapter of Hebrews",
-       y = "Frequency of words",
-       title = "Top Word in Each Chapter of Hebrews",
-       subtitle = "Inspired by ToughTalk Jazzband ablumb MY World",
+  annotate("text", x = 1, y = 106, label = "angels", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 2, y = 130, label = "angels", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 3, y = 114, label = "house", color = "#cd1076", family = "Saira", size = 5.5) + 
+  annotate("text", x = 4, y = 110, label = "rest", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 5, y = 85, label = "priest", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 6, y = 132, label = "promise", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 7, y = 186, label = "priest", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 8, y = 89, label = "covenant", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 9, y = 202, label = "blood", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 10, y = 222, label = "offering", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 11, y = 317, label = "faith", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 12, y = 219, label = "set", color = "#cd1076", family = "Saira", size = 5.5) +
+  annotate("text", x = 13, y = 145, label = "remember", color = "#cd1076", family = "Saira", size = 5.5) +
+  labs(x = " ",
+       y = " ",
+       title = "Top Picks from the Book of Hebrews",
+       subtitle = "Illustrated below shows the most frequent words by chapter in the book of Hebrews.<br>Inspired by **MY World** by ToughTalk Jazz band released in April 28, 2020",
        caption = "Source: King James Bible | Graphic: Sung Inkyung") +
   theme_minimal() +
   theme(legend.position = "none",
-        plot.title = element_text(size = 20,
-                                  margin = margin(b = 5)),
-        plot.subtitle = element_text(size = 16,
-                                     margin = margin(b = 15)),
-        plot.caption = element_text(size = 9),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        axis.text.x = element_text(size = 9))
+        plot.title = element_text(size = 24,
+                                  family = "Staatliches",
+                                  margin = margin(t =35,
+                                                  b = 9)),
+        plot.subtitle = element_markdown(size = 17,
+                                        family = "Lato",
+                                        lineheight = 1.1,
+                                        margin = margin(b = 15)),
+        plot.caption = element_text(size = 12,
+                                    family = "Saira"),
+        panel.grid = element_blank(),
+        axis.text.x = element_text(size = 15,
+                                   family = "Saira",
+                                   face = "bold"),
+        axis.text.y = element_blank(),
+        plot.margin = margin(10, 10, 10, 10))
   
-  ggsave(here::here("2020", "0228_HebrewsTopPicks", "0228_HebrewsTopPicks.png"), width = 35, height = 15, units = "cm")
+ggsave("0228_HebrewsTopPicks.png", width = 35, height = 25, units = "cm")
 ```
 

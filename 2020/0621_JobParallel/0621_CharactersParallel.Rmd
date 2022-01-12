@@ -18,9 +18,12 @@ library(ggsci)
 library(showtext)
 library(here)
 
-font_add_google("Roboto Mono", "Roboto Mono")
-showtext_auto()
+font_add_google("Anton")
+font_add_google("Roboto Condensed")
+font_add_google("Saira Condensed")
 
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -51,21 +54,20 @@ job_words <- job %>%
 ```{r}
 words <- job_words %>% 
   group_by(character, chapter, word) %>% 
-  filter(word %in% c("understanding", "wisdom", "dignity", "strength", "righteous", "words")) %>% 
+  filter(word %in% c("understanding", "wisdom", "dignity", "strength", "righteous", "pity")) %>% 
   add_count(word) %>% 
   summarize(total = sum(n))
   
 p <- words %>% 
   ggplot(aes(axis1 = word, axis2 = character, axis3 = chapter, y = total)) +
   geom_alluvium(aes(fill = character)) +
-  geom_stratum(fill = "grey70", 
-               color = "grey20", 
+  geom_stratum(fill = "grey85", 
                size = 0.03, 
                width = 0.4) +
    geom_text(stat = "stratum", 
-             color = "gray20",
-             family = "Roboto Mono",
-             size = 9,
+             color = "gray15",
+             family = "Saira Condensed",
+             size = 4.5,
              infer.label = T) +
   scale_x_discrete(limits = c("Word", "Character", "Chapter"),
                    expand = c(0, 0),
@@ -78,26 +80,24 @@ p <- words %>%
        subtitle = "First 2 chapters are removed; Conversation between God and Satan",
        caption = "Graphic: Sung Inkyung") +
   theme_minimal() +
-  theme(plot.title = element_text(size = 40,
-                                  family = "Roboto Mono",
+  theme(plot.title = element_text(size = 24,
+                                  family = "Anton",
                                   face = "bold",
                                   hjust = .5,
-                                  margin = margin(c(t = 20))),
-        plot.subtitle = element_text(size = 36,
-                                    family = "Roboto Mono",
+                                  margin = margin(c(b = 4))),
+        plot.subtitle = element_text(size = 20,
+                                    family = "Roboto Condensed",
                                     face = "bold",
                                     hjust = .5,
-                                    margin = margin(c(b = 10))),
-        plot.caption = element_text(size = 24,
-                                    family = "Roboto Mono",
-                                    hjust = .5,
+                                    margin = margin(c(b = 15))),
+        plot.caption = element_text(size = 13,
+                                    family = "Roboto Condensed",
+                                    hjust = 1,
                                     margin = margin(c(t = 20, b = 20))),
-        axis.text.x = element_text(size = 30, 
-                                   color = "black", 
-                                   family = "Roboto Mono",
-                                   face = "bold"),
-        axis.text.y = element_text(size = 20, 
-                                     family = "Roboto Mono"),
+        axis.text.x = element_text(size = 13, 
+                                   family = "Anton",
+                                   color = "gray35"),
+        axis.text.y = element_blank(),
         axis.line = element_blank(),
         panel.grid = element_blank(),
         legend.position = "bottom",
@@ -105,8 +105,9 @@ p <- words %>%
         legend.key.height = unit(0.75, "lines"),
         legend.spacing.x = unit(0.5, 'cm'),
         legend.title = element_blank(),
-        legend.text = element_text(size = 20),
+        legend.text = element_text(size = 10,
+                                   family = "Saira Condensed"),
         plot.margin = margin(5, 5, 5, 5))
 
-ggsave(here("2020", "0621_JobParallel",  "0621_CharactersParallel.png"), width = 22, height = 25, units = "cm")
+ggsave("0621_CharactersParallel.png", width = 22, height = 30, units = "cm")
 ```

@@ -1,7 +1,7 @@
 ---
 title: "Characters Net"
 author: "Sung Inkyung"
-date: '2020 6 21 '
+date: '2020 6 21'
 output: html_document
 ---
 
@@ -13,7 +13,17 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(igraph)
 library(ggraph)
+library(MetBrewer)
 library(here)
+library(showtext)
+
+
+font_add_google("Raleway")
+font_add_google("Rambla")
+font_add_google("Jost")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
 
 
@@ -25,7 +35,6 @@ job <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new
 
 
 ```{r}
-
 job_words <- job %>% 
    mutate(
     character = case_when(
@@ -43,9 +52,8 @@ job_words <- job %>%
   filter(!word %in% c("thou", "thy", "thine", "hast", "art",
                       "shalt", "thee", "hath", "ye", "yea", "thereof", "job", "god", "day", "doth", "canst", "cometh", "wilt", "dost", "wherefore", "shouldes", "lo")) %>% 
   count(character, word, sort = T) %>% 
-  slice(1:300) %>% 
+  slice(1:200) %>% 
   graph_from_data_frame()
-
 
 
 communities <- walktrap.community(job_words)
@@ -58,8 +66,7 @@ V(job_words)$dgr <- degree(job_words, mode = "all")
 
 
 ```{r}
-
-## plot
+# plot
 set.seed(2020)
 
 net_plot <- job_words %>% 
@@ -74,26 +81,30 @@ net_plot <- job_words %>%
   geom_node_text(
     aes(label = name,
         size = 9),
+    family = "Raleway",
     color = "white",
     repel = T) +
-  scale_color_manual(values = c("#5e86bd", "#df5286", "#db6565", "#307a49", 
-                                "#d6b354",  "#7ed1f2", "#9e155e")) +
-  labs(title = "Word Network by Characters\nin the Book of Job",
+  scale_color_manual(values = met.brewer("Stevens")) +
+  labs(title = "Word Network \nby Characters\nin the Book of\nJob",
        caption = "Graphic: Sung Inkyung") +
   theme(panel.background = element_rect(fill = "#25283d"),
         plot.background = element_rect(fill = "#25283d",
                                        color = "#25283d"),
         legend.position = "none",
-        plot.title = element_text(color = "gray75",
-                                  size = 24,
-                                  hjust = .5,
+        plot.title = element_text(color = "gray97",
+                                  family = "Rambla",
+                                  size = 28,
+                                  hjust = 0,
                                   face = "bold",
                                   margin = margin(10, 0, 5, 0)),
         plot.caption = element_text(color = "gray75",
-                                    hjust = .5,
+                                    family = "Jost",
+                                    size = 9,
+                                    hjust = 1,
                                     margin = margin(0, 0, 15, 0)),
         plot.margin = margin(20, 60, 10, 20))
 
-ggsave(here("2020", "0621_JobNetwork", "0621_CharactersNet.png"), width = 28, height = 18, units = "cm")
+ggsave("0621_CharactersNet.png", width = 28, height = 18, units = "cm")
 
 ```
+###scale_color_manual(values = c("#5e86bd", "#df5286", "#db6565", "#307a49", "#d6b354",  "#7ed1f2", "#9e155e")) +

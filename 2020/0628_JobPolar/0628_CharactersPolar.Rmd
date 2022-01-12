@@ -8,13 +8,21 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+### Source[tidytuesday by PMassicotte] (https://github.com/PMassicotte/tidytuesday/blob/master/R/tidytuesday_2020_week03.R)
 ```{r}
 library(tidyverse)
 library(tidytext)
 library(here)
+library(showtext)
+
+font_add_google("Anton")
+font_add_google("Roboto")
+font_add_google("Jost")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
-### Source[tidytuesday by PMassicotte] (https://github.com/PMassicotte/tidytuesday/blob/master/R/tidytuesday_2020_week03.R)
+
 
 ```{r}
 job <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
@@ -95,7 +103,8 @@ plot <- jw %>%
                 label = word,
                 hjust = hjust),
             color = "gray90",
-            size = .7,
+            family = "Jost",
+            size = 0.9,
             angle = label_data$angle) +
   geom_text(data = char,
             aes(x = pos, 
@@ -104,20 +113,24 @@ plot <- jw %>%
                 angle = angle2,
                 color = character,
                 hjust = hjust),
-            size = 12) +
+            family = "Roboto",
+            size = 5) +
   annotate("text",
            x = 0, y = -50,
-           label = "Words Parade\nin the Book of\nJob",
+           label = "J o b",
            color = "gray90",
-           fontface = "bold",
-           size = 16) +
+           family = "Anton",
+           size = 15) +
   labs(caption = "Graphic: Sung Inkyung") +
   paletteer::scale_fill_paletteer_d("Redmonder::qMSOBu2") +
   paletteer::scale_color_paletteer_d("Redmonder::qMSOBu2") +
   theme(legend.position = "none",
-        plot.background = element_rect(fill = "#091114"),
-        panel.background = element_rect(fill = "#091114"),
-        plot.caption = element_text(size = 30,
+        plot.background = element_rect(fill = "#091114",
+                                       color = NA),
+        panel.background = element_rect(fill = "#091114",
+                                        color = NA),
+        plot.caption = element_text(size = 11,
+                                    family = "Jost",
                                     color = "gray90",
                                     hjust = .5,
                                     margin = margin(b = 20)),
@@ -127,7 +140,7 @@ plot <- jw %>%
         axis.text = element_blank(),
         axis.ticks = element_blank())
 
-ggsave(here("2020", "0628_JobPolar", "0628_CharactersPolar.png"), width = 25, height = 25, units = "cm")
+ggsave("0628_CharactersPolar.png", width = 25, height = 25, units = "cm")
   
 ```
 

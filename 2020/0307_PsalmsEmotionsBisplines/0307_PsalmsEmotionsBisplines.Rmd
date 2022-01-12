@@ -8,17 +8,27 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+### source [Sentiment Analysis in R] (http://rstudio-pubs-static.s3.amazonaws.com/283881_efbb666d653a4eb3b0c5e5672e3446c6.html)
+### Source[tidytuesday by gkaramanis] (https://github.com/gkaramanis/tidytuesday/blob/master/2020-week03/passwords-bsplines.R)
 ```{r}
 library(tidyverse)
 library(tidytext)
 library(ggforce)
 library(paletteer)
 library(here)
+library(showtext)
 
+
+font_add_google("Monoton")
+font_add_google("Comfortaa")
+font_add_google("Fira Sans Condensed")
+font_add_google("Finger Paint")
+
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
 ```
-### source [Sentiment Analysis in R] (http://rstudio-pubs-static.s3.amazonaws.com/283881_efbb666d653a4eb3b0c5e5672e3446c6.html)
-### Source[tidytuesday by gkaramanis] (https://github.com/gkaramanis/tidytuesday/blob/master/2020-week03/passwords-bsplines.R)
+
 ```{r}
 bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
   filter(book == "Psalms")
@@ -78,29 +88,40 @@ plot_bisplines <- bsplines %>%
   scale_size(range = c(0, 0.7), guide = FALSE) +
   labs(x = "",
        y = "",
-       title = "Classification of 10 Sentiments of Words Extracted from Psalms book by NRC Lexicon",
-       subtitle = "Every circle is a word. Radius, stroke width, and color represent its frequency through 150 chapters.",
+       title = "Classification of 10 Sentiments in PSALMS",
+       subtitle = "Every circle represents a word.\nRadius, stroke width, and color indicate how often they appeared in 150 chapters.",
        caption = "Graphic: Sung Inkyung")+
    guides(color = guide_colorbar(title = "Frequency", 
                          title.position = "top", 
                          title.hjust = 0.5, 
-                         barheight = 0.7)) +
+                         barheight = 0.5,
+                         barwidth = 9)) +
   facet_wrap(vars(toupper(sentiment)), ncol = 5) +
   coord_fixed() +
   theme_void() +
   theme(
     legend.position = "bottom",
-    plot.title = element_text(size = 16, hjust = 0.5, 
+    legend.title = element_text(size = 9,
+                                family = "Fira Sans Condensed"),
+    legend.title.align = 0.5,
+    plot.title = element_text(size = 20, 
+                              family = "Comfortaa",
+                              hjust = 0.5, 
                               margin = margin(b = 7)),
-    plot.subtitle = element_text(size = 14, hjust = 0.5, 
+    plot.subtitle = element_text(size = 14, 
+                                 family = "Comfortaa",
+                                 hjust = 0.5, 
                                  margin = margin(b = 50)),
-    plot.caption = element_text(size = 9,  color = "grey60",
-                                margin = margin(t = 15)),
-    strip.text = element_text(size = 9, 
+    plot.caption = element_text(size = 11,
+                                family = "Fira Sans Condensed",
+                                color = "grey15",
+                                margin = margin(t = 20)),
+    strip.text = element_text(size = 14, 
+                              family = "Finger Paint",
                               color = "#484e4a", 
                               margin = margin(b = 10)),
     plot.margin = margin(10, 10, 10, 10)
   )
 
-ggsave(here("2020", "0307_PsalmsEmotionsBisplines", "0307_PsalmsEmotionsBisplines.png"), width = 24, height = 22, units = "cm")
+ggsave("0307_PsalmsEmotionsBisplines.png", width = 24, height = 22, units = "cm")
 ```

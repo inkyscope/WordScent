@@ -14,6 +14,11 @@ library(tidyverse)
 library(tidytext)
 library(paletteer)
 library(here)
+library(showtext)
+
+font_add_google("Rajdhani")
+font_add_google("Roboto")
+font_add_google("Caveat Brush")
 
 ```
 ### source [Sentiment Analysis in R] (http://rstudio-pubs-static.s3.amazonaws.com/283881_efbb666d653a4eb3b0c5e5672e3446c6.html)
@@ -49,48 +54,47 @@ psamls_afinn <-
 afinn_plot <- psalms_afinn %>% 
   ggplot() +
   geom_text(aes(value, count, label = word, color = value),
+            family = "Caveat Brush",
+            size = 7,
             check_overlap = FALSE) +
-  scale_color_gradient(low = "#56b1f7",
-                       high = "#eba487") +
+  scale_color_gradient(low = "#eba487",
+                       high = "#56b1f7") +
+  scale_y_continuous(expand = c(0.01, 0.01)) +
+  geom_hline(yintercept = -3.5,
+             color = "#e6e7eb", size = 0.7) +
   guides(color = FALSE) +
-  labs(x = "AFINN Value",
-       y = "Count",
+  labs(x = " ",
+       y = " ",
        title = "Sentiment analysis of Psalms using the AFINN lexicon",
-       subtitle = "AFINN lexicon assigns words with a score that runs between -5 and 5, with negative scores\nindicating negative sentiment and positive scores indicating positive sentiment.",
+       subtitle = "AFINN lexicon assigns words with a score that runs between -5 and 5,\nwith negative scores indicating negative sentiment and\npositive scores indicating positive sentiment.",
        caption = "Source: King James Bible | Graphic: Sung Inkyung") +
   theme_minimal() +
   theme(
     plot.background = element_rect(fill = "#1a1c2e"),
-    plot.title = element_text(size = 18, 
-                              face = "bold",
+    plot.title = element_text(size = 30, 
+                              family = "Rajdhani",
                               color = "#f2f3f5",
-                              margin = margin(t= 20, b = 8)),
-    plot.subtitle = element_text(size = 14, 
-                                 lineheight = 1.1,
+                              margin = margin(b = 7)),
+    plot.subtitle = element_text(size = 18, 
+                                 family = "Roboto",
+                                 lineheight = 0.9,
                                  color = "#e6e7eb",
                                  margin = margin(b = 20)),
     plot.caption = element_text(size = 9,
+                                family = "Roboto",
                                 color = "#e6e7eb",
-                                 margin = margin(t = 10,
-                                                 r = 10,
-                                                 b = 20)),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.major.y = element_line(color = "#21243a"),
-    panel.grid.major.x = element_line(color = "#21243a"),
-    axis.text = element_text(color = "#e6e7eb", size = 10),
-    axis.text.x = element_text(margin = margin(t = 5)),
-    axis.text.y = element_text(margin = margin(r = 5)),
-    axis.title = element_text(size = 9, color = "#e6e7eb"),
-    axis.ticks = element_line(color = "#babcd1"),
-    axis.title.x = element_text(margin = margin(t = 15),
-                                hjust = .5),
-    axis.title.y = element_text(margin = margin(r = 20),
-                                hjust = .5),
-    axis.line = element_line(color = "#9d9fb0")
+                                 margin = margin(t = 15)),
+    panel.grid = element_blank(),
+    axis.text.x = element_text(family = "Roboto",
+                               color = "#e6e7eb",
+                               size = 10,
+                               margin = margin(t = 5)),
+    axis.text.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    plot.margin = margin(20, 15, 10, 15)
   )
 
-ggsave(here("2020", "0307_PsalmsAfinn", "0307_PsamlsbyAfinnValue.png"), width = 34, height = 24, units = "cm")
+ggsave("0307_PsamlsbyAfinnValue.png", width = 34, height = 24, units = "cm")
 
 ```
 
