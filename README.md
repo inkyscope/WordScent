@@ -26,3 +26,25 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 <p float = "center">
 <img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0307_FourGospels/0307_MatthewMarkLukeJohn.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2021/0130_WordNet/WordNet.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0307_PsalmsAfinn/0307_PsamlsbyAfinnValue.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0315_GospelsSentimentWeb/0315_GospelsSentimentPolygon.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0523_PsalmsPillars/0523_PsalmsPillars.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0621_JobNetwork/0621_CharactersNet.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0621_JobParallel/0621_CharactersParallel.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0623_JobCircles/0623_CharactersCircles.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0628_JobPolar/0628_CharactersPolar.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/0705_PsalmsCircles/0705_PsalmsCircles.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1109_Ecclesiastes/1109_Ecclesiastes.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1115_Ezekiel/1115_Ezekiel_Lord.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1118_Holy/1118_Holy.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1121_BibleWordsCircles/1121_BibleWordsCircles.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1122_WordsHeatmap/1122_WordsHeatmap.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1205_PrepositionsPairs/1205_PrepositionsPairsNetwork.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1218_ClotheYourselfWith/1218_ClotheYourselvesWith.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1219_Words_2020/1219_EmbeddedWords_2020.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1219_Words_2020/1219_Words_2020.png" width="10%" hspace="3"/><img src="https://github.com/inkyscope/WordSpice/blob/master/2020/1220_SeedsofWords/1220_SeedsofWords.png" width="10%" hspace="3"/>
 </p>
+
+# Favorites
+### 2021 Word Calendar
+![Word Calendar](https://github.com/inkyscope/WordSpice/blob/master/2021/1030_WordCalendar_2021/WordCalendar_2021.png)
+
+### Job
+![Job](https://github.com/inkyscope/WordSpice/blob/master/2021/1028_Job-Friends/Job_Friends.png)
+
+### 1Samuel
+![Spiders](https://github.com/inkyscope/WordSpice/blob/master/2021/1223_1Samuel/1Samuel_TopLogOdds.png)
+
+### Hebrews
+![Hebrews](https://github.com/inkyscope/WordSpice/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
+
+### Holy
+![Holy](https://github.com/inkyscope/WordSpice/blob/master/2020/1118_Holy/1118_Holy.png)
+
+### Clothe yourself with
+![Clothe](https://github.com/inkyscope/WordSpice/blob/master/2020/1218_ClotheYourselfWith/1218_ClotheYourselvesWith.png)
+
+
+
