@@ -147,9 +147,9 @@ plot_feb <-
   scale_color_identity() +
   coord_equal() +
   theme_void() +
-  theme(plot.background = element_rect(fill = "#c36902",
+  theme(plot.background = element_rect(fill = "#f2e67f",
                                        color = NA),
-        panel.background = element_rect(fill = "#c36902",
+        panel.background = element_rect(fill = "#f2e67f",
                                     color = NA))
 ```
 
@@ -212,9 +212,9 @@ plot_mar <-
   scale_color_identity() +
   coord_equal() +
   theme_void() +
-  theme(plot.background = element_rect(fill = "#ff7986",
+  theme(plot.background = element_rect(fill = "#cde23b",
                                        color = NA),
-        panel.background = element_rect(fill = "#ff7986",
+        panel.background = element_rect(fill = "#cde2eb",
                                          color = NA))
 ```
 
