@@ -56,20 +56,20 @@ plot_data <- bind_cols(bible_word, layout) %>%
   mutate(n = scales::comma(round(n), accuracy = 1))
 
 top <- plot_data %>% 
-  slice_max(n = 12, order_by = n)
+  slice_max(n = 20, order_by = r)
 
-```
-
-```{r}
 trunk <- tibble(x = c(-25, -25, -50, 50, 24, 25),
                 y = c(-200, -350, -400, -400, -350, -200))
 
 ```
 
+
 ```{r}
-tree_word <- plot_data %>% 
+set.seed(123)
+
+plot <- plot_data %>% 
   ggplot() +
-  geom_shape(data = trunk, aes(x = x + 0.05, y = y), 
+  geom_shape(data = trunk, aes(x = x + 0.2, y = y), 
              fill = "#765c48", 
              color = darken("#765c48")) +
   geom_circle(aes(x0 = x, y0 = y, r = r, 
@@ -81,7 +81,7 @@ tree_word <- plot_data %>%
                 label = glue("{str_wrap(book, 10)}\n{n}")), 
             color = "#ebe4dc",
             family = "Caveat Brush",
-            size = 4.5,
+            size = 5,
             lineheight = 0.9) +
   scale_fill_manual(values = met.brewer("Renoir", n = 66)) +
   scale_color_manual(values = met.brewer("Morgenstern", n = 66)) +
@@ -94,7 +94,7 @@ tree_word <- plot_data %>%
   theme_minimal() +
   theme(panel.grid = element_blank(),
         plot.title = element_text(family = "Ranchers",
-                                  size = 36, 
+                                  size = 38, 
                                   hjust = .5,
                                   margin = margin(t = 20, b = 9)),
         plot.subtitle = element_text(family = "Caveat",
@@ -102,11 +102,11 @@ tree_word <- plot_data %>%
                                      hjust = .5,
                                      margin = margin(b = 20)),
         plot.caption = element_markdown(family = "Caveat",
-                                        size = 14,
+                                        size = 16,
                                         hjust = .5,
                                         margin = margin(t = 30, b = 20)),
         axis.text = element_blank())
 
-ggsave("1118_BibleBooksTree.png", width = 25, height = 25, units = "cm")
+ggsave("1118_BibleBooksTree.png", width = 27, height = 27, units = "cm")
   
 ```
