@@ -1,5 +1,5 @@
 ---
-title: "Closet"
+title: "Wardrobe"
 author: "Sung Inkyung"
 date: '2020 12 18'
 output: html_document
@@ -17,8 +17,8 @@ library(tidygraph)
 library(ggraph)
 library(showtext)
 
-font_add_google("Comfortaa")
-font_add_google("Lato")
+font_add_google("Saira")
+font_add_google("Saira Condensed")
 font_add_google("Source Sans Pro")
 
 showtext_opts(dpi = 320)
@@ -119,7 +119,7 @@ p <- graph %>% ggraph(layout = 'dendrogram', circular = TRUE) +
                        x = 0.75 * x, y = 0.75 * y, 
                        hjust = c(.9, 1, 0.6), 
                        vjust = c(4, 1.3, -3)), 
-                   family = "Lato",
+                   family = "Saira",
                    size = 9) +
     geom_node_text(data = filter(apostles, level == 3), 
                    aes(label = node, color = color,
@@ -131,8 +131,8 @@ p <- graph %>% ggraph(layout = 'dendrogram', circular = TRUE) +
                    size = 6) +
     geom_label(aes(x = 0.035, y = 0.045, 
                    label = "CLOTHE\nYOURSELVES\nWITH"), 
-               size = 13, 
-               family = "Comfortaa",
+               size = 15, 
+               family = "Saira Condensed",
                fontface = "bold",
                fill = "white", 
                label.size = 0) +
@@ -145,11 +145,13 @@ p <- graph %>% ggraph(layout = 'dendrogram', circular = TRUE) +
          caption = " **Graphic**: Sung Inkyung") +
     coord_equal(clip = "off") +
     theme(plot.background = element_rect(fill = "white",
-                                         color = "transparent"),
+                                         color = NA),
           panel.background = element_rect(fill = "white",
-                                          color = "transparent"),
-          plot.caption = element_markdown(size = 18,
-                                          family = "Lato"))
+                                          color = NA),
+          plot.caption = element_markdown(color = "gray45",
+                                          family = "Saira",
+                                          size = 18),
+          plot.margin = margin(10, 10, 10, 10))
 
-ggsave( "1218_ClotheYourselvesWith.png", width = 45, height = 42.5, units = "cm")
+ggsave("1218_Wardrobe.png", width = 45, height = 42.5, units = "cm")
 ```
