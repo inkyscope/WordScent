@@ -1,0 +1,144 @@
+---
+title: "BodyParts"
+author: "Sung Inkyung"
+date: '2020 12 5'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(pals)
+library(patchwork)
+library(showtext)
+
+font_add_google("Teko")
+font_add_google("JetBrains Mono")
+font_add_google("Saira Condensed")
+```
+
+
+```{r}
+bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
+```
+
+
+```{r}
+bodyparts <- bible %>% 
+  select(book, chapter, text) %>% 
+  unnest_tokens(word, text) %>% 
+  filter(word %in% c("hand", "face", "mouth", "head", "feet", "eye")) %>% 
+  group_by(book, word) %>% 
+  summarize(count = n()) %>% ## hand appears 1466 times in 54 books
+  filter(count >= 10) %>% 
+  ungroup()  
+
+df <- bodyparts %>% 
+  group_by(word) %>% 
+  summarize(total = sum(count)) %>% 
+  arrange(-total)
+  
+```
+
+```{r}
+plot_total <- df %>% 
+  ggplot(aes(x = total, y = fct_reorder(word, total))) +
+  geom_col(width = .9, 
+           color = "#cea912",
+           fill = "#576675") +
+  geom_text(aes(label = total),
+            family = "JetBrains Mono",
+            nudge_x = - 65) +
+  scale_x_reverse(limits = c(1500, 0),
+                  breaks = c(0, 300, 600, 900, 1200, 1500),
+                  position = "top") +
+  scale_y_discrete(position = "right",
+                   labels = c("eye", "feet","head", "mouth", "face", "hand")) +
+  theme_minimal () +
+  theme(
+    plot.background = element_rect(fill = "#cea912", 
+                                   color = "#cea912"),
+    panel.background = element_rect(fill = "#cea912", 
+                                    color = "#cea912"),
+    axis.text.x.top = element_blank(),
+    axis.text.y.right = element_text(color = "black",
+                                     family = "JetBrains Mono",
+                                     size = 11),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.line.x = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+
+```
+
+
+```{r}
+plot <- bodyparts%>% 
+  mutate(word = factor(word, levels = c("hand", "face", "mouth", "head", "feet", "eye"))) %>% 
+  filter(!is.na(word)) %>% 
+  ggplot(aes(x = word, y = count, fill = book)) +
+  geom_col() +
+  geom_text(aes(x = word, y = 0, 
+                label = glue::glue("{word}  ")),
+            color = "black",
+            family = "Teko",
+            size = 6,
+            hjust = 1.2) +
+  #geom_text(aes(x = "hand", y = 0, label = "0"), hjust = 0.8, size = 2) +
+  geom_text(aes(x = "hand", y = 300, label = "300"), family = "JetBrains Mono", hjust = -1.5, size = 5) +
+  geom_text(aes(x = "hand", y = 600, label = "600"),family = "JetBrains Mono", hjust = -2.5, size = 5) +
+  geom_text(aes(x = "hand", y = 900, label = "900"), family = "JetBrains Mono", hjust = 3.4, size = 5) +
+  geom_text(aes(x = "hand", y = 1200, label = "1200"), family = "JetBrains Mono", hjust = 2, size = 5) +
+  scale_x_discrete(limits = rev,
+                   labels = c("hand", "face", "mouth", "head", "feet", "eye")) +
+  scale_y_continuous(limits = c(0, 1500)) +
+  scale_fill_manual(values=as.vector(polychrome(32))) +
+  coord_polar(theta = "y", start = 0, clip = "off") +
+  labs(title = "Distribution of Body Parts in Bible",
+       subtitle = "Among the words representing body parts that appear more than 10 times,<br>**HAND** appears 1,390 times over 32 books,<br>4 times more than **FACE** and **MOUTH**",
+       caption = "**Graphic**: Sung Inkyung") +
+  theme_void() +
+  theme(
+    legend.position = "bottom",
+    legend.text = element_text(family = "Saira Condensed",
+                               size = 13), 
+    legend.key.size = unit(0.2, "line"),
+    legend.key.width = unit(3, "line"),
+    legend.background = element_rect(colour ="#cea912",
+                                     fill="#cea912"),
+    legend.title= element_blank(),
+    plot.background = element_rect(colour = "#cea912",
+                                   fill = "#cea912"),
+    panel.background = element_rect(colour = "#cea912",
+                                    fill = "#cea912"),
+    plot.title = element_text(color = "black", 
+                              family = "Teko",
+                              size = 34, 
+                              face = "bold",
+                              hjust = 0.5, 
+                              margin = margin(t = 20, b = 7)),
+    plot.subtitle = element_markdown(family = "JetBrains Mono",
+                                     color = "black", 
+                                     size = 14, 
+                                     lineheight = 1.1,
+                                     hjust = 0.5),
+    plot.caption = element_markdown(family = "JetBrains Mono",
+                                    color= "gray15", 
+                                    size = 13, 
+                                    hjust = 1, 
+                                    margin = margin(t = 30, b = 20)),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank())
+
+
+ggsave("1205_BodyParts.png", width =30, height = 30, units = "cm")
+```
+
+```{r}
+# plot_total + plot + plot_layout(ncol = 2, widths=c(1, 2))```
