@@ -15,55 +15,58 @@ library(tidytext)
 library(ggbump)
 library(ggtext)
 library(glue)
+library(showtext)
+
+font_add_google("Staatliches")
+font_add_google("Saira")
+font_add_google("Fira Sans Condensed")
+
+showtext_opts(dpi = 320)
+showtext_auto()
 ```
 
 
 ```{r}
 bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
 
-```
-
-
-```{r}
 book_by_words <- bible %>% 
   select(book, chapter, text) %>% 
-  filter(book %in% c("Jeremiah", "Isaiah", "Ezekiel")) %>% 
+  filter(book %in% c("Isaiah", "Jeremiah", "Ezekiel")) %>% 
   group_by(book) %>% 
   unnest_tokens(word, text) %>% 
   anti_join(stop_words) 
-```
 
-
-```{r}
 prophets_stop_word <- c(c("art", "thy", "thou", "thine", "thee", "hast", "hath","shalt",
                          "ye", "yea", "saith", "thereof", "wherefore", "lo"))
 
 multiples <- count(book_by_words, book, word) %>% 
-  count(word) %>% 
   filter(n > 18) %>% 
-  filter(!word %in% prophets_stop_word)
+  filter(!word %in% prophets_stop_word) %>% 
+  arrange(desc(n))
+
 ```
 
 
 ```{r}
 counts <- book_by_words %>% 
   count(book, word) %>% 
-  mutate(book = factor(book, c("Jeremiah", "Isaiah", "Ezekiel"))) %>% 
+  mutate(book = factor(book, c("Isaiah", "Jeremiah", "Ezekiel"))) %>% 
   arrange(book, n) %>% 
   semi_join(multiples, by = c("word")) %>% 
   group_by(book) %>% 
   mutate(y_pos = seq_along(word)*2) %>% 
-  mutate(hjust = case_when(book == "Jeremiah" ~ 1,
+  mutate(book = ordered(book, levels = c("Isaiah", "Jeremiah", "Ezekiel"))) %>% 
+  mutate(hjust = case_when(book == "Isaiah" ~ 1,
                            book == "Ezekiel" ~ 0,
                            TRUE ~ 0.5)) %>% 
-  mutate(color = case_when(word == "judgment" ~ "#f8333c",
-                           word == "multitude" ~ "#f8333c",
-                           word == "righteousness" ~ "#00B295",
-                           word == "soul" ~ "#00B295",
-                           word == "word" ~ "#00B295",
+  mutate(color = case_when(word == "judgment" ~ "#c724b1",
+                           word == "iniquity" ~ "#c724b1",
+                           word == "righteousness" ~ "#c724b1",
+                           word == "soul" ~ "#c724b1",
+                           word == "word" ~ "#ffd700",
                            TRUE ~ "black")) %>% 
   mutate(word = case_when(word == "judgment" ~ glue("**{word}**"),
-                          word == "multitude" ~ glue("**{word}**"),
+                          word == "iniquity" ~ glue("**{word}**"),
                           word == "righteousness" ~ glue("**{word}**"),
                           word == "soul" ~ glue("**{word}**"),
                           word == "word" ~ glue("**{word}**"),
@@ -76,8 +79,7 @@ edge_lists <- split(counts, counts$book)
 edge_set_one <- left_join(edge_lists[[1]],
                           edge_lists[[2]],
                           by = "word") %>% 
-  select(word, x = book.x, xend = book.y, 
-         y = y_pos.x, yend = y_pos.y)
+  select(word, x = book.x, xend = book.y, y = y_pos.x, yend = y_pos.y)
 
 edge_set_two <- left_join(edge_lists[[2]],
                           edge_lists[[3]],
@@ -86,11 +88,11 @@ edge_set_two <- left_join(edge_lists[[2]],
          y = y_pos.x, yend = y_pos.y)
 
 edge_sets <-  bind_rows(edge_set_one, edge_set_two) %>% 
-  mutate(color = case_when(word == "judgment" ~ "#f8333c",
-                           word == "multitude" ~ "#f8333c",
-                           word == "righteousness" ~ "#00B295",
-                           word == "soul" ~ "#00B295",
-                           word == "word" ~ "#00B295",
+  mutate(color = case_when(word == "judgment" ~ "#c724b1",
+                           word == "iniquity" ~ "#c724b1",
+                           word == "righteousness" ~ "#c724b1",
+                           word == "soul" ~ "#c724b1",
+                           word == "word" ~ "#ffd700",
                            TRUE ~ "black")) %>%  
   mutate(size = case_when(str_detect(word, "\\*\\*") ~ 1,
                           TRUE ~ .1))
@@ -99,35 +101,47 @@ edge_sets <-  bind_rows(edge_set_one, edge_set_two) %>%
 
 ```{r}
 plot <- ggplot() +
-  geom_label(data = counts, 
+  geom_label(data = counts,
              aes(x = book, y = y_pos, 
                  label = word, hjust = hjust), 
              alpha = 0, color = NA, label.size = 0) +
   geom_sigmoid(data = edge_sets, 
                aes(x = x, xend = xend, y = y, yend = yend, 
                    group = word, color = color, size = size)) +
-  geom_richtext(data = counts, 
-                aes(x = book, y = y_pos, label = word, hjust = hjust, color = color),  
+  geom_richtext(data = counts,
+                aes(x = book, y = y_pos, label = word, hjust = hjust, color = color),
+                family = "Fira Sans Condensed",
                 fill = "#fbf7f4", label.color = NA) +
   geom_richtext(data = distinct(counts, book, hjust), 
                 aes(x = book, y = 415, label = str_to_title(book), hjust = hjust), 
+                family = "Saira",
                 size = 10, 
                 fill = "#fbf7f4", 
                 label.color = NA) +
+  scale_x_discrete(limits = c("Isaiah", "Jeremiah", "Ezekiel")) +
   scale_color_identity() +
   scale_size_identity() +
   labs(x = NULL,
        y = NULL,
-       title = "Word Nets via Major Prophets; **Ezekiel**, **Isaiah** and **Jeremiah**",
+       title = "Words Net via **Isaiah**, **Jeremiah** and **Ezekiel**",
        caption = "**Graphic**: Sung Inyung") +
-  theme(plot.background = element_rect(fill = "#fbf7f4"),
-        plot.title = element_markdown(hjust = 0.5,
-                                      size = 30),
-        plot.caption = element_markdown(),
+  theme(plot.background = element_rect(fill = "#fbf7f4",
+                                       color = NA),
+        panel.background = element_rect(fill = "#fbf7f4",
+                                       color = NA),
+        plot.title = element_markdown(family = "Staatliche",
+                                      size = 36,
+                                      hjust = 0.5,
+                                      margin = margin(b = 10)),
+        plot.caption = element_markdown(family = "Saira",
+                                        size = 14,
+                                        margin = margin(t = 15)),
         axis.text.y = element_blank(),
-        axis.text.x = element_blank())
+        axis.text.x = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = margin(10, 10, 10, 10))
 
-ggsave(here::here("2020", "1104_JeremiahIsaiahEzekiel", "1104_JeremiahIsaiahEzekiel.png"), width = 33, height = 100, units = "cm")
+ggsave("1104_JeremiahIsaiahEzekiel.png", width = 30, height = 120, units = "cm")
 
 ```
 
