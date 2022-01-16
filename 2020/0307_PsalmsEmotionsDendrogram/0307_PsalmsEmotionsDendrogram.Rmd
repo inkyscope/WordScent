@@ -1,7 +1,7 @@
 ---
 title: "PsalmsEmotionsDendrogram"
 author: "Sung Inkyung"
-date: '2020.3.7 '
+date: '2020.3.7'
 output: html_document
 ---
 
@@ -12,10 +12,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(tidytext)
+library(ggtext)
 library(ggraph)
 library(tidygraph)
 library(paletteer)
 library(here)
+library(showtext)
+
+font_add_google("Orbitron")
+font_add_google("Saira")
+font_add_google("Saira Condensed")
+font_add_google("IBM Plex Sans")
+
+showtext_opts(dpi = 320)
+showtext_auto()
 ```
 
 ```{r}
@@ -32,18 +42,16 @@ psalms <- bible %>%
   anti_join(stop_words) %>% 
   filter(!word %in% psalms_stop_word,
          str_detect(word, "[a-z]"))
-
 psalms_nrc <- psalms %>% 
   inner_join(get_sentiments("nrc")) %>% 
   filter(!is.na(sentiment)) %>% 
   mutate(sentiment = factor(sentiment)) %>% 
   count(word, sentiment, sort = TRUE) %>% 
-  filter(n > 7)
+  filter(n > 7) 
 ```
 
 
 ```{r}
-
 root <- tibble(to = unique(psalms_nrc $sentiment),
                from = "origin")
 
@@ -82,34 +90,49 @@ big_plot <- ggraph(graph, layout = 'dendrogram', circular = TRUE) +
                      colour = group, 
                      angle = -((-node_angle(x, y)+90) %% 180) + 90,  
                      hjust = ifelse(between(node_angle(x,y), 90, 270), 0, 1)), 
+                 family = "IBM Plex Sans",
                  size = 2.2) +
   geom_node_text(aes(x = x*2.7, y = y*2.7, 
                      label = label, 
                      color = group, 
                      hjust = ifelse(between(node_angle(x,y), 90, 270), 1, 0)), 
-                 size = 3, 
+                 family = "Saira",
+                 size = 4.5, 
                  data = stem_labels)  +
   geom_node_text(aes(x = x*2.1, y = y*2.1, 
                      label = scales::percent(percent), 
                      color = group, 
                      hjust = ifelse(between(node_angle(x,y), 90, 270), 1, 0)), 
+                 family = "Saira Condensed",
                  size = 3,  data = stem_labels)  +
   geom_node_point(aes(filter = leaf, colour = group, alpha = 0.2)) +
   annotate("text", x = 0, y = 0, 
-           label = "P S A L M S\nS E N T I M E N T S", size = 7, color = "white") +
+           label = "P S A L M S\nSENTIMENTS", family = "Orbitron", size = 7, color = "white") +
   scale_colour_paletteer_d("yarrr::basel") + 
   labs(x = NULL, 
        y = NULL,
        title = "Classification and Distribution of Psalms Sentiments",
-       subtitle = "Illustrated below as a donut-dendrogram hybrid is classified by NRC lexicon from the 371 words from Psalms book. Sentiments of joy, trust, surprise \nanticipation and positive stands at 41%. Negative sentiments including fear, sadness, anger and disgust stands at 59%.\nIt is shown that 150 chapters of Psalms are developed in parallel in the aspect of 10 sentiments. ", 
-       caption = "Graphic: Sung Inkyung") +
+       subtitle = "371 words from Psalms book are classified by NRC lexicon.\nPositive sentiments(joy, trust, surprise, anticipation): 41%.\nNegative sentiments(fear, sadness, anger, disgust): 59%.", 
+       caption = "**Graphic**: Sung Inkyung") +
+  expand_limits(x = c(-1.7, 1.5), y = c(-1.7, 1.5)) +
+  coord_equal() +
   theme(legend.position="none",
         axis.text = element_blank(),
-        panel.background = element_rect(fill = "black")) +
-  expand_limits(x = c(-1.5, 1.5), y = c(-1.5, 1.5)) +
-  coord_equal()
+        panel.background = element_rect(fill = "black"),
+        plot.title = element_text(family = "Saira",
+                                  size = 24,
+                                  face = "bold",
+                                  margin = margin(b = 7)),
+        plot.subtitle = element_text(family = "IBM Plex Sans",
+                                     size = 20,
+                                     lineheight = 1.1,
+                                     margin = margin(b = 10)),
+        plot.caption = element_markdown(family = "Saira Condensed",
+                                        size = 11),
+        plot.margin = margin(10, 10, 10, 10)) 
+  
 
-ggsave(here ("2020", "PsalmsEmtionsDendrogram", "PsalmsEmotionsDendrogram.png"), width = 30, height = 30, units= "cm")
+ggsave("PsalmsEmotionsDendrogram.png", width = 30, height = 30, units= "cm")
 
 ```
 
