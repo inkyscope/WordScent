@@ -15,10 +15,13 @@ library(tidytext)
 library(ggtext)
 library(scales)
 library(treemapify)
-library(showtext)
 library(here)
+library(showtext)
 
-font_add_google("Roboto Condensed", "Roboto Condensed")
+font_add_google("Anton")
+font_add_google("Saira")
+
+showtext_opts(dpi = 320)
 showtext_auto()
 
 ```
@@ -27,45 +30,40 @@ showtext_auto()
 ```{r}
 bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
 
-```
-
-```{r}
 book_by_characters <- bible %>% 
   group_by(book) %>% 
   summarise(characters = sum(nchar(text))) %>% 
   arrange(desc(characters)) %>% 
   ungroup() %>% 
-  mutate(count = scales::comma(characters),
-         mark = str_c(book, "\n", count)) 
-  
+  mutate(count = scales::comma(round(characters), accuracy = 1),
+         mark = str_c(book, "\n", count))
 ```
+
 
 ```{r}
 tree_plot <- book_by_characters %>% 
   ggplot(aes(area = characters,
              label = mark)) +
-  geom_treemap(color = "gray90",
+  geom_treemap(color = "gray97",
                fill = "#131423",
-               size = .7) +
+               size = .4) +
   geom_treemap_text(color = "white",
                     place = "topleft",
                     min.size = 0,
-                    family = "Roboto Condensed",
-                    reflow = T,
-                    size = 26) +
-  labs(title = "Bible Books by Number of Characters",
-       subtitle = "Of the New Testament, Luke, Acts, Matthew are listed in the top 20",
+                    family = "Saira",
+                    size = 13,
+                    reflow = T) +
+  labs(title = "Bible Books by Number of Words",
        caption = "**Graphic**: Sung Inkyung") +
   theme(panel.background = element_rect(fill = "white"),
-        plot.title = element_text(size = 36,
-                                      face = "bold",
-                                  margin = margin(b = 5)),
-        plot.subtitle = element_text(size = 28,
+        plot.title = element_text(family = "Anton",
+                                  size = 24,
                                   margin = margin(b = 10)),
-        plot.caption = element_markdown(size = 18,
-                                    margin = margin(t = 10)),
-        plot.margin = margin(20, 20, 20, 20))
+        plot.caption = element_markdown(family = "Saira",
+                                        size = 9,
+                                        margin = margin(t = 10)),
+        plot.margin = margin(10, 10, 10, 10))
 
-ggsave(here("2020", "0711_BibleTreemap", "0711_BibleBooksTreemap.png"), width = 22, height = 14, units = "cm")
+ggsave("0711_BibleBooksTreemap.png", width = 36, height = 20, units = "cm")
 ```
 
