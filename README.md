@@ -5,7 +5,7 @@ a personal take on words in bible(KJV and NIV)
 Word because our thoughts are already directed to the Word, ... We are silent **after** hearing the Word because the Word is still speaking and dwelling within us"  
 from _**Life Togehter**_  by Dietrich Bonhoeffer
 
--------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 ## References
 |  Link  | Title | Author |
 |--------|-------|--------|
@@ -16,7 +16,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 |[:link:](https://youtu.be/ezbExj7pT1s) | Divine Conspiracy | Dallas Willard |
 |[:link:](https://www.goodreads.com/book/show/44291053-maturity) | Maturity | Sinclair Ferguson |
 
---------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
 
 ## 30 DAY WORD CHART PROJECTS
 |  1 | 2 | 3 | 4 |
@@ -26,7 +26,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 | Stitch | Mills | Reel | Torch |
 | Spark | Magnet | Ray | Top |
 
----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
 # 2021
 <p float = "center">
@@ -42,24 +42,27 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ### 2021 Word Calendar
 ![Word Calendar](https://github.com/inkyscope/WordSpice/blob/master/2021/1030_WordCalendar_2021/WordCalendar_2021.png)
 
+### 1Samuel
+![Spiders](https://github.com/inkyscope/WordSpice/blob/master/2021/1223_1Samuel/1Samuel_TopLogOdds.png)
 
 ### Job
 ![Job](https://github.com/inkyscope/WordSpice/blob/master/2021/1028_Job-Friends/Job_Friends.png)
 
-### 1Samuel
-![Spiders](https://github.com/inkyscope/WordSpice/blob/master/2021/1223_1Samuel/1Samuel_TopLogOdds.png)
-
-### Hebrews
-![Hebrews](https://github.com/inkyscope/WordSpice/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
+### Wardrobe
+![Wardrobe](https://github.com/inkyscope/WordSpice/blob/master/2020/1218_Wardrobe/1218_Wardrobe.png)
 
 ### Holy
 ![Holy](https://github.com/inkyscope/WordSpice/blob/master/2020/1118_Holy/1118_Holy.png)
 
-### Wardrobe
-![Wardrobe](https://github.com/inkyscope/WordSpice/blob/master/2020/1218_Wardrobe/1218_Wardrobe.png)
+### Isaiah Jeremiah Ezekiel
+![Isaiah Jeremiah Ezekiel](https://github.com/inkyscope/WordSpice/blob/master/2020/1104_JeremiahIsaiahEzekiel/1104_JeremiahIsaiahEzekiel.png)
 
 ### Psalms
 ![Psalsm](https://github.com/inkyscope/WordSpice/blob/master/2020/0307_PsalmsEmotionsDendrogram/PsalmsEmotionsDendrogram.png)
+
+### Hebrews
+![Hebrews](https://github.com/inkyscope/WordSpice/blob/master/2020/0228_HebrewsTopPicks/0228_HebrewsTopPicks.png)
+
 
 
 
