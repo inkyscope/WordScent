@@ -114,8 +114,9 @@ plot <- ggplot() +
                 fill = "#fbf7f4", label.color = NA) +
   geom_richtext(data = distinct(counts, book, hjust), 
                 aes(x = book, y = 415, label = str_to_title(book), hjust = hjust), 
-                family = "Saira",
-                size = 10, 
+                family = "Staatliches",
+                size = 16, 
+                fontface = "bold",
                 fill = "#fbf7f4", 
                 label.color = NA) +
   scale_x_discrete(limits = c("Isaiah", "Jeremiah", "Ezekiel")) +
@@ -123,25 +124,27 @@ plot <- ggplot() +
   scale_size_identity() +
   labs(x = NULL,
        y = NULL,
-       title = "Words Net via **Isaiah**, **Jeremiah** and **Ezekiel**",
+       title = "**W o r d s<br>v i a**",
        caption = "**Graphic**: Sung Inyung") +
   theme(plot.background = element_rect(fill = "#fbf7f4",
                                        color = NA),
         panel.background = element_rect(fill = "#fbf7f4",
                                        color = NA),
-        plot.title = element_markdown(family = "Staatliche",
-                                      size = 36,
+        plot.title = element_markdown(family = "Staatliches",
+                                      size = 40,
                                       hjust = 0.5,
-                                      margin = margin(b = 10)),
+                                      lineheight = 1.5,
+                                      margin = margin(t = 20)),
         plot.caption = element_markdown(family = "Saira",
                                         size = 14,
-                                        margin = margin(t = 15)),
-        axis.text.y = element_blank(),
+                                        hjust = 0.95,
+                                        margin = margin(t = 15, b = 10)),
         axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
         axis.ticks = element_blank(),
-        plot.margin = margin(10, 10, 10, 10))
+        panel.grid = element_blank())
 
-ggsave("1104_JeremiahIsaiahEzekiel.png", width = 30, height = 120, units = "cm")
+ggsave("1104_JeremiahIsaiahEzekiel.png", width = 40, height = 120, units = "cm")
 
 ```
 
