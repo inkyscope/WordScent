@@ -20,6 +20,9 @@ library(showtext)
 font_add_google("Teko")
 font_add_google("JetBrains Mono")
 font_add_google("Saira Condensed")
+
+showtext_opts(dpi = 320)
+showtext_auto()
 ```
 
 
@@ -137,7 +140,7 @@ plot <- bodyparts%>%
     axis.text.y = element_blank())
 
 
-ggsave("1205_BodyParts.png", width =30, height = 30, units = "cm")
+ggsave("1208_BodyParts.png", width =30, height = 30, units = "cm")
 ```
 
 ```{r}
