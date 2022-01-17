@@ -1,0 +1,114 @@
+---
+title: "0117 word centroids"
+author: "Sung Inkyung"
+date: '2022 1 17'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source[30DayMapChallenge by @gkaramanis](https://github.com/gkaramanis/30DayMapChallenge/blob/main/2021/28-not-flat/28-not-flat-circle.R)
+```{r}
+library(tidyverse)
+library(lubridate)
+library(rgeos)
+library(rworldmap)
+library(showtext)
+
+
+font_add_google("Orbitron")
+font_add_google("Montserrat Alternates")
+
+showtext_opts(dpi = 320)
+showtext_auto()
+
+```
+
+
+```{r}
+# get world map
+wmap <- getMap(resolution="low")
+
+# get centroids
+centroids <- gCentroid(wmap, byid=TRUE)
+
+# get a data.frame with centroids
+df_centroids <- as.data.frame(centroids)
+head(df)
+
+
+# plot
+plot(centroids)
+
+df_words <- read_csv("data/wordcalendar_2021.csv") %>% 
+  select(word) %>% 
+  mutate(id = row_number()) %>% 
+  distinct(word) %>% 
+  sample_n(244)
+  
+
+df_globe <- bind_cols(df_centroids, df_words)
+
+df_globe %>% 
+  filter(word == "acknowledge")
+```
+
+
+```{r}
+centroids <- df_globe %>% 
+  select(longitude = x, latitude = y, word) %>% 
+  mutate(
+    a = longitude * pi/180,
+    d = ifelse(word == "ID", 2, 1.3),
+    h = ifelse(abs(a) < pi/2, 0, 1))
+
+longs <- data.frame(
+  l = seq(-180, 180, 90)
+) %>% 
+  mutate(la = 1 * pi/180)
+```
+
+
+```{r}
+ggplot(centroids) +
+  geom_segment(aes(x = cos(a), xend = 0.999 * d * cos(a),
+                   y = sin(a), yend = 0.999 * d * sin(a)),
+               size = 0.05) +
+  geom_point(aes(x = cos(a), y = sin(a)), size = 0.2) +
+  geom_text(aes(x = d * cos(a), y = d * sin(a),
+                label = ifelse(h == 0, paste("·", word), paste(word, "·")),
+                hjust = h,
+                angle = ifelse(h == 0, longitude, longitude - 180),
+                color = ifelse(word == "entwine", "#a73062", "#333544")),
+            check_overlap = TRUE, size = 4,
+            family = "Montserrat Alternates", lineheight = 0.9) +
+  geom_text(data = longs,
+            aes(x = 0.85 * cos(la), y = 0.85 * sin(la),
+                label = ifelse(l == -180,  "±180", l)),
+            check_overlap = TRUE, 
+            color = "#333544",
+            family = "Montserrat Alternates",
+            size = 5) +
+  annotate("text",
+           0, 0,
+           label = "WORDS\nGLOBE",
+           color = "#1e3f5a",
+           family = "Orbitron",
+           size = 12, fontface = "bold",
+           lineheight = 1.1) +
+  scale_color_identity() +
+  coord_fixed(xlim = c(-2, 2), ylim = c(-2, 2),
+              clip = "off") +
+  labs(caption = "Source: country centroids | Graphic: Sung Inkyung") +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "gray98",
+                                       color = NA),
+        plot.caption = element_text(color = "#4e5754",
+                                    family = "Orbitron",
+                                    size = 11,
+                                    hjust = 0.5),
+        plot.margin = margin(10, 10, 10, 10))
+
+ggsave("0117_wordCentroids.png", width = 26, height = 27, units = "cm")
+```
