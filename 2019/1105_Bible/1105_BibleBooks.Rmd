@@ -96,72 +96,81 @@ book_by_words <- bible %>%
   count(book, Testament, word, sort = TRUE) %>% 
   ungroup() %>% 
   group_by(book, Testament) %>% 
-  summarise(words = sum(n)) %>% 
-  arrange(desc(words))
+  summarise(count = sum(n)) %>% 
+  arrange(desc(count))
 
 book_by_words$book <- factor(book_by_words$book,
-                             levels = book_by_words$book[order(book_by_words$words)]) # Reorder books according to length
+                             levels = book_by_words$book[order(book_by_words$count)]) # Reorder books according to length
 book_by_words$Testament <- factor(book_by_words$Testament, 
                                   levels = c("Old Testament", "New Testament"))
 
 p1 <- book_by_words %>% 
-  ggplot(aes(book, words, fill = Testament)) +
+  ggplot(aes(count, book, fill = Testament)) +
   geom_col(show.legend = FALSE)+
   scale_fill_manual(values = c("Old Testament" = "#112358",
                                "New Testament" = "#dd2a7b")) +
-  scale_y_continuous(expand = c(0, 0),
+  scale_x_continuous(breaks = seq(0, 40000, 20000),
+                     expand = c(0, 0),
                      label = comma) +
-  coord_flip() +
   labs(x = "",
        y = "# of words per testament") +
   theme_minimal() +
-  theme(panel.grid.major.x = element_line(size = 0.004,
-                                          color = "gray25"),
-        panel.grid.major.y = element_blank(),
+  theme(plot.backgroun = element_rect(fill = "black",
+                                      color = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
         axis.text = element_text(size = 9,
                                  family = "Fira Sans Condensed",
-                                 color = "gray85"))
+                                 color = "#d2d2cf"),
+        plot.margin = margin(10, 10, 10, 10))
 
 
 p2 <- book_by_words %>% 
-  ggplot(aes(book, words, fill = Testament)) +
+  ggplot(aes(count, book, fill = Testament)) +
   geom_col(show.legend = FALSE) +
   scale_fill_manual(values = c("Old Testament" = "#112358",
                                "New Testament" = "#dd2a7b")) +
-  scale_y_continuous(expand = c(0, 0),
+  scale_x_continuous(breaks = seq(0, 40000, 20000),
+                     expand = c(0, 0),
                      label = comma) +
-  coord_flip() +
   facet_wrap(~Testament, scales = "free_y") +
   labs(x = "",
        y = "# of words per testament") +
   theme_minimal() +
-  theme(panel.grid.major.x = element_line(size = 0.004,
-                                          color = "gray25"),
-        panel.grid.major.y = element_blank(),
+  theme(plot.backgroun = element_rect(fill = "black",
+                                      color = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
         axis.text = element_text(size = 9,
                                  family = "Fira Sans Condensed",
-                                 color = "gray85"))
+                                 color = "#d2d2cf"),
+        plot.margin = margin(10, 10, 10, 10))
 
 
-title <- ggplot(data.frame(x = 1:2, y = 1:10)) +
-  labs(x = "",
-       y = "",
-       title = "Books of the King James Bible by Word Frequency",
-       caption = "Graphic: Sung Inkyung") +
+patchwork <- p1 + p2
+
+plot_final <- patchwork + plot_annotation(
+  title = "Books of the King James Bible by Word Frequency",
+  caption = "Graphic: Sung Inkyung") &
   theme(legend.position="none",
-        plot.title = element_text(size = 24,
+        plot.backgroun = element_rect(fill = "black",
+                                      color = NA),
+        panel.backgroun = element_rect(fill = "black",
+                                      color = NA),
+        plot.title = element_text(size = 26,
                                   family = "Anton",
-                                  color = "gray97",
-                                  hjust = -.34,
-                                  margin = margin(b = 20)),
+                                  color = "#e2e5de",
+                                  hjust = 0.5,
+                                  margin = margin(t = 10, b= 15)),
         plot.caption = element_text(size = 11,
                                     family = "Jost",
-                                    color = "gray97",
-                                    hjust = -4.95,
-                                    margin = margin(t = 25)),
-        panel.grid = element_blank())
+                                    color = "#808080",
+                                    hjust = 1,
+                                    margin = margin(t = 20)),
+        panel.grid = element_blank(),
+        plot.margin = margin(10, 10, 10, 10))
+  
 
-title + p1 + p2 +  plot_layout(widths = c(0, 1, 2))
 
-ggsave("1105_BibleBooks.png", width = 30, height = 26, units = "cm")
+ggsave("1105_BibleBooks.png", width = 25, height = 25, units = "cm")
 ```
