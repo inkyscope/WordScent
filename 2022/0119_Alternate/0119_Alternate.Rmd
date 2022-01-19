@@ -1,0 +1,111 @@
+---
+title: "Untitled"
+author: "Sung Inkyung"
+date: '2022 1 19 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(ggforce)
+library(MetBrewer)
+library(showtext)
+
+font_add_google("Piazzolla")
+font.add.google("Assistant")
+```
+
+
+```{r}
+df <- read_csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/wordcalendar_2021.csv") %>% 
+  select(word) %>% 
+  pull(word)
+```
+
+```{r}
+# Extracting words of specific length in R using regular expressions
+# https://stackoverflow.com/questions/13797280/extracting-words-of-specific-length-in-r-using-regular-expressions
+
+# remove punctuation (optional)
+v <- gsub("[[:punct:]]", " ", df)
+
+# split into distinct words
+w <- strsplit( v , " " )
+
+# calculate the length of each word
+x <- nchar( w[[1]] )
+xx <- str_length(w[[1]])
+
+word <- gsub("\\b[a-zA-Z0-9]{1,8}\\b|\\b[a-zA-Z0-9]{10,}\\b", "", df) 
+
+df_word = c("recognize", "apportion", "entertain", "dismissed", "celebrate", "blaspheme", "determine", "alternate", "frustrate", "pronounce", "vindicate", "prescribe", "discredit")
+```
+
+```{r}
+# Formula for generating fibonacci numbers: 
+# https://stackoverflow.com/questions/62090178/use-mapv-reduce-to-create-fibonacci-sequence-in-r
+# Codes credit to Kaustav Sen https://github.com/kaustavSen/30DayChartChallenge/blob/main/day_10/day_10.R
+
+set.seed(2022)
+
+fibonacci <- accumulate(
+  .init = c(0L, 1L),
+  rep(0, 18),
+  ~c(.x, sum(.x))[2:3]
+) %>% 
+  map_int(~pluck(.x, 1)) %>% 
+  .[-1:-10]
+
+tower <- tibble(fibo_number = 1:9) %>% 
+  mutate(sample = list(runif(1000, min =0, max = 5))) %>% 
+  unnest(sample)
+
+df_plot <- tibble(fibonacci) %>% 
+  rowwise() %>% 
+  mutate(sample = list(rexp(fibonacci, 2))) %>% 
+  unnest(sample) %>% 
+  mutate(
+    fibo_number = as.numeric(as.factor(fibonacci)),
+    fibo_label = case_when(
+      fibo_number == 1 ~ "a",
+      fibo_number == 2 ~ "l",
+      fibo_number == 3 ~ "t",
+      fibo_number == 4 ~ "e",
+      fibo_number == 5 ~ "r",
+      fibo_number == 6 ~ "n",
+      fibo_number == 7 ~ "a",
+      fibo_number == 8 ~ "t",
+      TRUE ~ "e"
+    )
+  ) 
+
+
+plot <- df_plot %>%  
+  group_by(fibo_number) %>% 
+  mutate(avg = mean(sample)) %>% 
+  ggplot(aes(x = fibo_number, y = sample, fill = as.factor(fibonacci))) +
+  geom_jitter(data = tower, 
+              aes(x = fibo_number, y = sample),
+              shape = 22, color = "white", fill = "gray93",
+              stroke = 1, size = 5, alpha = 0.4, show.legend = F) +
+  geom_jitter(shape = 22, color = "white", stroke = 1,
+              size = 5, alpha = 0.6, show.legend = F) +
+  geom_text(aes(x = fibo_number, y = avg, label = fibo_label,
+                color = after_scale(colorspace::darken(fill, 0.4))), size = 22, family = "Piazzolla", fontface = "bold") +
+  scale_fill_manual(values = met.brewer("Redon")) +
+  labs(caption = "Source: Exodus 28:34 | Graphic: Sung Inkyung") +
+  theme_void() +
+  theme(plot.caption = element_text(family = "Assistant",
+                                    size = 9, 
+                                    color = "gray15",
+                                    hjust = 0.95,
+                                    margin = margin(t = 15)))
+
+ggsave("0119_Alternate.png", width = 20, height = 20, units = "cm")
+```
+

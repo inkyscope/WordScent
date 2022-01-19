@@ -50,12 +50,6 @@ df_words <- read_csv("data/wordcalendar_2021.csv") %>%
 
 df_globe <- bind_cols(df_centroids, df_words)
 
-df_globe %>% 
-  filter(word == "acknowledge")
-```
-
-
-```{r}
 centroids <- df_globe %>% 
   select(longitude = x, latitude = y, word) %>% 
   mutate(
@@ -67,10 +61,7 @@ longs <- data.frame(
   l = seq(-180, 180, 90)
 ) %>% 
   mutate(la = 1 * pi/180)
-```
 
-
-```{r}
 ggplot(centroids) +
   geom_segment(aes(x = cos(a), xend = 0.999 * d * cos(a),
                    y = sin(a), yend = 0.999 * d * sin(a)),
@@ -95,7 +86,7 @@ ggplot(centroids) +
            label = "WORDS\nGLOBE",
            color = "#1e3f5a",
            family = "Orbitron",
-           size = 12, fontface = "bold",
+           size = 15, fontface = "bold",
            lineheight = 1.1) +
   scale_color_identity() +
   coord_fixed(xlim = c(-2, 2), ylim = c(-2, 2),
@@ -107,8 +98,9 @@ ggplot(centroids) +
         plot.caption = element_text(color = "#4e5754",
                                     family = "Orbitron",
                                     size = 11,
-                                    hjust = 0.5),
+                                    hjust = 0.5,
+                                    margin = margin(t = 15)),
         plot.margin = margin(10, 10, 10, 10))
 
-ggsave("0117_wordCentroids.png", width = 26, height = 27, units = "cm")
+ggsave("0117_wordCentroids.png", width = 28, height = 29, units = "cm")
 ```
