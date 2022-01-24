@@ -68,7 +68,10 @@ top_john <- gospels %>%
 top_tf_idf <- rbind(rbind(top_matthew, top_mark, top_luke, top_john)) %>% 
   select(book, word, n, tf_idf, rank) %>% 
   arrange(tf_idf, rank)
+```
 
+
+```{r}
 tf_idf_plot <- top_tf_idf %>% 
   mutate(book = factor(book, 
                        levels = c("Matthew", "Mark", "Luke", "John"))) %>% 
@@ -93,7 +96,7 @@ tf_idf_plot <- top_tf_idf %>%
                                      hjust = 0.5,
                                      margin = margin(b = 25)),
         plot.caption = element_text(size = 7,
-                                    hjust = 1,
+                                    hjust = 0.9,
                                     family = "Sarabun"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
