@@ -138,8 +138,7 @@ facet <- gospels_nrc %>%
                                         margin = margin(t = 20)),
         axis.title = element_blank(),
         axis.ticks = element_blank(),
-        axis.text.x = element_text(size = 7,
-                                   family = "Comfortaa"),
+        axis.text.x = element_blank(),
         axis.text.y = element_blank()) 
   
 ```
