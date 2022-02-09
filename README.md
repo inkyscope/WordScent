@@ -39,6 +39,10 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 </p>
 
 # Favorites
+
+### Martha, Martha
+![Martha, Martha](https://github.com/inkyscope/WordSpice/blob/master/2022/0209_MarthaMartha/0209_MarthaMartha.png)
+
 ### 2021 Word Calendar
 ![Word Calendar](https://github.com/inkyscope/WordSpice/blob/master/2021/1030_WordCalendar_2021/WordCalendar_2021.png)
 
