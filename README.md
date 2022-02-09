@@ -24,7 +24,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 | **MORNING BY MORNING** | **SIDE BY SIDE** | **WAVE UPON WAVE** | **DAY TO DAY** |
 | [Spice](https://github.com/inkyscope/WordSpice/tree/master/2020) | Mobil | Ripple | Tapestry |
 | [Stitch](https://github.com/inkyscope/WordSpice/tree/master/2021) | Mills | Reel | Torch |
-| Spark | Magnet | Ray | Top |
+| [Spark](https://github.com/inkyscope/WordSpice/tree/master/2022) | Magnet | Ray | Top |
 
 ----------------------------------------------------------------------------------------------------------------------
 
