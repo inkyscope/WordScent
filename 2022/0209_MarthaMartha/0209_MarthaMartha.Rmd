@@ -1,0 +1,94 @@
+---
+title: "0209_MarthaMaria"
+author: "Sung Inkyung"
+date: '2022 2 9'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Source[GenuaryArt by Nicola Rennie](https://github.com/nrennie/genuary/blob/main/2022/scripts/19_text.R)
+```{r}
+library(tidyverse)
+library(tibble)
+library(MetBrewer)
+library(showtext)
+
+font_add_google("Metamorphous")
+font_add_google("Poppins")
+
+showtext_opts(dpi = 300)
+showtext_auto()
+```
+
+
+```{r}
+# Luke10:38-42 At the Home of Martha and Mary
+bible <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv") %>% 
+  filter(book == "Luke",
+         chapter == 10,
+         verse %in% c(38:42)) %>% 
+  pull(text)
+```
+
+
+```{r}
+word1 <- unlist(str_split("MARTHA", ""))
+word2 <- unlist(str_split("MARIA", ""))
+word3 <- unlist(str_split("MANYTHINGS", ""))
+word4 <- unlist(str_split("ONETHING", ""))
+word5 <- unlist(str_split("NEEDFUL", ""))
+words <- list(word1, word2, word3, word4, word5)
+
+set.seed(2022)
+
+all_letters <- c()
+all_cols <- c()
+while (length(all_letters) < 625) {
+  s <- sample(1:5, size = 1)
+  w <- words[[s]]
+  all_letters <- c(all_letters, w)
+  all_cols <- c(all_cols, rep(sample(1:6, 1), length(w)))
+}
+
+x <- 1:25
+y <- 1:25
+
+df_plot <- tibble(expand.grid(x = x, y = y))
+df_plot$all_letters <- all_letters[1:nrow(df_plot)]
+df_plot$all_cols <- as.character(all_cols[1:nrow(df_plot)])
+```
+
+```{r metBrewer palette}
+plot <- ggplot() +
+  geom_text(data = df_plot,
+            aes(x = x, y = y, label = all_letters,
+                color = all_cols), family = "Metamorphous",
+            size = 5, fontface = "bold") +
+  scale_color_manual(values = met.brewer("Derain")) +
+  labs(title = "Martha, Martha",
+       subtitle = "But one thing is needful",
+       caption = "Source: Luke 10:38-42(KJV) | Graphic: Sung Inkyung") +
+  coord_fixed() +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "black",
+                                        color = NA),
+        panel.background = element_rect(fill = "black",
+                                        color = NA),
+        plot.title = element_text(family = "Metamorphous",
+                                  size = 30, hjust = 0.5,
+                                  color = "gray85"),
+        plot.subtitle = element_text(family = "Poppins",
+                                  size = 18, hjust = 0.5,
+                                  color = "gray85"),
+        plot.caption = element_text(family = "Poppins",
+                                    size = 11, hjust = 0.5,
+                                    color = "gray45"),
+        plot.margin = margin(20, 20, 20, 20))
+
+ggsave("0209_MarthaMartha.png", width = 30, height = 30, units = "cm")
+
+```
+
