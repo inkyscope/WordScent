@@ -24,7 +24,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 | **MORNING BY MORNING** | **SIDE BY SIDE** | **WAVE UPON WAVE** | **DAY TO DAY** |
 | [Spice](https://github.com/inkyscope/WordSpice/tree/master/2020) | Mobil | Ripple | Tapestry |
 | [Stitch](https://github.com/inkyscope/WordSpice/tree/master/2021) | Mills | Reel | Torch |
-| Spark | Magnet | Ray | Top |
+| [Spark](https://github.com/inkyscope/WordSpice/tree/master/2022) | Magnet | Ray | Top |
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -39,6 +39,10 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 </p>
 
 # Favorites
+
+### Martha, Martha
+![Martha, Martha](https://github.com/inkyscope/WordSpice/blob/master/2022/0209_MarthaMartha/0209_MarthaMartha.png)
+
 ### 2021 Word Calendar
 ![Word Calendar](https://github.com/inkyscope/WordSpice/blob/master/2021/1030_WordCalendar_2021/WordCalendar_2021.png)
 
