@@ -1,5 +1,5 @@
 ---
-title: "1 Samuel_TopWords"
+title: "1Samuel Top Words"
 author: "Sung Inkyung"
 date: '2021 12 23'
 output: html_document
@@ -15,11 +15,11 @@ library(tidytext)
 library(paletteer)
 library(showtext)
 
-font_add_google("Anton", "anton")
-font_add_google("Roboto", "roboto")
+font_add_google("Anton")
+font_add_google("Roboto")
+
 showtext_opts(dpi = 320)
 showtext_auto(enable = TRUE)
-
 
 theme_set(theme_minimal())
 ```
@@ -140,7 +140,6 @@ top_prc <- df_word %>%
 
 ## lord, david, saul, israel, samuuel, philistines
 
-
 top_tfidf <- chapter_words %>% 
   bind_tf_idf(word, chapter, n) %>% 
   arrange(desc(tf_idf)) %>% 
@@ -149,8 +148,7 @@ top_tfidf <- chapter_words %>%
 top_logodds <- df_word %>% 
   count(chapter, word, sort = T, name = "total") %>% 
   distinct(chapter, word, total) %>% 
-  bind_log_odds(chapter, word, total) %>% 
-  arrange(desc(log_odds_weighted)) %>% 
+  bind_log_odds(chapter, word, total) %>%  
   slice_max(n = 10, order_by = log_odds_weighted)
 
 ## top9: saul, jonathan, david, ark, philistines
@@ -223,7 +221,7 @@ ggplot(grid_words) +
   scale_fill_identity() +
   coord_cartesian(clip = "off", xlim = c(-12, 75)) +
   labs(
-    title = "1 Samuel Related Top Words",
+    title = "1 Samuel Top Words",
     subtitle = "Based on log odds ratio by chapter",
     caption = "Source: KJV | Graphic: Sung Inkyung\nCredit:Georgios Karamanis"
   ) +
@@ -232,17 +230,16 @@ ggplot(grid_words) +
     plot.background = element_rect(fill = "#5e9e99", 
                                    color = NA),
     plot.title = element_text(size = 28,
-                              family = "anton",
+                              family = "Anton",
                               color = c1,),
     plot.subtitle = element_text(size = 22,
-                                 family = "anton",
+                                 family = "Anton",
                                  color = "#5462a1"),
     plot.caption = element_text(size = 12, hjust = 0.5,
-                                family = "roboto",
+                                family = "Roboto",
                                 color = "#4a4c52"),
     plot.margin = margin(20, 20, 20, 20)
   )
 
 ggsave("1Samuel_TopLogOdds.png", width = 25, height = 25, units = "cm")
 ```
-

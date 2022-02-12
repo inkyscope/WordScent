@@ -1,0 +1,77 @@
+---
+title: "0210 David's Lament for Saul and Jonathan"
+author: "Sung Inkyung"
+date: '2022 2 10'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(geomtextpath)
+library(cowplot)
+library(showtext)
+
+font_add_google("EB Garamond")
+font_add_google("Barlow")
+showtext_opts(dpi = 320)
+showtext_auto()
+```
+
+```{r}
+# 2Samuel 1:19-27 David's lament for Saul and Jonathan
+txt <- readLines("lament.txt")
+
+theta <- seq(0, 20 * pi, by = 0.1) 
+r <- 0.5 + 0.5 * theta
+x = r * cos(theta)
+y = r * sin(theta)
+
+df_plot <- data.frame(x = r * cos(theta), 
+                      y = r * sin(theta),
+                      text = txt)
+```
+
+
+```{r}
+plot <- ggplot(df_plot, aes(x, y, label = text)) +
+  geom_textpath(size = 3.8, vjust = 2, text_only = T, include_line = F) +
+  coord_equal() + 
+  labs(title = "David's Lament for Saul and Jonathan",
+       caption = "Source: 2Samuel 1:19-27 (KJV) | Graphic: Sung Inkyung") +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "blanchedalmond", 
+                                       colour = NA),
+        panel.background = element_rect(fill = "blanchedalmond", 
+                                        colour = NA),
+        plot.title = element_text(colour = "darkslategrey",
+                                  family="EB Garamond",
+                                  size = 24,
+                                  face = "bold",
+                                  hjust = 0.5, vjust=0,
+                                  margin = margin(b = 30)),
+        plot.caption = element_text(colour = "darkslategray4",
+                                    family ="Barlow",
+                                    size = 9,
+                                    hjust = 0.5, 
+                                    margin = margin(t = 10)),
+        panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        plot.margin = margin(10, 10, 10, 10))
+
+
+plot_final <- ggdraw() +
+  draw_plot(plot) +
+  theme(plot.background = element_rect(fill = "blanchedalmond", 
+                                       colour = NA),
+        plot.margin = margin(10, 10, 10, 10))
+
+ggsave("0210_DavidSaulJonathan.png", width = 18, height = 18, units = "cm")
+```
+
