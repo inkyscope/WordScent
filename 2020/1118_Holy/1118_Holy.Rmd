@@ -23,6 +23,41 @@ showtext_opts(dpi = 320)
 showtext_auto(enable = TRUE)
 ```
 
+```{r}
+df_holy <- bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(word == "holy") %>% 
+  count(book, word, name = "count") %>% 
+  mutate(book = fct_reorder(book, count))
+
+plot_holy <- df_holy %>% 
+  ggplot(aes(count, book, label = count)) +
+  geom_col(fill = "#7d9cb6", color = NA) +
+  geom_text(data = df_holy %>% filter(count >= 10),family = "Roboto", size = 3.5, face = "bold", nudge_x = -0.9) +
+  scale_x_continuous(breaks = seq(0, 100, 20)) +
+  coord_cartesian(expand = c(0, 0)) +
+  labs(x = "",
+       y = "", 
+       title = "Distribution of HOLY through Bible Books",
+       caption = "Source: King James Version | Graphic: Sung Inkyung") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#cbc4bc", color = NA),
+        plot.title = element_text(family = "Anton", size = 32, hjust = 0.5, 
+                                  margin = margin(b = 15)),
+        plot.caption = element_text(family = "Saira Condensed", size = 13, hjust = 0.5, 
+                                    margin = margin(t = 15)),
+        axis.text.x = element_text(family = "Saira Condensed", size = 14),
+        axis.text.y = element_text(family = "Saira Condensed",
+                                   size = 15),
+        panel.grid.major.x = element_line(size = 0.4, color = "gray90"),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        plot.margin = margin(20, 20, 20, 20)) 
+
+ggsave("1118_HolyinBible.png", width = 33, height = 30, units = "cm")
+```
+
 
 ```{r}
 bible_holy <- bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv") %>% 

@@ -1,0 +1,56 @@
+---
+title: "0303 LUKK_CHASM"
+author: "Sung Inkyung"
+date: '2022 3 3'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+### Image Source[aRtist by gkaramanis] (https://github.com/gkaramanis/aRtist/blob/main/genuary/2021/2021-19/2021-19.R)
+
+library(tidyverse)
+library(ggforce)
+library(showtext)
+
+font_add_google("Amatic SC")
+font_add_google("Barriecito")
+
+showtext_opts(dpi = 320)
+showtext_auto()
+
+f1 = "Amatic SC"
+f2 = "Barriecito"
+
+n = 150
+
+rows_df <- data.frame(y = 1:n) %>% 
+  rowwise() %>% 
+  mutate(x = list(-n/2:n/2 + rnorm(n - 1, 0, sd = y^3))) %>% 
+  ungroup() %>% 
+  unnest(x) %>% 
+  arrange(y, x) %>% 
+  group_by(y) %>% 
+  mutate(xn = row_number()) %>% 
+  ungroup()
+
+plot <-  ggplot(rows_df, aes(x, y^2, group = xn)) +
+  annotate(geom = "text", x = c(-38e05, 38e05),  y = 9800,
+           label = c("C H", "S M"), family = f2, size = 8,
+           color = "#f1f0fa") +
+  geom_bspline(size = .3, n = 100, color = "#e3256b") +
+  geom_bspline(size = .15, n = 500, color = "#fcfafb") +
+  scale_y_reverse() +
+  coord_cartesian(expand = F) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#484753", 
+                                       color = NA),
+        plot.margin = margin(0, 20, 0, 20))
+
+ggsave("0303_LUKE_CHAMS.png", dpi = 320, width = 10, height = 7, units = "cm")
+
+```
+

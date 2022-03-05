@@ -1,0 +1,132 @@
+---
+title: "0103 2Samuel"
+author: "Sung Inkyung"
+date: '2022 1 4'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(ggtext)
+library(ggraph)
+library(tidygraph)
+library(showtext)
+
+font_add_google("Lato")
+font_add_google("Lora")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
+```
+
+
+```{r}
+bible <- read.csv("bible_kjv_new.csv")
+
+df_2Samuel <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv") %>% 
+  filter(book == "2 Samuel",
+         citation %in% c("2 Samuel 1:12", "2 Samuel 1:16")) %>% 
+  select(from = citation, from_text = text) %>% 
+  mutate(id = row_number())
+  
+```
+
+
+```{r}
+week1 <- (c("Ecclesiastes 3:4", "Romans 8:9", "Genesis 12:3", "Acts 9:4", "Acts 9:5", "Ezekiel 36:26", "Proverbs 25:13", "1 Samuel 2:30", "Revelation 20:12", "1 Corinthians 1:24"))
+
+
+w1_crossref <- bible %>% 
+  filter(citation %in% week1) %>% 
+  select(to = citation, to_text = text) %>% 
+  slice(to %>% match(c("Ecclesiastes 3:4", "Romans 8:9", "Genesis 12:3", "Acts 9:4", "Acts 9:5", "Ezekiel 36:26", "Proverbs 25:13", "1 Samuel 2:30", "Revelation 20:12", "1 Corinthians 1:24")) %>% order()) %>% 
+  mutate(id = row_number())
+
+
+df_to <- df_2Samuel %>% 
+  full_join(w1_crossref) %>% 
+  select(id, from, from_text, to, to_text) %>% 
+  mutate(from = case_when(id %in% c(1:6)  ~ "2 Samuel 1:12", 
+                          TRUE ~"2 Samuel 1:16")) %>% 
+  mutate(week = "week1") %>% 
+  select(id, week, from, from_text, to, to_text)
+
+write_csv(df_to, "week1_2Samuel.csv")
+```
+
+```{r}
+df <- read.csv("week1_2Samuel.csv") %>% 
+  unnest_tokens(word, from_text) %>% 
+  unnest_tokens(word, to_text) %>% 
+  anti_join(stop_words) %>% 
+  group_by(word) %>% 
+  mutate(count = n()) 
+
+df_plot <- df %>% 
+  as_tbl_graph() %>% 
+  activate(nodes) %>% 
+  mutate(degree = centrality_degree(weights = count, loops = T))
+
+
+df_node <- df_plot %>% 
+  activate(nodes) %>%
+  as_tibble()
+
+df_edge <- df_plot %>% 
+  activate(edges) %>% 
+  as_tibble()
+```
+
+
+```{r}
+plot <- df_plot %>% 
+  ggraph(layout = 'linear',
+         circular = T) +
+  geom_edge_arc(aes(color = count),
+                lineend = 'round',
+                start_cap = circle(3, 'mm'),
+                end_cap = circle(3, 'mm')) +
+  geom_node_text(aes(label = name),
+                 family = "Lato", size = 4.5, fontface = "bold", color = "#333a59") +
+  scale_edge_color_gradient(low = "#22b4b7", high = "#002060") +
+  guides(edge_color = guide_edge_colorbar(
+    title = "Number of Words",
+    title.position = "top",
+    barwidth = 7,
+    barheight = .3
+  )) +
+  labs(title = "Cross Reference of 2Samuel 1:1-16",
+       subtitle = "Sermon by Pastor Cho ChungMin at Basic Church\nJanuary 2, 2022",
+       caption = "Graphic: Sung Inkyung") +
+  expand_limits(x = c(-1.3, 1.3)) +
+  theme(
+    legend.position = c(0.12, 0.02),
+    legend.background = element_rect(fill = "#c6c1b9",
+                                   color = NA),
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 7.5),
+    legend.title.align = 0.5,
+    plot.background = element_rect(fill = "#c6c1b9",
+                                   color = NA),
+    panel.background = element_rect(fill = "#c6c1b9",
+                                    color = NA),
+    plot.title = element_text(family = "Lora", size = 24, hjust = 0.5, face = "bold",
+                              color = "#b1044f",
+                              margin = margin(b = 7)),
+    plot.subtitle = element_text(family = "Lato", size = 17, hjust = 0.5, lineheight = 0.9,
+                                 color = "#b1044f",
+                                 margin = margin(b = 15)),
+    plot.caption = element_text(family = "Lato", size = 10, color = "gray35",
+                                margin = margin(t = 15)),
+    plot.margin = margin(10, 10, 10, 10)
+    )
+
+ggsave("0103_2Samuel.png", width = 28, height = 20, units = "cm")
+
+```
+

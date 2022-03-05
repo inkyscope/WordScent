@@ -14,6 +14,16 @@ library(tidyverse)
 library(tidytext)
 library(ggtext)
 library(scales)
+library(showtext)
+
+font_add_google("Raleway")
+font_add_google("Oswald")
+
+showtext_opts(dpi = 320)
+showtext_auto(enable = TRUE)
+
+f1 = "Raleway"
+f2 = "Oswald"
 ```
 
 
@@ -70,7 +80,7 @@ plot1 <- df_tf_idf %>%
            show.legend = F) +
   geom_text(aes(label = n,
                 hjust = 1.2,
-                size = 3, 
+                size = 2.5, 
                 color = "#fbe9c3")) +
   scale_fill_manual(values = c("Job" = "#15404e", "David" = "#4288ae")) +
   scale_y_reordered() +
@@ -79,29 +89,24 @@ plot1 <- df_tf_idf %>%
   labs(x = "",
        y = "",
        title = "<span style ='color:#15404e'>**Job**</span> and <span style = 'color:#4288ae'>**David**</span>",
-       subtitle = "Top 15 of highest tf_idf words by Job and David") +
+       subtitle = "Top 15 of highest tf_idf words by Job and David",
+       caption = "Source: Job, Psalms (KJV) | Graphic: Sung Inkyung") +
   theme_minimal() +
   theme(legend.position = "none",
-        plot.background = element_rect(fill = "#fbe9c3",
+        strip.text.x = element_text(family = f1, size = 12, face = "bold", colour = "#3e445e"),
+        plot.background = element_rect(fill = "#cbc4bc",
                                        color = NA),
-        plot.title = element_markdown(size = 24, 
-                                      hjust = 0.5, 
+        plot.title = element_markdown(family = f1, size = 24, hjust = 0.5, 
                                       margin = margin(b = 5)),
-        plot.subtitle = element_markdown(size = 16, 
-                                      hjust = 0.5, 
+        plot.subtitle = element_markdown(family = f1, size = 14,  hjust = 0.5, 
                                       margin = margin(b = 15)),
-        axis.text.y = element_text(size = 12, 
-                                   face = "bold", 
-                                   colour = "#3e445e", 
+        plot.caption = element_text(family = f2, size = 7, hjust = 0.5, 
+                                    margin = margin(t = 15)),
+        axis.text.y = element_text(family = f2, size = 12, face = "bold", colour = "#3e445e", 
                                    margin = margin(0,-5,0,0)),
         panel.grid.minor = element_blank(),
         panel.grid.major = element_blank(),
-        strip.text.x = element_text(size = 12,
-                                    face = "bold", 
-                                    colour = "#3e445e"),
-        plot.margin = margin(20,20,30,30))
-
-plot1
+        plot.margin = margin(20,20,20,20))
 
 ggsave("Job_David.png", dpi = 300, width = 24, height = 16, units = "cm")
 ```
@@ -135,7 +140,6 @@ ggplot(frequency, aes(Job, David)) +
   theme_light()
 ```
 
-
 ```{r}
 # Comparing word usage
 
@@ -153,12 +157,9 @@ word_ratios <- job_david %>%
   arrange(desc(logratio)) 
 ```
         
-        
-        title = "<span style = 'color:#4288ae'>**More from David**</span> and <span style ='color:#15404e'>**More from Job**</span>",
-       caption = "Source: KJV | Graphic: Sung Inkyung"
-
 ```{r}
 plot2 <- word_ratios %>% 
+  filter(word != "o") %>% 
   group_by(logratio < 0) %>% 
   slice_max(abs(logratio), n = 15) %>% 
   ungroup() %>% 
@@ -168,7 +169,8 @@ ggplot(aes(logratio, word, fill = logratio < 0)) +
            show.legend = FALSE) +
   geom_text(aes(label = word,
                 hjust = hjust),
-            size = 4.5,
+            family = f2,
+            size = 4,
             color = "#dbe5f1") +
   scale_fill_manual(values = c("#15404e", "#4288ae")) +
   scale_y_discrete(breaks = NULL) +
@@ -176,26 +178,28 @@ ggplot(aes(logratio, word, fill = logratio < 0)) +
            x = 0.085, y = 7.7,
            label = "More from David",
            color = "#4288ae",
-           size = 10,
+           family = f1,
+           size = 8,
            fontface = "bold",
            angle = 90) +
   annotate("text",
            x = - 0.095, y = 23,
            label = "More from Job",
            color = "#15404e",
-           size = 10,
+           family = f1,
+           size = 8,
            fontface = "bold",
            angle = 90) +
   labs(x = "",
        y = "",
-       caption = "Source: KJV | Graphic: Sung InKyung") +
+       caption = "Source: Job, Psalms (KJV) | Graphic: Sung InKyung") +
   theme_minimal() +
   theme(legend.position = "none",
-        plot.background = element_rect(fill = "#fbe9c3",
+        plot.background = element_rect(fill = "#cbc4bc",
                                        color = NA),
-        plot.caption = element_text(size = 11,
-                                  colour = "#4d8679", 
+        plot.caption = element_text(family = f2, size = 11,
                                   hjust = 0.5, 
+                                  color = "gray45",
                                   margin = margin(t = 20)),
         axis.title.y = element_blank(),
         axis.text.x = element_blank(),
@@ -204,7 +208,6 @@ ggplot(aes(logratio, word, fill = logratio < 0)) +
         panel.grid.major = element_blank(),
         plot.margin = margin(20, 20, 20, 20))
 
-plot2
 
 ggsave("Job_David_Ratios.png", dpi = 300, width = 28, height = 24, units = "cm")
 
