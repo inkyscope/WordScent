@@ -26,7 +26,7 @@ showtext_auto(enable = TRUE)
 
 
 ```{r}
-bible <- read.csv("bible_kjv_new.csv")
+bible <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv")
 
 df_2Samuel <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bible_kjv_new.csv") %>% 
   filter(book == "2 Samuel",
@@ -38,7 +38,7 @@ df_2Samuel <- read.csv("C:/Users/inkyscope/Documents/projectR/inkyscroll/data/bi
 
 
 ```{r}
-week1 <- (c("Ecclesiastes 3:4", "Romans 8:9", "Genesis 12:3", "Acts 9:4", "Acts 9:5", "Ezekiel 36:26", "Proverbs 25:13", "1 Samuel 2:30", "Revelation 20:12", "1 Corinthians 1:24"))
+week1 <- (c("Ecclesiastes 3:4", "Romans 8:9", "Genesis 12:3", "Acts 9:5", "Ezekiel 36:26", "Proverbs 25:13", "1 Samuel 2:30", "Revelation 20:12", "1 Corinthians 1:24"))
 
 
 w1_crossref <- bible %>% 
@@ -101,8 +101,8 @@ plot <- df_plot %>%
     barheight = .3
   )) +
   labs(title = "Cross Reference of 2Samuel 1:1-16",
-       subtitle = "Sermon by Pastor Cho ChungMin at Basic Church\nJanuary 2, 2022",
-       caption = "Graphic: Sung Inkyung") +
+       subtitle = "- They mourned and wept and fasted -",
+       caption = "Source: Sermon by Pastor Cho JungMin\nJanuary 2, 2022\nBASIC Community Church\n\nGraphic: Sung Inkyung") +
   expand_limits(x = c(-1.3, 1.3)) +
   theme(
     legend.position = c(0.12, 0.02),
@@ -118,7 +118,7 @@ plot <- df_plot %>%
     plot.title = element_text(family = "Lora", size = 24, hjust = 0.5, face = "bold",
                               color = "#b1044f",
                               margin = margin(b = 7)),
-    plot.subtitle = element_text(family = "Lato", size = 17, hjust = 0.5, lineheight = 0.9,
+    plot.subtitle = element_text(family = "Lato", size = 20, hjust = 0.5,
                                  color = "#b1044f",
                                  margin = margin(b = 15)),
     plot.caption = element_text(family = "Lato", size = 10, color = "gray35",
