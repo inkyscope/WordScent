@@ -15,7 +15,6 @@ library(tidytext)
 library(ggtext)
 library(scales)
 library(treemapify)
-library(here)
 library(showtext)
 
 font_add_google("Anton")
@@ -23,9 +22,7 @@ font_add_google("Saira")
 
 showtext_opts(dpi = 320)
 showtext_auto()
-
 ```
-
 
 ```{r}
 bible <- readr::read_csv("C:/Users/inkyscope/Documents/projects/data/bible_kjv_new.csv")
@@ -39,12 +36,11 @@ book_by_characters <- bible %>%
          mark = str_c(book, "\n", count))
 ```
 
-
 ```{r}
 tree_plot <- book_by_characters %>% 
   ggplot(aes(area = characters,
              label = mark)) +
-  geom_treemap(color = "gray97",
+  geom_treemap(color = "gray97", 
                fill = "#131423",
                size = .4) +
   geom_treemap_text(color = "white",
@@ -53,8 +49,8 @@ tree_plot <- book_by_characters %>%
                     family = "Saira",
                     size = 13,
                     reflow = T) +
-  labs(title = "Bible Books by Number of Words",
-       caption = "**Graphic**: Sung Inkyung") +
+  labs(title = "Bible Books by Number of Characters",
+       caption = "**Source**: King James Version | **Graphic**: Sung Inkyung") +
   theme(panel.background = element_rect(fill = "white"),
         plot.title = element_text(family = "Anton",
                                   size = 24,
