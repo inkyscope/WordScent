@@ -56,7 +56,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ![Wardrobe](https://github.com/inkyscope/WordSpice/blob/master/2020/1218_Wardrobe/1218_Wardrobe.png)
 
 ### Body
-![Body](https://github.com/inkyscope/WordSpice/blob/master/2020/1208_BodyParts/1205_BodyParts.png)
+![Body](https://github.com/inkyscope/WordSpice/blob/master/2020/1208_BodyParts/1208_BodyParts.png)
 
 ### Holy
 ![Holy](https://github.com/inkyscope/WordSpice/blob/master/2020/1118_Holy/1118_Holy.png)
