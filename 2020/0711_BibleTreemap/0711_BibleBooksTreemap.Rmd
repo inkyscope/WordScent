@@ -47,19 +47,19 @@ tree_plot <- book_by_characters %>%
                     place = "topleft",
                     min.size = 0,
                     family = "Saira",
-                    size = 13,
+                    size = 18,
                     reflow = T) +
   labs(title = "Bible Books by Number of Characters",
        caption = "**Source**: King James Version | **Graphic**: Sung Inkyung") +
   theme(panel.background = element_rect(fill = "white"),
         plot.title = element_text(family = "Anton",
-                                  size = 24,
+                                  size = 36,
                                   margin = margin(b = 10)),
         plot.caption = element_markdown(family = "Saira",
-                                        size = 9,
+                                        size = 15,
                                         margin = margin(t = 10)),
         plot.margin = margin(10, 10, 10, 10))
 
-ggsave("0711_BibleBooksTreemap.png", width = 36, height = 20, units = "cm")
+ggsave("0711_BibleBooksTreemap.png", width = 40, height = 30, units = "cm")
 ```
 
