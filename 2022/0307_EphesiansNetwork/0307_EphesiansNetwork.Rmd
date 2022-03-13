@@ -1,0 +1,102 @@
+---
+title: "0307 Ephesians Network"
+author: "Sung Inkyung"
+date: '2022 3 7'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(igraph)
+library(ggraph)
+library(MetBrewer)
+library(showtext)
+
+font_add_google("Bebas Neue")
+font_add_google("Oxygen")
+font_add_google("Rubik")
+
+showtext_opts(dpi = 320)
+showtext_auto()
+
+f1 = "Bebas Neue"
+f2 = "Oxygen"
+f3 = "Rubik"
+```
+
+```{r}
+ephesians <- read_csv("data/Ephesians_ChoJungMin.csv")
+
+df_eph <- ephesians %>% 
+  janitor::clean_names() %>%
+  select(from, to) %>% 
+  mutate(weight = 5, 
+         level = 3) %>% 
+  filter(to != "na")
+
+hierarchy <- tibble(to = c(unique(df_eph$from))) %>% 
+  mutate(from = gsub("(^.*\\..*)(\\...*)", "\\1", to),
+         level = 2, weight = 10)
+
+top <- tibble(to = unique(grep("Eph", hierarchy$from, value = T))) %>%
+  mutate(from = "Ephesians",
+         level = 1, weight = 20)
+
+links <- df_eph %>% 
+  rbind(hierarchy) %>% 
+  rbind(top)
+
+df_plot <- links %>% 
+  mutate(weight = as.factor(weight),
+         level = as.factor(level)) %>% 
+  graph_from_data_frame()
+
+df_node <- links %>% 
+  select(-to) %>% 
+  mutate(from = fct_reorder(from, level),
+         level = as.factor(level)) %>% 
+  group_by(from) %>% 
+  slice(1) %>% 
+  arrange(level) %>% 
+  select(from, level) %>% 
+  mutate(fontface = ifelse(level == "3", "plain", "bold"))
+```
+
+```{r}
+#https://github.com/schochastics/graphlayouts
+
+set.seed(2022)
+
+plot_net <- ggraph(df_plot, layout = "fr") + # "stress", "nicely"
+  geom_edge_link(aes(edge_color = level,
+                     edge_width = as.numeric(fct_rev(level))),
+                 show.legend = FALSE) +
+  geom_node_point(color = "#003967", size = 1.3) +
+  geom_node_text(aes(#color = df_node$level,
+                     #fontface = df_node$fontface,
+                     label = name), family = f3, size = 2, nudge_y = 0.2, color = "#EEF4FF", repel = FALSE, check_overlap = TRUE, show.legend = FALSE) +
+  scale_color_manual(values = met.brewer("Juarez")) +
+  scale_edge_color_manual(values =met.brewer("Juarez")) +
+  scale_edge_width(range = c(0.2, 0.6)) +
+  labs(x = "", y = "", 
+       title = "EPHESIANS IN BIBLE",
+       subtitle = "Illustrated below that it links each verse of Ephesians with other relevant biblical books.\nIt is reflected series of sermons delivered by Pastor Cho JungMin between 2020.11.22 and\n2021.3.7 for 16 weeks at BASIC Community Church in Seoul, Korea.",
+       caption = "Graphic: Sung Inkyung") +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#444444", color = "#444444"),
+        plot.title = element_text(family = f1, size = 28, face = "bold", color = "#FFF9EE",
+                                  margin = margin(b = 9)),
+        plot.subtitle = element_text(family = f3, size = 16, color = "#FFF9EE",
+                                  margin = margin(b = 9)),
+        plot.caption = element_text(family = f2, size = 11, color = "#FFF9EE",
+                                  margin = margin(t = 15)),
+        panel.grid = element_blank(),
+        plot.margin = margin(15, 15, 15, 15))
+
+ggsave("0307_EphesiansNetwork.png", width = 30, height = 26, units = "cm")
+```
