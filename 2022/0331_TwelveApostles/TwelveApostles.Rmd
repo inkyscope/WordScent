@@ -1,0 +1,88 @@
+---
+title: "The Twelve Apostles"
+output: html_document
+date: '2022-03-31'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(ggridges)
+library(ggsci)
+library(showtext)
+
+font_add_google("Lora")
+font_add_google("Fira Sans")
+
+showtext_opts(dpi = 320)
+showtext_auto()
+
+f1 = "Lora"
+f2 = "Fira Sans"
+```
+
+
+```{r}
+#loading data
+babynames <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-03-22/babynames.csv')
+
+## Luke6:14
+
+twelve <- c("Peter", "Andrew", "James", "John", "Philip", "Bartholomew", "Matthew", "Thomas",  "Simon", "Judas") ## James, Judas
+
+
+df_apostles <- babynames %>% 
+  filter(name %in% twelve) %>% 
+  group_by(year, name) %>% 
+  summarise(prc = round(sum(prop), 3)) 
+
+df <- babynames %>% 
+  filter(name %in% twelve) %>% 
+  group_by(year, name) %>% 
+  summarise(total = sum(n)) %>% 
+  group_by(name) %>% 
+  summarise(count = sum(total))
+
+top_boys <- babynames %>% 
+  filter(sex == "M") %>% 
+  group_by(name) %>% 
+  summarise(total = sum(n)) %>% 
+  slice_max(n = 50, order_by = total)
+```
+
+
+```{r}
+plot <- ggplot(df_apostles, 
+               aes(x = year, y = prc, group = name)) +
+  geom_area(aes(fill = fct_reorder(name, prc)),
+            show.legend = F) +
+  scale_x_continuous(limits = c(1880, 2017), expand = c(0, 0)) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_jco() +
+  facet_wrap(~ name, nrow = 5) +
+  labs(x = "",
+       y = "",
+       title = "Popularity of The Twelve Apostles' Names in the US Baby Names 1887 - 2017",
+       subtitle = "James: 5,173,828, Judas 412 times named for boys over time\nAmong The Twelve Apostles, James and James son of Alphaeus,\nJudas son of James and Judas Iscariot, who became a traitor are overlapped",
+       caption = "Source: {babynames} by Hadley Wickham, Luke 6:14-16(NIV)\nGraphic: Sung Inkyung") +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "#edecdf", color = NA),
+        plot.background = element_rect(fill = "#edecdf", color = NA),
+        strip.text = element_text(family = f1, size = 18, hjust = 0),
+        strip.background = element_rect(fill = "#edecdf"),
+        plot.title = element_text(family = f1, size = 28, face = "bold", hjust = 0.5, margin = margin(b = 9)),
+        plot.subtitle = element_text(family = f2, size = 20,  hjust = 0.5, lineheight = 0.9, margin = margin(b = 15)),
+        plot.caption = element_text(family = f2, size = 8),
+        axis.text.x = element_text(family = f2, size = 12),,
+        axis.text.y = element_text(family = f2, size = 12),
+        panel.grid.major.y = element_line(size = 0.3, color = "gray75"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = margin(25, 20, 20, 20))
+
+```
