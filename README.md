@@ -21,7 +21,7 @@ from _**Life Togehter**_  by Dietrich Bonhoeffer
 ## 30 DAY WORD CHART PROJECTS
 |  1 | 2 | 3 | 4 |
 |--------|-------|--------|--------|
-| **MORNING BY MORNING** | **SIDE BY SIDE** | **WAVE UPON WAVE** | **DAY TO DAY** |
+| **MORNING after MORNING** | **NIGHT afer NIGHT** | **DAY after DAY** | **TIME after TIME** |
 | [Spice](https://github.com/inkyscope/WordSpice/tree/master/2020) | Mobil | Ripple | Tapestry |
 | [Stitch](https://github.com/inkyscope/WordSpice/tree/master/2021) | Mills | Reel | Torch |
 | [Spark](https://github.com/inkyscope/WordSpice/tree/master/2022) | Magnet | Ray | Top |
